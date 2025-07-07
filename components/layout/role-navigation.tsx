@@ -32,7 +32,7 @@ export function getRoleNavigation(user: User | null): NavigationItem[] {
   const baseNavigation: NavigationItem[] = [
     {
       title: "Dashboard",
-      href: "/dashboard",
+      href: "/main",
       icon: LayoutDashboard,
       description: "Vista general del restaurante",
     },

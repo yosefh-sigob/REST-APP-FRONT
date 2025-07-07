@@ -1,13 +1,15 @@
 "use client"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { useAuth } from "@/contexts/auth-context"
 import { getRoleNavigation, getRoleColor } from "./role-navigation"
+import { useOptimizedNavigation } from "@/hooks/use-navigation"
 import { cn } from "@/lib/utils"
 import { ChevronLeft, ChevronRight } from "lucide-react"
+import { useCallback, startTransition, useEffect } from "react"
 
 interface AuthSidebarProps {
   isCollapsed: boolean
@@ -18,6 +20,14 @@ export function AuthSidebar({ isCollapsed, onToggleCollapse }: AuthSidebarProps)
   const { user } = useAuth()
   const pathname = usePathname()
   const navigation = getRoleNavigation(user)
+  const { navigateTo, prefetchRoute } = useOptimizedNavigation()
+
+  // Prefetch all navigation routes on mount
+  useEffect(() => {
+    navigation.forEach((item) => {
+      prefetchRoute(item.href)
+    })
+  }, [navigation, prefetchRoute])
 
   if (!user) return null
 
@@ -77,14 +87,24 @@ export function AuthSidebar({ isCollapsed, onToggleCollapse }: AuthSidebarProps)
               const isActive = pathname === item.href
 
               return (
-                <Link key={item.href} href={item.href}>
+                <Link 
+                  key={item.href} 
+                  href={item.href}
+                  prefetch={true}
+                  className="block"
+                >
                   <Button
                     variant={isActive ? "secondary" : "ghost"}
                     className={cn(
-                      "w-full justify-start h-10",
+                      "w-full justify-start h-10 transition-all duration-200",
                       isCollapsed ? "px-2" : "px-3",
                       isActive && "bg-orange-100 text-orange-900 hover:bg-orange-200",
+                      !isActive && "hover:bg-gray-100 hover:text-gray-900"
                     )}
+                    onClick={(e) => {
+                      e.preventDefault()
+                      navigateTo(item.href)
+                    }}
                   >
                     <Icon className={cn("h-4 w-4", isCollapsed ? "" : "mr-3")} />
                     {!isCollapsed && (
