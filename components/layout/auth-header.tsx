@@ -111,12 +111,12 @@ export function AuthHeader({ onToggleSidebar, showSidebarToggle = true }: AuthHe
                 <div className="flex flex-col space-y-1">
                   <p className="text-sm font-medium leading-none">{user.nombreCompleto}</p>
                   <p className="text-xs leading-none text-muted-foreground">{user.correo}</p>
-                  <div className="flex items-center space-x-2 mt-2">
+                  {/* <div className="flex items-center space-x-2 mt-2">
                     <Badge className={`text-xs ${getRoleColor(user.rol)}`}>{user.rol}</Badge>
                     <Badge variant="outline" className="text-xs">
                       {user.nivelLicencia}
                     </Badge>
-                  </div>
+                  </div> */}
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />

@@ -57,27 +57,6 @@ export function AuthSidebar({ isCollapsed, onToggleCollapse }: AuthSidebarProps)
         </Button>
       </div>
 
-      {/* Información del Usuario */}
-      {!isCollapsed && (
-        <div className="p-4 border-b">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-600 rounded-full flex items-center justify-center">
-              <span className="text-white text-sm font-bold">
-                {user.nombreCompleto
-                  .split(" ")
-                  .map((n) => n[0])
-                  .join("")
-                  .slice(0, 2)}
-              </span>
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-900 truncate">{user.nombreCompleto}</p>
-              <Badge className={`text-xs mt-1 ${getRoleColor(user.rol)}`}>{user.rol}</Badge>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Navegación */}
       <ScrollArea className="flex-1">
         <div className="p-2">
