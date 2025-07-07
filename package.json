@@ -1,10 +1,13 @@
 {
-  "name": "my-v0-project",
+  "name": "apprest-sistema",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "build": "next build",
-    "dev": "next dev",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio",
+    "dev": "next dev --turbopack",
     "lint": "next lint",
     "start": "next start"
   },
@@ -12,7 +15,6 @@
     "@aws-sdk/client-rds-data": "latest",
     "@cloudflare/workers-types": "latest",
     "@electric-sql/pglite": "latest",
-    "@eslint/eslintrc": "latest",
     "@hookform/resolvers": "latest",
     "@libsql/client": "latest",
     "@libsql/client-wasm": "latest",
@@ -55,14 +57,12 @@
     "@upstash/redis": "latest",
     "@vercel/postgres": "latest",
     "@xata.io/client": "latest",
-    "autoprefixer": "^10.4.20",
     "better-sqlite3": "latest",
     "bun-types": "latest",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "latest",
-    "date-fns": "4.1.0",
-    "drizzle-kit": "latest",
+    "date-fns": "latest",
     "drizzle-orm": "latest",
     "embla-carousel-react": "latest",
     "expo-sqlite": "latest",
@@ -94,11 +94,17 @@
     "zod": "latest"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4.1.11",
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "drizzle-kit": "^0.30.0",
+    "eslint": "^9",
+    "eslint-config-next": "15.3.4",
     "postcss": "^8.5",
-    "tailwindcss": "^3.4.17",
+    "tailwindcss": "^4.1.11",
+    "tw-animate-css": "^1.3.4",
     "typescript": "^5"
   }
 }
