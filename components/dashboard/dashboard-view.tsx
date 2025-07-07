@@ -170,9 +170,9 @@ export function DashboardView() {
   })
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-2">
       {/* Welcome Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">¡Bienvenido, {firstName}!</h1>
           <p className="text-gray-600 mt-1">Aquí tienes un resumen de tu restaurante hoy • {currentTime}</p>
@@ -188,7 +188,7 @@ export function DashboardView() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
         {STATS_CARDS.map((stat, index) => {
           const Icon = stat.icon
           const isPositive = stat.changeType === "positive"
@@ -220,7 +220,7 @@ export function DashboardView() {
       </div>
 
       {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
         {/* Recent Activity */}
         <Card className="lg:col-span-2">
           <CardHeader>
@@ -259,15 +259,17 @@ export function DashboardView() {
             {QUICK_ACTIONS.map((action, index) => {
               const Icon = action.icon
               return (
-                <Link key={index} href={action.href}>
-                  <Button className={`w-full justify-start h-12 ${action.color} text-white`} variant="default">
-                    <Icon className="h-4 w-4 mr-3" />
-                    <div className="text-left">
-                      <div className="font-medium">{action.title}</div>
-                      <div className="text-xs opacity-90">{action.description}</div>
-                    </div>
-                  </Button>
-                </Link>
+                <div>
+                  <Link key={index} href={action.href}>
+                    <Button className={`w-full justify-start h-12 ${action.color} text-white`} variant="default">
+                      <Icon className="h-4 w-4 mr-3" />
+                      <div className="text-left">
+                        <div className="font-medium">{action.title}</div>
+                        <div className="text-xs opacity-90">{action.description}</div>
+                      </div>
+                    </Button>
+                  </Link>
+                </div>
               )
             })}
           </CardContent>
@@ -281,7 +283,7 @@ export function DashboardView() {
           <CardDescription>Detalles de tu restaurante y configuración actual</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
             <div>
               <p className="text-sm font-medium text-gray-600">Empresa</p>
               <p className="text-lg font-semibold text-gray-900 mt-1">{user.nombreEmpresa}</p>
