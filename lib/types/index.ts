@@ -209,3 +209,13 @@ export interface ConfiguracionRestaurante {
     push: boolean
   }
 }
+
+// Tipos para encuestas
+export interface PreguntaEncuesta {
+  id: string
+  pregunta: string
+  tipo: "calificacion" | "multiple" | "texto" | "si_no"
+  requerida: boolean
+  orden: number
+  opciones?: string[]
+}

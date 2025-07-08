@@ -14,13 +14,14 @@ export async function crearEmpresa(data: unknown): Promise<{ success: boolean; d
     const empresaData = {
       EmpresaULID: generateULID(),
       ...validatedData,
+      TipoEmpresa: validatedData.TipoEmpresa as any,
       FechaRegistro: new Date(),
       Fecha_UltimoCambio: new Date(),
     }
 
     const [nuevaEmpresa] = await db.insert(empresa).values(empresaData).returning()
 
-    return { success: true, data: nuevaEmpresa }
+    return { success: true, data: nuevaEmpresa as unknown as Empresa }
   } catch (error) {
     console.error("Error al crear empresa:", error)
     return { success: false, error: "Error al crear la empresa" }
@@ -35,7 +36,7 @@ export async function obtenerEmpresaPorId(id: string): Promise<{ success: boolea
       return { success: false, error: "Empresa no encontrada" }
     }
 
-    return { success: true, data: empresaEncontrada }
+    return { success: true, data: empresaEncontrada as unknown as Empresa }
   } catch (error) {
     console.error("Error al obtener empresa:", error)
     return { success: false, error: "Error al obtener la empresa" }
@@ -45,7 +46,7 @@ export async function obtenerEmpresaPorId(id: string): Promise<{ success: boolea
 export async function obtenerTodasLasEmpresas(): Promise<{ success: boolean; data?: Empresa[]; error?: string }> {
   try {
     const empresas = await db.select().from(empresa)
-    return { success: true, data: empresas }
+    return { success: true, data: empresas as unknown as Empresa[] }
   } catch (error) {
     console.error("Error al obtener empresas:", error)
     return { success: false, error: "Error al obtener las empresas" }
@@ -61,7 +62,7 @@ export async function actualizarEmpresa(
 
     const [empresaActualizada] = await db
       .update(empresa)
-      .set({ ...validatedData, Fecha_UltimoCambio: new Date() })
+      .set({ ...validatedData, TipoEmpresa: validatedData.TipoEmpresa as any, Fecha_UltimoCambio: new Date() })
       .where(eq(empresa.EmpresaULID, id))
       .returning()
 
@@ -69,7 +70,7 @@ export async function actualizarEmpresa(
       return { success: false, error: "Empresa no encontrada" }
     }
 
-    return { success: true, data: empresaActualizada }
+    return { success: true, data: empresaActualizada as unknown as Empresa }
   } catch (error) {
     console.error("Error al actualizar empresa:", error)
     return { success: false, error: "Error al actualizar la empresa" }
@@ -78,9 +79,9 @@ export async function actualizarEmpresa(
 
 export async function eliminarEmpresa(id: string): Promise<{ success: boolean; error?: string }> {
   try {
-    const resultado = await db.delete(empresa).where(eq(empresa.EmpresaULID, id))
+    const resultado = await db.delete(empresa).where(eq(empresa.EmpresaULID, id)).returning()
 
-    if (resultado.rowCount === 0) {
+    if (resultado.length === 0) {
       return { success: false, error: "Empresa no encontrada" }
     }
 

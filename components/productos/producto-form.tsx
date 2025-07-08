@@ -22,10 +22,29 @@ import { Loader2, Save, X, AlertCircle, Check } from "lucide-react"
 interface ProductoFormProps {
   producto?: Producto | null
   datosRelacionados: {
-    grupos: any[]
-    subgrupos: any[]
-    unidades: any[]
-    areasProduccion: any[]
+    grupos: Array<{
+      GrupoProductoULID: string
+      Descripcion: string
+      [key: string]: unknown
+    }>
+    subgrupos: Array<{
+      SubgrupoProductoULID: string
+      GrupoProductoULID?: string
+      ClaveGrupo?: string
+      Descripcion: string
+      [key: string]: unknown
+    }>
+    unidades: Array<{
+      UnidadULID: string
+      Descripcion: string
+      Abreviacion?: string
+      [key: string]: unknown
+    }>
+    areasProduccion: Array<{
+      AreaProduccionULID: string
+      Descripcion: string
+      [key: string]: unknown
+    }>
   }
   onSuccess: () => void
   onCancel: () => void
@@ -51,21 +70,21 @@ export function ProductoForm({ producto, datosRelacionados, onSuccess, onCancel 
       PrecioAbierto: producto?.PrecioAbierto || false,
       ControlStock: producto?.ControlStock || false,
       PrecioxUtilidadad: producto?.PrecioxUtilidadad || false,
-      Facturable: producto?.Facturable || true,
+      Facturable: producto?.Facturable ?? true,
       Suspendido: producto?.Suspendido || false,
-      Comedor: producto?.Comedor || false,
+      Comedor: producto?.Comedor ?? true,
       ADomicilio: producto?.ADomicilio || false,
       Mostrador: producto?.Mostrador || false,
       Enlinea: producto?.Enlinea || false,
       EnAPP: producto?.EnAPP || false,
       EnMenuQR: producto?.EnMenuQR || false,
-      GrupoProductoULID: producto?.GrupoProductoULID || "defaultGroup",
-      SubgrupoProductoULID: producto?.SubgrupoProductoULID || "defaultSubgroup",
-      UnidadesULID: producto?.UnidadesULID || "defaultUnit",
-      AreaProduccionULID: producto?.AreaProduccionULID || "defaultArea",
-      AlmacenULID: producto?.AlmacenULID || "defaultAlmacen",
-      ClasificacionQRULID: producto?.ClasificacionQRULID || "defaultQR",
-      ClaveTributaria: producto?.ClaveTributaria || "defaultTributaria",
+      GrupoProductoULID: producto?.GrupoProductoULID || datosRelacionados.grupos[0]?.GrupoProductoULID || "",
+      SubgrupoProductoULID: producto?.SubgrupoProductoULID || "",
+      UnidadesULID: producto?.UnidadesULID || datosRelacionados.unidades[0]?.UnidadULID || "",
+      AreaProduccionULID: producto?.AreaProduccionULID || datosRelacionados.areasProduccion[0]?.AreaProduccionULID || "",
+      AlmacenULID: producto?.AlmacenULID || "",
+      ClasificacionQRULID: producto?.ClasificacionQRULID || "",
+      ClaveTributaria: producto?.ClaveTributaria || "",
       DatosDinamicos: producto?.DatosDinamicos || {},
     },
   })
@@ -85,7 +104,7 @@ export function ProductoForm({ producto, datosRelacionados, onSuccess, onCancel 
       } else {
         setClaveValida(null)
       }
-    } catch (error) {
+    } catch {
       setClaveValida(null)
     } finally {
       setValidandoClave(false)
@@ -93,15 +112,22 @@ export function ProductoForm({ producto, datosRelacionados, onSuccess, onCancel 
   }
 
   // Efecto para validar clave cuando cambia
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    const clave = form.watch("ClaveProducto")
-    if (clave && clave !== producto?.ClaveProducto) {
-      const timeoutId = setTimeout(() => validarClave(clave), 500)
-      return () => clearTimeout(timeoutId)
-    } else {
-      setClaveValida(null)
-    }
-  }, [form.watch("ClaveProducto"), producto?.ClaveProducto])
+    const subscription = form.watch((value, { name }) => {
+      if (name === "ClaveProducto") {
+        const clave = value.ClaveProducto
+        if (clave && clave !== producto?.ClaveProducto) {
+          const timeoutId = setTimeout(() => validarClave(clave), 500)
+          return () => clearTimeout(timeoutId)
+        } else {
+          setClaveValida(null)
+        }
+      }
+    })
+    
+    return () => subscription.unsubscribe()
+  }, [producto?.ClaveProducto])
 
   const onSubmit = async (data: ProductoFormData) => {
     // Validar que al menos un canal esté activo
@@ -139,7 +165,7 @@ export function ProductoForm({ producto, datosRelacionados, onSuccess, onCancel 
       } else {
         toast.error(result.error || `Error al ${esEdicion ? "actualizar" : "crear"} producto`)
       }
-    } catch (error) {
+    } catch {
       toast.error(`Error al ${esEdicion ? "actualizar" : "crear"} producto`)
     } finally {
       setLoading(false)
@@ -148,9 +174,12 @@ export function ProductoForm({ producto, datosRelacionados, onSuccess, onCancel 
 
   const obtenerSubgruposFiltrados = () => {
     const grupoSeleccionado = form.watch("GrupoProductoULID")
-    if (!grupoSeleccionado) return []
+    if (!grupoSeleccionado || !datosRelacionados.subgrupos) return []
 
-    return datosRelacionados.subgrupos.filter((subgrupo) => subgrupo.ClaveGrupo === grupoSeleccionado)
+    return datosRelacionados.subgrupos.filter((subgrupo) => 
+      subgrupo.GrupoProductoULID === grupoSeleccionado || 
+      subgrupo.ClaveGrupo === grupoSeleccionado
+    )
   }
 
   const contarCanalesActivos = () => {
@@ -198,7 +227,12 @@ export function ProductoForm({ producto, datosRelacionados, onSuccess, onCancel 
                               placeholder="Ej: TACO001"
                               className="uppercase"
                               onChange={(e) => {
-                                field.onChange(e.target.value.toUpperCase())
+                                const value = e.target.value.toUpperCase()
+                                field.onChange(value)
+                                // Reset validation state when value changes
+                                if (value !== producto?.ClaveProducto) {
+                                  setClaveValida(null)
+                                }
                               }}
                             />
                           </FormControl>
@@ -225,7 +259,7 @@ export function ProductoForm({ producto, datosRelacionados, onSuccess, onCancel 
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Tipo de Producto *</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <Select onValueChange={field.onChange} value={field.value}>
                           <FormControl>
                             <SelectTrigger>
                               <SelectValue placeholder="Seleccionar tipo" />
@@ -475,15 +509,15 @@ export function ProductoForm({ producto, datosRelacionados, onSuccess, onCancel 
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Grupo de Producto</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <Select onValueChange={field.onChange} value={field.value}>
                           <FormControl>
                             <SelectTrigger>
                               <SelectValue placeholder="Seleccionar grupo" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="defaultGroup">Sin grupo</SelectItem>
-                            {datosRelacionados.grupos.map((grupo) => (
+                            <SelectItem value="">Sin grupo</SelectItem>
+                            {datosRelacionados.grupos?.map((grupo) => (
                               <SelectItem key={grupo.GrupoProductoULID} value={grupo.GrupoProductoULID}>
                                 {grupo.Descripcion}
                               </SelectItem>
@@ -501,14 +535,14 @@ export function ProductoForm({ producto, datosRelacionados, onSuccess, onCancel 
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Subgrupo de Producto</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <Select onValueChange={field.onChange} value={field.value}>
                           <FormControl>
                             <SelectTrigger>
                               <SelectValue placeholder="Seleccionar subgrupo" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="defaultSubgroup">Sin subgrupo</SelectItem>
+                            <SelectItem value="">Sin subgrupo</SelectItem>
                             {obtenerSubgruposFiltrados().map((subgrupo) => (
                               <SelectItem key={subgrupo.SubgrupoProductoULID} value={subgrupo.SubgrupoProductoULID}>
                                 {subgrupo.Descripcion}
@@ -530,15 +564,15 @@ export function ProductoForm({ producto, datosRelacionados, onSuccess, onCancel 
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Unidad de Medida</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <Select onValueChange={field.onChange} value={field.value}>
                           <FormControl>
                             <SelectTrigger>
                               <SelectValue placeholder="Seleccionar unidad" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="defaultUnit">Sin unidad</SelectItem>
-                            {datosRelacionados.unidades.map((unidad) => (
+                            <SelectItem value="">Sin unidad</SelectItem>
+                            {datosRelacionados.unidades?.map((unidad) => (
                               <SelectItem key={unidad.UnidadULID} value={unidad.UnidadULID}>
                                 {unidad.Descripcion} ({unidad.Abreviacion})
                               </SelectItem>
@@ -556,15 +590,15 @@ export function ProductoForm({ producto, datosRelacionados, onSuccess, onCancel 
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Área de Producción</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <Select onValueChange={field.onChange} value={field.value}>
                           <FormControl>
                             <SelectTrigger>
                               <SelectValue placeholder="Seleccionar área" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="defaultArea">Sin área</SelectItem>
-                            {datosRelacionados.areasProduccion.map((area) => (
+                            <SelectItem value="">Sin área</SelectItem>
+                            {datosRelacionados.areasProduccion?.map((area) => (
                               <SelectItem key={area.AreaProduccionULID} value={area.AreaProduccionULID}>
                                 {area.Descripcion}
                               </SelectItem>

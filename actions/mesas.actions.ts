@@ -5,9 +5,11 @@ import { mesas } from "@/lib/database/schema"
 import { eq, and } from "drizzle-orm"
 import { mesaSchema } from "@/schemas/database.schemas"
 import { generateULID } from "@/utils/ulid"
-import type { Mesa } from "@/interfaces/database"
 
-export async function crearMesa(data: unknown): Promise<{ success: boolean; data?: Mesa; error?: string }> {
+// Tipo inferido de la tabla mesas de Drizzle
+type MesaDB = typeof mesas.$inferSelect
+
+export async function crearMesa(data: unknown): Promise<{ success: boolean; data?: MesaDB; error?: string }> {
   try {
     const validatedData = mesaSchema.parse(data)
 
@@ -29,7 +31,7 @@ export async function crearMesa(data: unknown): Promise<{ success: boolean; data
 
 export async function obtenerMesasPorEmpresa(
   empresaId: string,
-): Promise<{ success: boolean; data?: Mesa[]; error?: string }> {
+): Promise<{ success: boolean; data?: MesaDB[]; error?: string }> {
   try {
     const mesasEmpresa = await db.select().from(mesas).where(eq(mesas.EmpresaULID, empresaId))
     return { success: true, data: mesasEmpresa }
@@ -42,7 +44,7 @@ export async function obtenerMesasPorEmpresa(
 export async function obtenerMesasPorArea(
   empresaId: string,
   areaId: number,
-): Promise<{ success: boolean; data?: Mesa[]; error?: string }> {
+): Promise<{ success: boolean; data?: MesaDB[]; error?: string }> {
   try {
     const mesasArea = await db
       .select()
@@ -59,7 +61,7 @@ export async function obtenerMesasPorArea(
 export async function actualizarMesa(
   id: string,
   data: unknown,
-): Promise<{ success: boolean; data?: Mesa; error?: string }> {
+): Promise<{ success: boolean; data?: MesaDB; error?: string }> {
   try {
     const validatedData = mesaSchema.partial().parse(data)
 
@@ -82,9 +84,9 @@ export async function actualizarMesa(
 
 export async function eliminarMesa(id: string): Promise<{ success: boolean; error?: string }> {
   try {
-    const resultado = await db.delete(mesas).where(eq(mesas.MesaULID, id))
+    const resultado = await db.delete(mesas).where(eq(mesas.MesaULID, id)).returning()
 
-    if (resultado.rowCount === 0) {
+    if (resultado.length === 0) {
       return { success: false, error: "Mesa no encontrada" }
     }
 

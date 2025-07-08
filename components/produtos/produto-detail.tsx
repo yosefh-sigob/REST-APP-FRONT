@@ -18,10 +18,10 @@ import {
   Building,
   Settings,
 } from "lucide-react"
-import type { Produto } from "@/schemas/produtos.schemas"
+import type { Producto } from "@/schemas/produtos.schemas"
 
 interface ProductoDetailProps {
-  produto: Produto
+  produto: Producto
   onEdit: () => void
   onClose: () => void
 }
