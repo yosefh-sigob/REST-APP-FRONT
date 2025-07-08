@@ -1,6 +1,7 @@
-"use client"
-import { ReservacionesView } from "@/components/reservaciones/reservaciones-view"
 
-export default function ReservacionesPage() {
-  return <ReservacionesView />
+// import { ReservacionesView } from "@/components/reservaciones/reservaciones-view"
+
+export default async function ReservacionesPage() {
+  return <div>ReservacionesView</div>
+  // return <ReservacionesView />
 }
