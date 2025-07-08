@@ -7,8 +7,9 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const empresaId = searchParams.get("empresaId")
-    const termino = searchParams.get("buscar")
-    const activos = searchParams.get("activos")
+    //UNUSED | Se comentarán de momento estas rutas
+    // const termino = searchParams.get("buscar")
+    // const activos = searchParams.get("activos")
 
     if (!empresaId) {
       return NextResponse.json({ error: "ID de empresa requerido" }, { status: 400 })
