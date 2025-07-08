@@ -17,34 +17,34 @@ export const ProductoFormSchema = z.object({
     .min(1, "El nombre del producto es requerido")
     .max(100, "El nombre no puede tener más de 100 caracteres"),
 
-  Descripcion: z.string().max(500, "La descripción no puede tener más de 500 caracteres").optional().default(""),
+  Descripcion: z.string().max(500, "La descripción no puede tener más de 500 caracteres"),
 
-  Favorito: z.boolean().default(false),
-  ExentoImpuesto: z.boolean().default(false),
-  PrecioAbierto: z.boolean().default(false),
-  ControlStock: z.boolean().default(false),
-  PrecioxUtilidadad: z.boolean().default(false),
-  Facturable: z.boolean().default(true),
-  Suspendido: z.boolean().default(false),
+  Favorito: z.boolean(),
+  ExentoImpuesto: z.boolean(),
+  PrecioAbierto: z.boolean(),
+  ControlStock: z.boolean(),
+  PrecioxUtilidadad: z.boolean(),
+  Facturable: z.boolean(),
+  Suspendido: z.boolean(),
 
   // Canales de venta
-  Comedor: z.boolean().default(false),
-  ADomicilio: z.boolean().default(false),
-  Mostrador: z.boolean().default(false),
-  Enlinea: z.boolean().default(false),
-  EnAPP: z.boolean().default(false),
-  EnMenuQR: z.boolean().default(false),
+  Comedor: z.boolean(),
+  ADomicilio: z.boolean(),
+  Mostrador: z.boolean(),
+  Enlinea: z.boolean(),
+  EnAPP: z.boolean(),
+  EnMenuQR: z.boolean(),
 
-  // Relaciones (opcionales)
-  GrupoProductoULID: z.string().optional(),
-  SubgrupoProductoULID: z.string().optional(),
-  UnidadesULID: z.string().optional(),
-  AreaProduccionULID: z.string().optional(),
-  AlmacenULID: z.string().optional(),
-  ClasificacionQRULID: z.string().optional(),
+  // Relaciones
+  GrupoProductoULID: z.string(),
+  SubgrupoProductoULID: z.string(),
+  UnidadesULID: z.string(),
+  AreaProduccionULID: z.string(),
+  AlmacenULID: z.string(),
+  ClasificacionQRULID: z.string(),
 
-  ClaveTributaria: z.string().optional().default(""),
-  DatosDinamicos: z.record(z.any()).optional().default({}),
+  ClaveTributaria: z.string(),
+  DatosDinamicos: z.record(z.any()),
 })
 
 // Validación personalizada para asegurar que al menos un canal esté activo

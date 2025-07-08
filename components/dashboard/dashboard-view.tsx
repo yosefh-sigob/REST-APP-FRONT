@@ -259,7 +259,7 @@ export function DashboardView() {
             {QUICK_ACTIONS.map((action, index) => {
               const Icon = action.icon
               return (
-                <div>
+                <div key={index}>
                   <Link key={index} href={action.href}>
                     <Button className={`w-full justify-start h-12 ${action.color} text-white`} variant="default">
                       <Icon className="h-4 w-4 mr-3" />

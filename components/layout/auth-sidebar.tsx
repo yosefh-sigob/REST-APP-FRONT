@@ -1,15 +1,15 @@
 "use client"
-import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { useAuth } from "@/contexts/auth-context"
-import { getRoleNavigation, getRoleColor } from "./role-navigation"
 import { useOptimizedNavigation } from "@/hooks/use-navigation"
 import { cn } from "@/lib/utils"
 import { ChevronLeft, ChevronRight } from "lucide-react"
-import { useCallback, startTransition, useEffect } from "react"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { useEffect } from "react"
+import { getRoleNavigation } from "./role-navigation"
 
 interface AuthSidebarProps {
   isCollapsed: boolean
