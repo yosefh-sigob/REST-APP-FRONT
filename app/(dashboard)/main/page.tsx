@@ -1,5 +1,5 @@
 import { DashboardView } from "@/components/dashboard/dashboard-view"
 
-export default function MainDashboard() {
+export default async function MainDashboard() {
   return <DashboardView />
 }

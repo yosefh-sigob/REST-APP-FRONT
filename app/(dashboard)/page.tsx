@@ -1,7 +1,7 @@
-"use client"
+
 
 import { DashboardView } from "@/components/dashboard/dashboard-view"
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
   return <DashboardView />
 }

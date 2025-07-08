@@ -1,6 +1,7 @@
-"use client"
-import { MeseroView } from "@/components/mesero/mesero-view"
 
-export default function MeseroPage() {
-  return <MeseroView />
+// import { MeseroView } from "@/components/mesero/mesero-view"
+
+export default async function MeseroPage() {
+  return <div>MeseroView</div>
+  // return <MeseroView />
 }

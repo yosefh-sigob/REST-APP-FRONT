@@ -74,7 +74,7 @@ export function getRoleNavigation(user: User | null): NavigationItem[] {
         },
         {
           title: "Encuestas SMS",
-          href: "/encuestas/campanas",
+          href: "/encuestas",
           icon: MessageSquare,
           description: "Campañas de satisfacción",
         },

@@ -1,6 +1,7 @@
-"use client"
-import { ClientesView } from "@/components/clientes/clientes-view"
 
-export default function ClientesPage() {
-  return <ClientesView />
+// import { ClientesView } from "@/components/clientes/clientes-view"
+
+export default async function ClientesPage() {
+  return <div>ClientesView</div>
+  // return <ClientesView />
 }

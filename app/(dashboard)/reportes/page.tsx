@@ -1,6 +1,6 @@
 
 export default async function page() {
   return (
-    <div>CrearEncuestasView</div>
+    <div>ReportesView</div>
   );
 }
