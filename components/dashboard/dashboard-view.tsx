@@ -20,44 +20,44 @@ import {
 import { useAuth } from "@/contexts/auth-context"
 import Link from "next/link"
 
-const STATS_CARDS = [
-  {
-    title: "Ventas Hoy",
-    value: "$15,420",
-    change: "+12.5%",
-    changeType: "positive",
-    icon: DollarSign,
-    color: "text-green-600",
-    bgColor: "bg-green-100",
-  },
-  {
-    title: "Órdenes",
-    value: "89",
-    change: "+8.2%",
-    changeType: "positive",
-    icon: ShoppingCart,
-    color: "text-blue-600",
-    bgColor: "bg-blue-100",
-  },
-  {
-    title: "Clientes Atendidos",
-    value: "156",
-    change: "+15.3%",
-    changeType: "positive",
-    icon: Users,
-    color: "text-purple-600",
-    bgColor: "bg-purple-100",
-  },
-  {
-    title: "Productos Vendidos",
-    value: "342",
-    change: "-2.1%",
-    changeType: "negative",
-    icon: Package,
-    color: "text-orange-600",
-    bgColor: "bg-orange-100",
-  },
-]
+// const STATS_CARDS = [
+//   {
+//     title: "Ventas Hoy",
+//     value: "$15,420",
+//     change: "+12.5%",
+//     changeType: "positive",
+//     icon: DollarSign,
+//     color: "text-green-600",
+//     bgColor: "bg-green-100",
+//   },
+//   {
+//     title: "Órdenes",
+//     value: "89",
+//     change: "+8.2%",
+//     changeType: "positive",
+//     icon: ShoppingCart,
+//     color: "text-blue-600",
+//     bgColor: "bg-blue-100",
+//   },
+//   {
+//     title: "Clientes Atendidos",
+//     value: "156",
+//     change: "+15.3%",
+//     changeType: "positive",
+//     icon: Users,
+//     color: "text-purple-600",
+//     bgColor: "bg-purple-100",
+//   },
+//   {
+//     title: "Productos Vendidos",
+//     value: "342",
+//     change: "-2.1%",
+//     changeType: "negative",
+//     icon: Package,
+//     color: "text-orange-600",
+//     bgColor: "bg-orange-100",
+//   },
+// ]
 
 const RECENT_ACTIVITIES = [
   {
@@ -188,7 +188,7 @@ export function DashboardView() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
+      {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
         {STATS_CARDS.map((stat, index) => {
           const Icon = stat.icon
           const isPositive = stat.changeType === "positive"
@@ -217,7 +217,7 @@ export function DashboardView() {
             </Card>
           )
         })}
-      </div>
+      </div> */}
 
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
