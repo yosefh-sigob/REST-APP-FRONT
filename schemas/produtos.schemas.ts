@@ -4,7 +4,7 @@ import { z } from "zod"
 export const productoBaseSchema = z.object({
   ClaveProducto: z.string().min(1, "La clave del producto es requerida").max(10, "Máximo 10 caracteres"),
   TipoProducto: z.enum(["Platillo", "Producto", "Botella"], {
-    required_error: "El tipo de producto es requerido",
+    message: "El tipo de producto es requerido",
   }),
   Nombredelproducto: z.string().min(1, "El nombre del producto es requerido").max(50, "Máximo 50 caracteres"),
   Descripcion: z.string().optional(),

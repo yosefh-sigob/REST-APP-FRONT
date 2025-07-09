@@ -9,7 +9,7 @@ export const ProductoFormSchema = z.object({
     .regex(/^[A-Z0-9]+$/, "Solo se permiten letras mayúsculas y números"),
 
   TipoProducto: z.enum(["Platillo", "Producto", "Botella"], {
-    required_error: "Debe seleccionar un tipo de producto",
+    message: "Debe seleccionar un tipo de producto",
   }),
 
   Nombredelproducto: z
@@ -44,7 +44,7 @@ export const ProductoFormSchema = z.object({
   ClasificacionQRULID: z.string(),
 
   ClaveTributaria: z.string(),
-  DatosDinamicos: z.record(z.any()),
+  DatosDinamicos: z.record(z.string(), z.any()),
 })
 
 // Validación personalizada para asegurar que al menos un canal esté activo
