@@ -105,7 +105,7 @@ export interface Producto {
   CanalesVenta: boolean
   EnMenuQR: boolean
   ClasificacionQRULID: number
-  DatosDinamicos?: any
+  DatosDinamicos?: JSON
   Fecha_UltimoCambio: Date
   Fecha_Sync: Date
   UsuarioULID: number

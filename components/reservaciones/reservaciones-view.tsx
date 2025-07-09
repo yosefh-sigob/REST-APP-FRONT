@@ -98,7 +98,8 @@ function getEstadoIcon(estado: string) {
 }
 
 export function ReservacionesView() {
-  const [selectedDate, setSelectedDate] = useState("2024-01-25")
+  // const [selectedDate, setSelectedDate] = useState("2024-01-25")
+  const [selectedDate] = useState("2024-01-25")
 
   const reservacionesHoy = RESERVACIONES_DATA.filter((r) => r.fecha === selectedDate)
   const confirmadas = reservacionesHoy.filter((r) => r.estado === "confirmada").length

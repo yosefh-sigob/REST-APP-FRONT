@@ -18,7 +18,7 @@ export interface EncuestaPregunta {
   OrdenPregunta: number
   EsRequerida: boolean
   Escala_Calificacion: number
-  Opciones?: any
+  Opciones?: JSON //SE TIPA ASÍ MIENTRAS SE SABE QUÉ OPCIONES DISPONIBLES TENDRÁ
   Fecha_Creacion: Date
 }
 

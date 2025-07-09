@@ -158,7 +158,7 @@ export interface FormErrors {
   [key: string]: string | undefined
 }
 
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T> {
   success: boolean
   data?: T
   error?: string

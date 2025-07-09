@@ -19,6 +19,7 @@ import {
   Settings,
 } from "lucide-react"
 import type { Producto } from "@/schemas/produtos.schemas"
+import Image from 'next/image'
 
 interface ProductoDetailProps {
   produto: Producto
@@ -74,7 +75,7 @@ export function ProductoDetail({ produto, onEdit, onClose }: ProductoDetailProps
       <div className="relative">
         {produto.Imagen ? (
           <div className="aspect-video w-full max-w-2xl mx-auto bg-gray-100 rounded-lg overflow-hidden">
-            <img
+            <Image
               src={produto.Imagen || "/placeholder.svg"}
               alt={produto.Nombredelproducto}
               className="w-full h-full object-cover"
