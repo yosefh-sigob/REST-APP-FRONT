@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { useState, useMemo } from "react"
@@ -79,7 +80,7 @@ export function ProductosView({ productosIniciales, datosRelacionados }: Product
       } else {
         toast.error("Error al recargar productos")
       }
-    } catch (error) {
+    } catch {
       toast.error("Error al recargar productos")
     } finally {
       setLoading(false)
@@ -96,7 +97,7 @@ export function ProductosView({ productosIniciales, datosRelacionados }: Product
       grupo: filtroGrupo === "todos" ? undefined : filtroGrupo,
       subgrupo: filtroSubgrupo === "todos" ? undefined : filtroSubgrupo,
     })
-  }, [productos, busqueda, filtroTipo, filtroGrupo, filtroSubgrupo, soloFavoritos, soloActivos, soloSuspendidos])
+  }, [productos, busqueda, filtroTipo, filtroGrupo, filtroSubgrupo, soloFavoritos, soloSuspendidos])
 
   // Estadísticas
   const estadisticas = useMemo(() => {
@@ -147,7 +148,7 @@ export function ProductosView({ productosIniciales, datosRelacionados }: Product
       } else {
         toast.error(result.error || "Error al actualizar favorito")
       }
-    } catch (error) {
+    } catch {
       toast.error("Error al actualizar favorito")
     }
   }
@@ -161,7 +162,7 @@ export function ProductosView({ productosIniciales, datosRelacionados }: Product
       } else {
         toast.error(result.error || "Error al actualizar estado")
       }
-    } catch (error) {
+    } catch {
       toast.error("Error al actualizar estado")
     }
   }
@@ -179,7 +180,7 @@ export function ProductosView({ productosIniciales, datosRelacionados }: Product
       } else {
         toast.error(result.error || "Error al eliminar producto")
       }
-    } catch (error) {
+    } catch {
       toast.error("Error al eliminar producto")
     }
   }

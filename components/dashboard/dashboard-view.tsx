@@ -1,23 +1,19 @@
 "use client"
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import {
-  BarChart3,
-  Users,
-  ShoppingCart,
-  Calendar,
-  Package,
-  DollarSign,
-  Clock,
-  AlertTriangle,
-  CheckCircle,
-  Info,
-  ArrowUpRight,
-  ArrowDownRight,
-} from "lucide-react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { useAuth } from "@/contexts/auth-context"
+import {
+  AlertTriangle,
+  BarChart3,
+  Calendar,
+  CheckCircle,
+  Clock,
+  Info,
+  Package,
+  ShoppingCart
+} from "lucide-react"
 import Link from "next/link"
 
 // const STATS_CARDS = [

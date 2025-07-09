@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Button } from "@/components/ui/button"
@@ -90,7 +90,7 @@ export function ProductoForm({ producto, datosRelacionados, onSuccess, onCancel 
   })
 
   // Validar clave de producto en tiempo real
-  const validarClave = async (clave: string) => {
+  const validarClave = useCallback(async (clave: string) => {
     if (!clave || clave.length < 1) {
       setClaveValida(null)
       return
@@ -109,10 +109,9 @@ export function ProductoForm({ producto, datosRelacionados, onSuccess, onCancel 
     } finally {
       setValidandoClave(false)
     }
-  }
+  }, [producto?.ProductoULID])
 
   // Efecto para validar clave cuando cambia
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const subscription = form.watch((value, { name }) => {
       if (name === "ClaveProducto") {
@@ -127,7 +126,7 @@ export function ProductoForm({ producto, datosRelacionados, onSuccess, onCancel 
     })
     
     return () => subscription.unsubscribe()
-  }, [producto?.ClaveProducto])
+  }, [form, producto?.ClaveProducto, validarClave])
 
   const onSubmit = async (data: ProductoFormData) => {
     // Validar que al menos un canal esté activo

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { generateULID } from "@/lib/utils/ulid"
 
 export interface Producto {
