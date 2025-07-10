@@ -85,30 +85,97 @@
 
 @layer base {
   * {
-    @apply border-border;
+    border-color: hsl(var(--border));
   }
   body {
-    @apply bg-background text-foreground;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
   }
 }
 
 @layer components {
   /* Componentes personalizados para el restaurante */
   .restaurant-card {
-    @apply bg-card text-card-foreground rounded-lg border shadow-sm;
+    background-color: hsl(var(--card));
+    color: hsl(var(--card-foreground));
+    border-radius: calc(var(--radius) - 2px);
+    border: 1px solid hsl(var(--border));
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
   }
 
   .restaurant-button {
-    @apply bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md transition-colors;
+    background-color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    padding: 0.5rem 1rem;
+    border-radius: calc(var(--radius) - 2px);
+    transition: background-color 0.2s;
+  }
+
+  .restaurant-button:hover {
+    background-color: hsl(var(--primary) / 0.9);
   }
 
   .restaurant-input {
-    @apply bg-background border border-input rounded-md px-3 py-2 text-sm;
+    background-color: hsl(var(--background));
+    border: 1px solid hsl(var(--input));
+    border-radius: calc(var(--radius) - 2px);
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  .restaurant-input:focus {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+
+  /* Estilos para el sidebar del restaurante */
+  .restaurant-sidebar {
+    background-color: hsl(var(--sidebar-background));
+    color: hsl(var(--sidebar-foreground));
+    border-right: 1px solid hsl(var(--sidebar-border));
+  }
+
+  .restaurant-sidebar-item {
+    padding: 0.5rem 1rem;
+    border-radius: calc(var(--radius) - 4px);
+    transition: background-color 0.2s;
+  }
+
+  .restaurant-sidebar-item:hover {
+    background-color: hsl(var(--sidebar-accent));
+    color: hsl(var(--sidebar-accent-foreground));
+  }
+
+  .restaurant-sidebar-item.active {
+    background-color: hsl(var(--sidebar-accent));
+    color: hsl(var(--sidebar-accent-foreground));
+    font-weight: 500;
+  }
+
+  /* Gradientes para el tema del restaurante */
+  .restaurant-gradient {
+    background: linear-gradient(135deg, hsl(25 95% 53%) 0%, hsl(0 84% 60%) 100%);
+  }
+
+  .restaurant-gradient-subtle {
+    background: linear-gradient(135deg, hsl(25 95% 97%) 0%, hsl(0 84% 97%) 100%);
   }
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  .animate-in {
+    animation-name: fade-in;
+    animation-duration: 0.2s;
+    animation-timing-function: ease-out;
+  }
+
+  .animate-out {
+    animation-name: fade-out;
+    animation-duration: 0.2s;
+    animation-timing-function: ease-out;
   }
 }
