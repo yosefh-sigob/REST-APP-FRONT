@@ -1,14 +1,14 @@
 import type { NextConfig } from "next"
 
 const nextConfig: NextConfig = {
+  experimental: {
+    optimizePackageImports: ["@radix-ui/react-icons"],
+  },
   eslint: {
     ignoreDuringBuilds: true,
   },
   typescript: {
     ignoreBuildErrors: true,
-  },
-  experimental: {
-    optimizePackageImports: ["lucide-react"],
   },
   images: {
     remotePatterns: [
