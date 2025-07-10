@@ -3,9 +3,6 @@
 @tailwind utilities;
 
 :root {
-  --radius: 0.5rem;
-
-  /* Light theme colors */
   --background: 0 0% 100%;
   --foreground: 222.2 84% 4.9%;
   --card: 0 0% 100%;
@@ -25,23 +22,12 @@
   --border: 214.3 31.8% 91.4%;
   --input: 214.3 31.8% 91.4%;
   --ring: 221.2 83.2% 53.3%;
-
-  /* Chart colors */
+  --radius: 0.5rem;
   --chart-1: 12 76% 61%;
   --chart-2: 173 58% 39%;
   --chart-3: 197 37% 24%;
   --chart-4: 43 74% 66%;
   --chart-5: 27 87% 67%;
-
-  /* Sidebar colors */
-  --sidebar-background: 0 0% 98%;
-  --sidebar-foreground: 240 5.3% 26.1%;
-  --sidebar-primary: 240 5.9% 10%;
-  --sidebar-primary-foreground: 0 0% 98%;
-  --sidebar-accent: 240 4.8% 95.9%;
-  --sidebar-accent-foreground: 240 5.9% 10%;
-  --sidebar-border: 220 13% 91%;
-  --sidebar-ring: 217.2 91.2% 59.8%;
 }
 
 .dark {
@@ -64,23 +50,11 @@
   --border: 217.2 32.6% 17.5%;
   --input: 217.2 32.6% 17.5%;
   --ring: 224.3 76.3% 94.1%;
-
-  /* Chart colors for dark mode */
   --chart-1: 220 70% 50%;
   --chart-2: 160 60% 45%;
   --chart-3: 30 80% 55%;
   --chart-4: 280 65% 60%;
   --chart-5: 340 75% 55%;
-
-  /* Sidebar colors for dark mode */
-  --sidebar-background: 240 5.9% 10%;
-  --sidebar-foreground: 240 4.8% 95.9%;
-  --sidebar-primary: 0 0% 98%;
-  --sidebar-primary-foreground: 240 5.9% 10%;
-  --sidebar-accent: 240 3.7% 15.9%;
-  --sidebar-accent-foreground: 240 4.8% 95.9%;
-  --sidebar-border: 240 3.7% 15.9%;
-  --sidebar-ring: 217.2 91.2% 59.8%;
 }
 
 @layer base {
@@ -90,98 +64,74 @@
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   }
 }
 
 @layer components {
-  /* Componentes personalizados para el restaurante */
+  .restaurant-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+
   .restaurant-card {
-    background-color: hsl(var(--card));
-    color: hsl(var(--card-foreground));
-    border-radius: calc(var(--radius) - 2px);
+    background: hsl(var(--card));
     border: 1px solid hsl(var(--border));
-    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    border-radius: calc(var(--radius) * 2);
   }
 
   .restaurant-button {
-    background-color: hsl(var(--primary));
+    background: hsl(var(--primary));
     color: hsl(var(--primary-foreground));
+    border-radius: var(--radius);
     padding: 0.5rem 1rem;
-    border-radius: calc(var(--radius) - 2px);
-    transition: background-color 0.2s;
-    border: none;
-    cursor: pointer;
-    font-weight: 500;
+    transition: all 0.2s ease-in-out;
   }
 
   .restaurant-button:hover {
-    background-color: hsl(var(--primary) / 0.9);
-  }
-
-  .restaurant-input {
-    background-color: hsl(var(--background));
-    border: 1px solid hsl(var(--input));
-    border-radius: calc(var(--radius) - 2px);
-    padding: 0.5rem 0.75rem;
-    font-size: 0.875rem;
-    width: 100%;
-  }
-
-  .restaurant-input:focus {
-    outline: 2px solid hsl(var(--ring));
-    outline-offset: 2px;
-  }
-
-  /* Estilos para el sidebar del restaurante */
-  .restaurant-sidebar {
-    background-color: hsl(var(--sidebar-background));
-    color: hsl(var(--sidebar-foreground));
-    border-right: 1px solid hsl(var(--sidebar-border));
-  }
-
-  .restaurant-sidebar-item {
-    padding: 0.5rem 1rem;
-    border-radius: calc(var(--radius) - 4px);
-    transition: background-color 0.2s;
-    cursor: pointer;
-  }
-
-  .restaurant-sidebar-item:hover {
-    background-color: hsl(var(--sidebar-accent));
-    color: hsl(var(--sidebar-accent-foreground));
-  }
-
-  .restaurant-sidebar-item.active {
-    background-color: hsl(var(--sidebar-accent));
-    color: hsl(var(--sidebar-accent-foreground));
-    font-weight: 500;
-  }
-
-  /* Gradientes para el tema del restaurante */
-  .restaurant-gradient {
-    background: linear-gradient(135deg, hsl(25 95% 53%) 0%, hsl(0 84% 60%) 100%);
-  }
-
-  .restaurant-gradient-subtle {
-    background: linear-gradient(135deg, hsl(25 95% 97%) 0%, hsl(0 84% 97%) 100%);
+    background: hsl(var(--primary) / 0.9);
   }
 }
 
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-in-out;
   }
 
-  .animate-in {
-    animation-name: fade-in;
-    animation-duration: 0.2s;
-    animation-timing-function: ease-out;
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out;
   }
 
-  .animate-out {
-    animation-name: fade-out;
-    animation-duration: 0.2s;
-    animation-timing-function: ease-out;
+  .animate-slide-down {
+    animation: slideDown 0.3s ease-out;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
   }
 }
