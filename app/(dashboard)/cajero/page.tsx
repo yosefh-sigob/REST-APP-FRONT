@@ -1,4 +1,3 @@
-
 // import { CajeroView } from "@/components/cajero/cajero-view"
 
 export default async function CajeroPage() {

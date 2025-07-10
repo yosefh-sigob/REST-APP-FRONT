@@ -1,4 +1,3 @@
-
 // import { MeseroView } from "@/components/mesero/mesero-view"
 
 export default async function MeseroPage() {
