@@ -2,77 +2,91 @@
 
 import type React from "react"
 import { createContext, useContext, useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 import type { User, LoginCredentials, AuthContextType } from "@/interfaces/auth"
 import { authenticateUser, generateToken, validateToken } from "@/actions/auth.actions"
-import { toast } from "sonner"
-import { useRouter } from "next/navigation"
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
+const AuthContext = createContext<AuthContextType | null>(null)
 
-const TOKEN_KEY = "restaurant_auth_token"
-const USER_KEY = "restaurant_user_data"
+export function useAuth() {
+  const context = useContext(AuthContext)
+  if (!context) {
+    throw new Error("useAuth debe ser usado dentro de un AuthProvider")
+  }
+  return context
+}
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
 
+  const isAuthenticated = !!user
+
   // Verificar token al cargar la aplicación
   useEffect(() => {
-    const initAuth = async () => {
+    const checkAuth = async () => {
       try {
-        const token = localStorage.getItem(TOKEN_KEY)
-        const userData = localStorage.getItem(USER_KEY)
-
-        if (token && userData) {
-          const validUser = await validateToken(token)
-          if (validUser) {
-            setUser(validUser)
+        const token = localStorage.getItem("auth-token")
+        if (token) {
+          const userData = await validateToken(token)
+          if (userData) {
+            setUser(userData)
           } else {
-            // Token inválido, limpiar storage
-            localStorage.removeItem(TOKEN_KEY)
-            localStorage.removeItem(USER_KEY)
+            localStorage.removeItem("auth-token")
           }
         }
       } catch (error) {
-        console.error("Error al inicializar autenticación:", error)
-        localStorage.removeItem(TOKEN_KEY)
-        localStorage.removeItem(USER_KEY)
+        console.error("Error verificando autenticación:", error)
+        localStorage.removeItem("auth-token")
       } finally {
         setIsLoading(false)
       }
     }
 
-    initAuth()
+    checkAuth()
   }, [])
 
   const login = async (credentials: LoginCredentials): Promise<boolean> => {
+    setIsLoading(true)
     try {
-      setIsLoading(true)
-      const authenticatedUser = await authenticateUser(credentials)
+      const userData = await authenticateUser(credentials)
 
-      if (authenticatedUser) {
-        const token = await generateToken(authenticatedUser)
+      if (userData) {
+        const token = await generateToken(userData)
+        localStorage.setItem("auth-token", token)
+        setUser(userData)
 
-        // Guardar en localStorage
-        localStorage.setItem(TOKEN_KEY, token)
-        localStorage.setItem(USER_KEY, JSON.stringify(authenticatedUser))
+        toast.success(`¡Bienvenido, ${userData.nombreCompleto}!`)
 
-        setUser(authenticatedUser)
-
-        toast.success(`¡Bienvenido, ${authenticatedUser.nombreCompleto}!`)
-
-        // Redireccionar al dashboard
-        router.push("/main")
+        // Redirigir según el rol
+        switch (userData.rol) {
+          case "Administrador":
+          case "Gerente":
+            router.push("/main")
+            break
+          case "Cajero":
+            router.push("/cajero")
+            break
+          case "Mesero":
+            router.push("/mesero")
+            break
+          case "Cocinero":
+            router.push("/cocina/ordenes")
+            break
+          default:
+            router.push("/main")
+        }
 
         return true
       } else {
-        toast.error("Credenciales incorrectas. Verifica usuario, contraseña y PIN.")
+        toast.error("Credenciales incorrectas")
         return false
       }
     } catch (error) {
       console.error("Error en login:", error)
-      toast.error("Error al iniciar sesión. Intenta nuevamente.")
+      toast.error("Error al iniciar sesión")
       return false
     } finally {
       setIsLoading(false)
@@ -80,16 +94,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const logout = () => {
-    // Limpiar storage
-    localStorage.removeItem(TOKEN_KEY)
-    localStorage.removeItem(USER_KEY)
-
-    // Limpiar estado
+    localStorage.removeItem("auth-token")
     setUser(null)
-
     toast.success("Sesión cerrada correctamente")
-
-    // Redireccionar al login
     router.push("/")
   }
 
@@ -98,16 +105,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     login,
     logout,
     isLoading,
-    isAuthenticated: !!user,
+    isAuthenticated,
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
-}
-
-export function useAuth() {
-  const context = useContext(AuthContext)
-  if (context === undefined) {
-    throw new Error("useAuth debe ser usado dentro de un AuthProvider")
-  }
-  return context
 }

@@ -9,7 +9,7 @@ import { Toaster } from "@/components/ui/sonner"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "RestApp - Sistema de Gestión de Restaurantes",
+  title: "AppRest - Sistema de Gestión de Restaurantes",
   description: "Sistema completo para la gestión de restaurantes",
     generator: 'v0.dev'
 }

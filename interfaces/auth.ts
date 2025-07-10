@@ -1,21 +1,19 @@
 export interface User {
   id: string
-  email: string
-  nombreCompleto?: string
-  nombreEmpresa?: string
-  rol?: string
-  nivelLicencia?: string
+  usuario: string
+  nombreCompleto: string
+  correo: string
+  rol: "Administrador" | "Gerente" | "Cajero" | "Mesero" | "Cocinero"
+  nivelLicencia: "Gratis" | "Lite" | "Pro" | "Franquicia"
+  nombreEmpresa: string
   ultimoLogin?: string
-  pin?: string
-  activo?: boolean
-  fechaCreacion?: string
-  fechaActualizacion?: string
+  activo: boolean
 }
 
 export interface LoginCredentials {
-  email: string
-  password: string
-  pin?: string
+  usuario: string
+  contraseña: string
+  pin: string
 }
 
 export interface AuthContextType {
@@ -24,10 +22,4 @@ export interface AuthContextType {
   logout: () => void
   isLoading: boolean
   isAuthenticated: boolean
-}
-
-export interface AuthState {
-  user: User | null
-  isAuthenticated: boolean
-  isLoading: boolean
 }
