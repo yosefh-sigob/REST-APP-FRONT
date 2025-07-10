@@ -30,16 +30,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         const token = localStorage.getItem("auth-token")
         if (token) {
+          // También establecer cookie para el middleware
+          document.cookie = `auth-token=${token}; path=/; max-age=${60 * 60 * 24 * 7}` // 7 días
+
           const userData = await validateToken(token)
           if (userData) {
             setUser(userData)
           } else {
             localStorage.removeItem("auth-token")
+            document.cookie = "auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
           }
         }
       } catch (error) {
         console.error("Error verificando autenticación:", error)
         localStorage.removeItem("auth-token")
+        document.cookie = "auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
       } finally {
         setIsLoading(false)
       }
@@ -55,7 +60,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       if (userData) {
         const token = await generateToken(userData)
+
+        // Guardar en localStorage y cookie
         localStorage.setItem("auth-token", token)
+        document.cookie = `auth-token=${token}; path=/; max-age=${60 * 60 * 24 * 7}` // 7 días
+
         setUser(userData)
 
         toast.success(`¡Bienvenido, ${userData.nombreCompleto}!`)
@@ -94,7 +103,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const logout = () => {
+    // Limpiar localStorage y cookie
     localStorage.removeItem("auth-token")
+    document.cookie = "auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
+
     setUser(null)
     toast.success("Sesión cerrada correctamente")
     router.push("/")
