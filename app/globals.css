@@ -22,12 +22,12 @@
   --border: 214.3 31.8% 91.4%;
   --input: 214.3 31.8% 91.4%;
   --ring: 221.2 83.2% 53.3%;
+  --radius: 0.5rem;
   --chart-1: 12 76% 61%;
   --chart-2: 173 58% 39%;
   --chart-3: 197 37% 24%;
   --chart-4: 43 74% 66%;
   --chart-5: 27 87% 67%;
-  --radius: 0.5rem;
 }
 
 .dark {
@@ -69,28 +69,28 @@
 
 @layer components {
   .restaurant-gradient {
-    background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   }
 
   .restaurant-card {
-    background: hsl(var(--card));
+    background: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     border: 1px solid hsl(var(--border));
-    border-radius: calc(var(--radius) + 2px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
   .restaurant-button {
-    background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     border: none;
-    border-radius: var(--radius);
-    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1.5rem;
     font-weight: 500;
-    transition: all 0.2s ease;
+    transition: all 0.2s;
   }
 
   .restaurant-button:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
   }
 }

@@ -4,56 +4,8 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { useAuth } from "@/contexts/auth-context"
-import {
-  AlertTriangle,
-  BarChart3,
-  Calendar,
-  CheckCircle,
-  Clock,
-  Info,
-  Package,
-  ShoppingCart
-} from "lucide-react"
+import { AlertTriangle, BarChart3, Calendar, CheckCircle, Clock, Info, Package, ShoppingCart } from "lucide-react"
 import Link from "next/link"
-
-// const STATS_CARDS = [
-//   {
-//     title: "Ventas Hoy",
-//     value: "$15,420",
-//     change: "+12.5%",
-//     changeType: "positive",
-//     icon: DollarSign,
-//     color: "text-green-600",
-//     bgColor: "bg-green-100",
-//   },
-//   {
-//     title: "Órdenes",
-//     value: "89",
-//     change: "+8.2%",
-//     changeType: "positive",
-//     icon: ShoppingCart,
-//     color: "text-blue-600",
-//     bgColor: "bg-blue-100",
-//   },
-//   {
-//     title: "Clientes Atendidos",
-//     value: "156",
-//     change: "+15.3%",
-//     changeType: "positive",
-//     icon: Users,
-//     color: "text-purple-600",
-//     bgColor: "bg-purple-100",
-//   },
-//   {
-//     title: "Productos Vendidos",
-//     value: "342",
-//     change: "-2.1%",
-//     changeType: "negative",
-//     icon: Package,
-//     color: "text-orange-600",
-//     bgColor: "bg-orange-100",
-//   },
-// ]
 
 const RECENT_ACTIVITIES = [
   {
@@ -157,68 +109,50 @@ function getActivityBgColor(status: string) {
 export function DashboardView() {
   const { user } = useAuth()
 
-  if (!user) return null
+  if (!user) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="text-center">
+          <h2 className="text-2xl font-semibold text-gray-900 mb-2">Cargando...</h2>
+          <p className="text-gray-600">Obteniendo información del usuario</p>
+        </div>
+      </div>
+    )
+  }
 
-  const firstName = user.nombreCompleto?.split(" ")[0] || "Usuario"
+  // Verificar que nombreCompleto existe y no es undefined
+  const firstName =
+    user.nombreCompleto && typeof user.nombreCompleto === "string"
+      ? user.nombreCompleto.split(" ")[0]
+      : user.email?.split("@")[0] || "Usuario"
+
   const currentTime = new Date().toLocaleTimeString("es-ES", {
     hour: "2-digit",
     minute: "2-digit",
   })
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-6">
       {/* Welcome Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">¡Bienvenido, {firstName}!</h1>
           <p className="text-gray-600 mt-1">Aquí tienes un resumen de tu restaurante hoy • {currentTime}</p>
         </div>
         <div className="flex items-center space-x-2">
           <Badge variant="outline" className="text-sm">
-            {user.rol}
+            {user.rol || "Usuario"}
           </Badge>
           <Badge variant="secondary" className="text-sm">
-            {user.nivelLicencia}
+            {user.nivelLicencia || "Básico"}
           </Badge>
         </div>
       </div>
 
-      {/* Stats Cards */}
-      {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
-        {STATS_CARDS.map((stat, index) => {
-          const Icon = stat.icon
-          const isPositive = stat.changeType === "positive"
-
-          return (
-            <Card key={index} className="hover:shadow-md transition-shadow">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-gray-600">{stat.title}</CardTitle>
-                <div className={`p-2 rounded-lg ${stat.bgColor}`}>
-                  <Icon className={`h-4 w-4 ${stat.color}`} />
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-gray-900">{stat.value}</div>
-                <div className="flex items-center mt-1">
-                  {isPositive ? (
-                    <ArrowUpRight className="h-3 w-3 text-green-600 mr-1" />
-                  ) : (
-                    <ArrowDownRight className="h-3 w-3 text-red-600 mr-1" />
-                  )}
-                  <p className={`text-xs font-medium ${isPositive ? "text-green-600" : "text-red-600"}`}>
-                    {stat.change} desde ayer
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          )
-        })}
-      </div> */}
-
       {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Recent Activity */}
-        <Card className="lg:col-span-2 ">
+        <Card className="lg:col-span-2">
           <CardHeader>
             <CardTitle className="flex items-center">
               <Clock className="h-5 w-5 mr-2" />
@@ -255,17 +189,15 @@ export function DashboardView() {
             {QUICK_ACTIONS.map((action, index) => {
               const Icon = action.icon
               return (
-                <div key={index}>
-                  <Link key={index} href={action.href}>
-                    <Button className={`w-full justify-start h-12 ${action.color} text-white`} variant="default">
-                      <Icon className="h-4 w-4 mr-3" />
-                      <div className="text-left">
-                        <div className="font-medium">{action.title}</div>
-                        <div className="text-xs opacity-90">{action.description}</div>
-                      </div>
-                    </Button>
-                  </Link>
-                </div>
+                <Link key={index} href={action.href}>
+                  <Button className={`w-full justify-start h-12 ${action.color} text-white`} variant="default">
+                    <Icon className="h-4 w-4 mr-3" />
+                    <div className="text-left">
+                      <div className="font-medium">{action.title}</div>
+                      <div className="text-xs opacity-90">{action.description}</div>
+                    </div>
+                  </Button>
+                </Link>
               )
             })}
           </CardContent>
@@ -279,20 +211,22 @@ export function DashboardView() {
           <CardDescription>Detalles de tu restaurante y configuración actual</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div>
               <p className="text-sm font-medium text-gray-600">Empresa</p>
-              <p className="text-lg font-semibold text-gray-900 mt-1">{user.nombreEmpresa}</p>
+              <p className="text-lg font-semibold text-gray-900 mt-1">{user.nombreEmpresa || "Mi Restaurante"}</p>
             </div>
             <div>
               <p className="text-sm font-medium text-gray-600">Plan Actual</p>
               <Badge variant="secondary" className="mt-1 text-sm">
-                {user.nivelLicencia}
+                {user.nivelLicencia || "Básico"}
               </Badge>
             </div>
             <div>
               <p className="text-sm font-medium text-gray-600">Usuario Activo</p>
-              <p className="text-lg font-semibold text-gray-900 mt-1">{user.nombreCompleto}</p>
+              <p className="text-lg font-semibold text-gray-900 mt-1">
+                {user.nombreCompleto || user.email || "Usuario"}
+              </p>
             </div>
             <div>
               <p className="text-sm font-medium text-gray-600">Último Acceso</p>
