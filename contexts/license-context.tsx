@@ -1,42 +1,53 @@
 "use client"
 
-import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
-import type { LicenseType } from "@/utils/license"
+import type React from "react"
+import { createContext, useContext, useState } from "react"
+
+type LicenseType = "gratis" | "lite" | "pro" | "franquicia"
 
 interface LicenseContextType {
   currentLicense: LicenseType
   setLicense: (license: LicenseType) => void
+  hasAccess: (requiredLicense: LicenseType) => boolean
+}
+
+const licenseHierarchy: Record<LicenseType, number> = {
+  gratis: 0,
+  lite: 1,
+  pro: 2,
+  franquicia: 3,
 }
 
 const LicenseContext = createContext<LicenseContextType | undefined>(undefined)
 
-interface LicenseProviderProps {
-  children: ReactNode
-}
-
-export function LicenseProvider({ children }: LicenseProviderProps) {
-  const [currentLicense, setCurrentLicense] = useState<LicenseType>("Gratis")
-
-  useEffect(() => {
-    // Cargar licencia desde localStorage al montar el componente
-    const savedLicense = localStorage.getItem("restaurant-license")
-    if (savedLicense && ["Gratis", "Lite", "Pro", "Franquicia"].includes(savedLicense)) {
-      setCurrentLicense(savedLicense as LicenseType)
-    }
-  }, [])
+export function LicenseProvider({ children }: { children: React.ReactNode }) {
+  const [currentLicense, setCurrentLicense] = useState<LicenseType>("pro")
 
   const setLicense = (license: LicenseType) => {
     setCurrentLicense(license)
-    localStorage.setItem("restaurant-license", license)
   }
 
-  return <LicenseContext.Provider value={{ currentLicense, setLicense }}>{children}</LicenseContext.Provider>
+  const hasAccess = (requiredLicense: LicenseType): boolean => {
+    return licenseHierarchy[currentLicense] >= licenseHierarchy[requiredLicense]
+  }
+
+  return (
+    <LicenseContext.Provider
+      value={{
+        currentLicense,
+        setLicense,
+        hasAccess,
+      }}
+    >
+      {children}
+    </LicenseContext.Provider>
+  )
 }
 
 export function useLicense() {
   const context = useContext(LicenseContext)
   if (context === undefined) {
-    throw new Error("useLicense must be used within a LicenseProvider")
+    throw new Error("useLicense debe ser usado dentro de un LicenseProvider")
   }
   return context
 }

@@ -1,25 +1,24 @@
 export interface User {
   id: string
-  usuario: string
-  nombreCompleto: string
-  correo: string
-  rol: "Administrador" | "Gerente" | "Cajero" | "Mesero" | "Cocinero"
-  nivelLicencia: "Gratis" | "Lite" | "Pro" | "Franquicia"
-  nombreEmpresa: string
-  ultimoLogin?: string
-  activo: boolean
+  email: string
+  name: string
+  role: "admin" | "manager" | "waiter" | "chef" | "cashier"
+  licenseType: "gratis" | "lite" | "pro" | "franquicia"
 }
 
 export interface LoginCredentials {
-  usuario: string
-  contraseña: string
-  pin: string
+  email: string
+  password: string
+}
+
+export interface AuthState {
+  user: User | null
+  isAuthenticated: boolean
+  isLoading: boolean
 }
 
 export interface AuthContextType {
-  user: User | null
+  authState: AuthState
   login: (credentials: LoginCredentials) => Promise<boolean>
   logout: () => void
-  isLoading: boolean
-  isAuthenticated: boolean
 }

@@ -2,7 +2,7 @@ import type { NextConfig } from "next"
 
 const nextConfig: NextConfig = {
   experimental: {
-    optimizePackageImports: ["@radix-ui/react-icons"],
+    optimizePackageImports: ["lucide-react"],
   },
   eslint: {
     ignoreDuringBuilds: true,
@@ -11,6 +11,7 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
+    domains: ["localhost"],
     remotePatterns: [
       {
         protocol: "https",
