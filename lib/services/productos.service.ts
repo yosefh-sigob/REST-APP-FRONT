@@ -22,10 +22,15 @@ import { IGetUnidad } from "@/interfaces/unidad.interface"
 import { IGetAreaProduccion } from "@/interfaces/areaProduccion.interface"
 
 export class ProductosService {
+  public static apiUrl = "http://localhost:3000"
   // Productos
   static async obtenerProductos(): Promise<IGetProducto[]> {
     try {
-      return await getProductos()
+      const response = await fetch(`${this.apiUrl}/productos`);
+      if(!response) {
+        throw new Error('Error al obtener los archivos');
+      }
+      return await response.json();
     } catch (error) {
       console.error("Error al obtener productos:", error)
       throw new Error("Error al cargar los productos")
