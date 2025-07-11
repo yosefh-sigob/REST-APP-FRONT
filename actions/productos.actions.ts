@@ -4,6 +4,7 @@ import { IGetProducto } from "@/interfaces/productos.interface"
 import { ProductosService } from "@/lib/services/productos.service"
 import { ProductoFormSchema, type ProductoFormData } from "@/schemas/productos.schemas"
 import { revalidatePath } from "next/cache"
+import axios from "axios"
 
 export interface ActionResult<T = any> {
   success: boolean
@@ -12,6 +13,27 @@ export interface ActionResult<T = any> {
   message?: string
 }
 
+// env API_URL_LOCAL
+const apiUrl = process.env.API_URL_LOCAL
+
+export async function obtenerProductosActionAPI(): Promise<ActionResult<IGetProducto[]>> {
+  try {
+    // axios get request to the API
+    const response = await axios.get(`${apiUrl}/productos`)
+    const productos: IGetProducto[] = response.data
+
+    return {
+      success: true,
+      data: productos,
+    }
+  } catch (error) {
+    console.error("Error en obtenerProductosAction:", error)
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Error desconocido al obtener productos",
+    }
+  }
+}
 export async function obtenerProductosAction(): Promise<ActionResult<IGetProducto[]>> {
   try {
     const productos = await ProductosService.obtenerProductos()
