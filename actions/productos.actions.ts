@@ -1,6 +1,7 @@
 "use server"
 
-import { ProductosService, type Producto } from "@/lib/services/productos.service"
+import { IGetProducto } from "@/interfaces/productos.interface"
+import { ProductosService } from "@/lib/services/productos.service"
 import { ProductoFormSchema, type ProductoFormData } from "@/schemas/productos.schemas"
 import { revalidatePath } from "next/cache"
 
@@ -11,7 +12,7 @@ export interface ActionResult<T = any> {
   message?: string
 }
 
-export async function obtenerProductosAction(): Promise<ActionResult<Producto[]>> {
+export async function obtenerProductosAction(): Promise<ActionResult<IGetProducto[]>> {
   try {
     const productos = await ProductosService.obtenerProductos()
     return {
@@ -27,7 +28,7 @@ export async function obtenerProductosAction(): Promise<ActionResult<Producto[]>
   }
 }
 
-export async function obtenerProductoPorIdAction(id: string): Promise<ActionResult<Producto | null>> {
+export async function obtenerProductoPorIdAction(id: string): Promise<ActionResult<IGetProducto | null>> {
   try {
     if (!id) {
       return {
@@ -50,7 +51,7 @@ export async function obtenerProductoPorIdAction(id: string): Promise<ActionResu
   }
 }
 
-export async function crearProductoAction(formData: ProductoFormData): Promise<ActionResult<Producto>> {
+export async function crearProductoAction(formData: ProductoFormData): Promise<ActionResult<IGetProducto>> {
   try {
     // Validar datos con Zod
     const validatedData = ProductoFormSchema.parse(formData)
@@ -106,7 +107,7 @@ export async function crearProductoAction(formData: ProductoFormData): Promise<A
 export async function actualizarProductoAction(
   id: string,
   formData: ProductoFormData,
-): Promise<ActionResult<Producto>> {
+): Promise<ActionResult<IGetProducto>> {
   try {
     if (!id) {
       return {
@@ -189,7 +190,7 @@ export async function eliminarProductoAction(id: string): Promise<ActionResult<b
   }
 }
 
-export async function alternarFavoritoAction(id: string): Promise<ActionResult<Producto>> {
+export async function alternarFavoritoAction(id: string): Promise<ActionResult<IGetProducto>> {
   try {
     if (!id) {
       return {
@@ -216,7 +217,7 @@ export async function alternarFavoritoAction(id: string): Promise<ActionResult<P
   }
 }
 
-export async function alternarSuspendidoAction(id: string): Promise<ActionResult<Producto>> {
+export async function alternarSuspendidoAction(id: string): Promise<ActionResult<IGetProducto>> {
   try {
     if (!id) {
       return {

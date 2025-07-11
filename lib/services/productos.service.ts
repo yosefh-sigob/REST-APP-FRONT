@@ -12,16 +12,18 @@ import {
   getAreasProduccion,
   existeClaveProducto,
   getEstadisticasProductos,
-  type Producto,
-  type GrupoProducto,
-  type SubgrupoProducto,
-  type Unidad,
-  type AreaProduccion,
 } from "@/lib/mock/productos.mock"
+
+import { IGetAlmacen } from "@/interfaces/almacen.interface"
+import { IGetGrupoProducto } from "@/interfaces/grupos.interface"
+import { IGetProducto } from "@/interfaces/productos.interface"
+import { IGetSubgrupoProducto } from "@/interfaces/subgrupos.interface"
+import { IGetUnidad } from "@/interfaces/unidad.interface"
+import { IGetAreaProduccion } from "@/interfaces/areaProduccion.interface"
 
 export class ProductosService {
   // Productos
-  static async obtenerProductos(): Promise<Producto[]> {
+  static async obtenerProductos(): Promise<IGetProducto[]> {
     try {
       return await getProductos()
     } catch (error) {
@@ -30,7 +32,7 @@ export class ProductosService {
     }
   }
 
-  static async obtenerProductoPorId(id: string): Promise<Producto | null> {
+  static async obtenerProductoPorId(id: string): Promise<IGetProducto | null> {
     try {
       return await getProductoById(id)
     } catch (error) {
@@ -40,8 +42,8 @@ export class ProductosService {
   }
 
   static async crearProducto(
-    producto: Omit<Producto, "ProductoULID" | "Fecha_UltimoCambio" | "Fecha_Sync">,
-  ): Promise<Producto> {
+    producto: Omit<IGetProducto, "ProductoULID" | "Fecha_UltimoCambio" | "Fecha_Sync">,
+  ): Promise<IGetProducto> {
     try {
       return await createProducto(producto)
     } catch (error) {
@@ -50,7 +52,7 @@ export class ProductosService {
     }
   }
 
-  static async actualizarProducto(id: string, producto: Partial<Omit<Producto, "ProductoULID">>): Promise<Producto> {
+  static async actualizarProducto(id: string, producto: Partial<Omit<IGetProducto, "ProductoULID">>): Promise<IGetProducto> {
     try {
       return await updateProducto(id, producto)
     } catch (error) {
@@ -68,7 +70,7 @@ export class ProductosService {
     }
   }
 
-  static async alternarFavorito(id: string): Promise<Producto> {
+  static async alternarFavorito(id: string): Promise<IGetProducto> {
     try {
       return await toggleFavorito(id)
     } catch (error) {
@@ -77,7 +79,7 @@ export class ProductosService {
     }
   }
 
-  static async alternarSuspendido(id: string): Promise<Producto> {
+  static async alternarSuspendido(id: string): Promise<IGetProducto> {
     try {
       return await toggleSuspendido(id)
     } catch (error) {
@@ -87,7 +89,7 @@ export class ProductosService {
   }
 
   // Datos relacionados
-  static async obtenerGruposProductos(): Promise<GrupoProducto[]> {
+  static async obtenerGruposProductos(): Promise<IGetGrupoProducto[]> {
     try {
       return await getGruposProductos()
     } catch (error) {
@@ -96,7 +98,7 @@ export class ProductosService {
     }
   }
 
-  static async obtenerSubgruposProductos(): Promise<SubgrupoProducto[]> {
+  static async obtenerSubgruposProductos(): Promise<IGetSubgrupoProducto[]> {
     try {
       return await getSubgruposProductos()
     } catch (error) {
@@ -105,7 +107,7 @@ export class ProductosService {
     }
   }
 
-  static async obtenerUnidades(): Promise<Unidad[]> {
+  static async obtenerUnidades(): Promise<IGetUnidad[]> {
     try {
       return await getUnidades()
     } catch (error) {
@@ -114,7 +116,7 @@ export class ProductosService {
     }
   }
 
-  static async obtenerAreasProduccion(): Promise<AreaProduccion[]> {
+  static async obtenerAreasProduccion(): Promise<IGetAreaProduccion[]> {
     try {
       return await getAreasProduccion()
     } catch (error) {
@@ -145,7 +147,7 @@ export class ProductosService {
 
   // Filtros y búsquedas
   static filtrarProductos(
-    productos: Producto[],
+    productos: IGetProducto[],
     filtros: {
       busqueda?: string
       tipo?: string
@@ -154,7 +156,7 @@ export class ProductosService {
       grupo?: string
       subgrupo?: string
     },
-  ): Producto[] {
+  ): IGetProducto[] {
     let productosFiltrados = [...productos]
 
     // Filtro por búsqueda
@@ -197,7 +199,7 @@ export class ProductosService {
   }
 
   // Ordenamiento
-  static ordenarProductos(productos: Producto[], campo: keyof Producto, direccion: "asc" | "desc" = "asc"): Producto[] {
+  static ordenarProductos(productos: IGetProducto[], campo: keyof IGetProducto, direccion: "asc" | "desc" = "asc"): IGetProducto[] {
     return [...productos].sort((a, b) => {
       const valorA = a[campo]
       const valorB = b[campo]
@@ -219,5 +221,3 @@ export class ProductosService {
     })
   }
 }
-
-export type { Producto, GrupoProducto, SubgrupoProducto, Unidad, AreaProduccion }

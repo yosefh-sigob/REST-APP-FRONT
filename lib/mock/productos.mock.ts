@@ -1,112 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import { IGetAlmacen } from "@/interfaces/almacen.interface"
+import { IGetAreaProduccion } from "@/interfaces/areaProduccion.interface"
+import { IGetGrupoProducto } from "@/interfaces/grupos.interface"
+import { IGetProducto } from "@/interfaces/productos.interface"
+import { IGetSubgrupoProducto } from "@/interfaces/subgrupos.interface"
+import { IGetUnidad } from "@/interfaces/unidad.interface"
 import { generateULID } from "@/lib/utils/ulid"
 
-export interface Producto {
-  ProductoULID: string
-  GrupoProductoULID?: string
-  SubgrupoProductoULID?: string
-  ClaveProducto: string
-  TipoProducto: "Platillo" | "Producto" | "Botella"
-  Nombredelproducto: string
-  Favorito: boolean
-  Descripcion: string
-  ExentoImpuesto: boolean
-  PrecioAbierto: boolean
-  UnidadesULID?: string
-  AreaProduccionULID?: string
-  AlmacenULID?: string
-  ControlStock: boolean
-  PrecioxUtilidadad: boolean
-  Facturable: boolean
-  ClaveTributaria?: string
-  Suspendido: boolean
-  Comedor: boolean
-  ADomicilio: boolean
-  Mostrador: boolean
-  Enlinea: boolean
-  EnAPP: boolean
-  EnMenuQR: boolean
-  ClasificacionQRULID?: string
-  DatosDinamicos?: Record<string, any>
-  Fecha_UltimoCambio: string
-  Fecha_Sync: string
-  UsuarioULID: string
-  EmpresaULID: string
-}
-
-export interface GrupoProducto {
-  GrupoProductoULID: string
-  ClaveGrupo: string
-  Descripcion: string
-  Orden: number
-  Clasificacion: string
-  MenuQR: boolean
-  CatalogoOnline: boolean
-  APPComensal: boolean
-  Inactiva: boolean
-  Paletacolor: string
-  Imagen?: string
-  Sucursales: boolean
-  AplicarComentarios: boolean
-  CamposDinamicos?: Record<string, any>
-  Fecha_UltimoCambio: string
-  Fecha_Sync: string
-  UsuarioULID: string
-  EmpresaULID: string
-}
-
-export interface SubgrupoProducto {
-  SubgrupoProductoULID: string
-  ClaveGrupo: string
-  ClaveSubGrupo: string
-  Descripcion: string
-  AplicarComentarios: boolean
-  Suspendido: boolean
-  Fecha_UltimoCambio: string
-  Fecha_Sync: string
-  UsuarioULID: string
-  EmpresaULID: string
-}
-
-export interface Unidad {
-  UnidadULID: string
-  ClaveUnidad: string
-  Descripcion: string
-  Abreviacion: string
-  Fecha_UltimoCambio: string
-  Fecha_Sync: string
-  UsuarioULID: string
-  EmpresaULID: string
-}
-
-export interface AreaProduccion {
-  AreaProduccionULID: string
-  ClaveArea: string
-  Descripcion: string
-  Impresora?: string
-  Activa: boolean
-  Fecha_UltimoCambio: string
-  Fecha_Sync: string
-  UsuarioULID: string
-  EmpresaULID: string
-}
-
-export interface Almacen {
-  AlmacenULID: string
-  ClaveAlmacen: string
-  Nombre: string
-  Descripcion: string
-  Direccion?: string
-  Activo: boolean
-  Fecha_UltimoCambio: string
-  Fecha_Sync: string
-  UsuarioULID: string
-  EmpresaULID: string
-}
 
 // Mock data inicial
-const mockProductos: Producto[] = [
+const mockProductos: IGetProducto[] = [
   {
     ProductoULID: "01HKQM5X8P9R2T4V6W8Y0Z1A3B",
     GrupoProductoULID: "01HKQM5X8P9R2T4V6W8Y0Z1A3C",
@@ -846,7 +750,7 @@ const mockProductos: Producto[] = [
   },
 ]
 
-const mockGruposProductos: GrupoProducto[] = [
+const mockGruposProductos: IGetGrupoProducto[] = [
   {
     GrupoProductoULID: "01HKQM5X8P9R2T4V6W8Y0Z1A3C",
     ClaveGrupo: "TACOS",
@@ -889,7 +793,7 @@ const mockGruposProductos: GrupoProducto[] = [
   },
 ]
 
-const mockSubgruposProductos: SubgrupoProducto[] = [
+const mockSubgruposProductos: IGetSubgrupoProducto[] = [
   {
     SubgrupoProductoULID: "01HKQM5X8P9R2T4V6W8Y0Z1A3D",
     ClaveGrupo: "01HKQM5X8P9R2T4V6W8Y0Z1A3C",
@@ -928,7 +832,7 @@ const mockSubgruposProductos: SubgrupoProducto[] = [
   },
 ]
 
-const mockUnidades: Unidad[] = [
+const mockUnidades: IGetUnidad[] = [
   {
     UnidadULID: "01HKQM5X8P9R2T4V6W8Y0Z1A3E",
     ClaveUnidad: "PZA",
@@ -971,7 +875,7 @@ const mockUnidades: Unidad[] = [
   },
 ]
 
-const mockAreasProduccion: AreaProduccion[] = [
+const mockAreasProduccion: IGetAreaProduccion[] = [
   {
     AreaProduccionULID: "01HKQM5X8P9R2T4V6W8Y0Z1A3F",
     ClaveArea: "COCINA",
@@ -1007,7 +911,7 @@ const mockAreasProduccion: AreaProduccion[] = [
   },
 ]
 
-const mockAlmacenes: Almacen[] = [
+const mockAlmacenes: IGetAlmacen[] = [
   {
     AlmacenULID: "01HKQM5X8P9R2T4V6W8Y0Z1A3G",
     ClaveAlmacen: "ALM001",
@@ -1059,20 +963,20 @@ const mockAlmacenes: Almacen[] = [
 ]
 
 // Funciones CRUD para Productos
-export const getProductos = async (): Promise<Producto[]> => {
+export const getProductos = async (): Promise<IGetProducto[]> => {
   // Simular delay de API
   await new Promise((resolve) => setTimeout(resolve, 100))
   return [...mockProductos]
 }
 
-export const getProductoById = async (id: string): Promise<Producto | null> => {
+export const getProductoById = async (id: string): Promise<IGetProducto | null> => {
   await new Promise((resolve) => setTimeout(resolve, 50))
   return mockProductos.find((p) => p.ProductoULID === id) || null
 }
 
 export const createProducto = async (
-  producto: Omit<Producto, "ProductoULID" | "Fecha_UltimoCambio" | "Fecha_Sync">,
-): Promise<Producto> => {
+  producto: Omit<IGetProducto, "ProductoULID" | "Fecha_UltimoCambio" | "Fecha_Sync">,
+): Promise<IGetProducto> => {
   await new Promise((resolve) => setTimeout(resolve, 200))
 
   // Verificar que la clave no exista
@@ -1081,7 +985,7 @@ export const createProducto = async (
     throw new Error(`Ya existe un producto con la clave: ${producto.ClaveProducto}`)
   }
 
-  const nuevoProducto: Producto = {
+  const nuevoProducto: IGetProducto = {
     ...producto,
     ProductoULID: generateULID(),
     Fecha_UltimoCambio: new Date().toISOString(),
@@ -1094,8 +998,8 @@ export const createProducto = async (
 
 export const updateProducto = async (
   id: string,
-  producto: Partial<Omit<Producto, "ProductoULID">>,
-): Promise<Producto> => {
+  producto: Partial<Omit<IGetProducto, "ProductoULID">>,
+): Promise<IGetProducto> => {
   await new Promise((resolve) => setTimeout(resolve, 200))
 
   const index = mockProductos.findIndex((p) => p.ProductoULID === id)
@@ -1111,7 +1015,7 @@ export const updateProducto = async (
     }
   }
 
-  const productoActualizado: Producto = {
+  const productoActualizado: IGetProducto = {
     ...mockProductos[index],
     ...producto,
     Fecha_UltimoCambio: new Date().toISOString(),
@@ -1133,7 +1037,7 @@ export const deleteProducto = async (id: string): Promise<boolean> => {
   return true
 }
 
-export const toggleFavorito = async (id: string): Promise<Producto> => {
+export const toggleFavorito = async (id: string): Promise<IGetProducto> => {
   await new Promise((resolve) => setTimeout(resolve, 100))
 
   const index = mockProductos.findIndex((p) => p.ProductoULID === id)
@@ -1147,7 +1051,7 @@ export const toggleFavorito = async (id: string): Promise<Producto> => {
   return mockProductos[index]
 }
 
-export const toggleSuspendido = async (id: string): Promise<Producto> => {
+export const toggleSuspendido = async (id: string): Promise<IGetProducto> => {
   await new Promise((resolve) => setTimeout(resolve, 100))
 
   const index = mockProductos.findIndex((p) => p.ProductoULID === id)
@@ -1162,49 +1066,49 @@ export const toggleSuspendido = async (id: string): Promise<Producto> => {
 }
 
 // Funciones para datos relacionados
-export const getGruposProductos = async (): Promise<GrupoProducto[]> => {
+export const getGruposProductos = async (): Promise<IGetGrupoProducto[]> => {
   await new Promise((resolve) => setTimeout(resolve, 50))
   return [...mockGruposProductos]
 }
 
-export const getSubgruposProductos = async (): Promise<SubgrupoProducto[]> => {
+export const getSubgruposProductos = async (): Promise<IGetSubgrupoProducto[]> => {
   await new Promise((resolve) => setTimeout(resolve, 50))
   return [...mockSubgruposProductos]
 }
 
-export const getUnidades = async (): Promise<Unidad[]> => {
+export const getUnidades = async (): Promise<IGetUnidad[]> => {
   await new Promise((resolve) => setTimeout(resolve, 50))
   return [...mockUnidades]
 }
 
-export const getAreasProduccion = async (): Promise<AreaProduccion[]> => {
+export const getAreasProduccion = async (): Promise<IGetAreaProduccion[]> => {
   await new Promise((resolve) => setTimeout(resolve, 50))
   return [...mockAreasProduccion]
 }
 
-export const getAlmacenes = async (): Promise<Almacen[]> => {
+export const getAlmacenes = async (): Promise<IGetAlmacen[]> => {
   await new Promise((resolve) => setTimeout(resolve, 50))
   return [...mockAlmacenes]
 }
 
 // Funciones auxiliares para obtener por ID
-export const getGrupoById = (id: string): GrupoProducto | null => {
+export const getGrupoById = (id: string): IGetGrupoProducto | null => {
   return mockGruposProductos.find((g) => g.GrupoProductoULID === id) || null
 }
 
-export const getSubgrupoById = (id: string): SubgrupoProducto | null => {
+export const getSubgrupoById = (id: string): IGetSubgrupoProducto | null => {
   return mockSubgruposProductos.find((s) => s.SubgrupoProductoULID === id) || null
 }
 
-export const getUnidadById = (id: string): Unidad | null => {
+export const getUnidadById = (id: string): IGetUnidad | null => {
   return mockUnidades.find((u) => u.UnidadULID === id) || null
 }
 
-export const getAreaProduccionById = (id: string): AreaProduccion | null => {
+export const getAreaProduccionById = (id: string): IGetAreaProduccion | null => {
   return mockAreasProduccion.find((a) => a.AreaProduccionULID === id) || null
 }
 
-export const getAlmacenById = (id: string): Almacen | null => {
+export const getAlmacenById = (id: string): IGetAlmacen | null => {
   return mockAlmacenes.find((a) => a.AlmacenULID === id) || null
 }
 
@@ -1241,7 +1145,7 @@ export const getEstadisticasProductos = async () => {
 }
 
 // Funciones de búsqueda y filtrado
-export const buscarProductos = async (termino: string): Promise<Producto[]> => {
+export const buscarProductos = async (termino: string): Promise<IGetProducto[]> => {
   await new Promise((resolve) => setTimeout(resolve, 100))
 
   if (!termino.trim()) {
@@ -1257,7 +1161,7 @@ export const buscarProductos = async (termino: string): Promise<Producto[]> => {
   )
 }
 
-export const filtrarProductosPorTipo = async (tipo: string): Promise<Producto[]> => {
+export const filtrarProductosPorTipo = async (tipo: string): Promise<IGetProducto[]> => {
   await new Promise((resolve) => setTimeout(resolve, 50))
 
   if (tipo === "todos" || !tipo) {
@@ -1267,7 +1171,7 @@ export const filtrarProductosPorTipo = async (tipo: string): Promise<Producto[]>
   return mockProductos.filter((producto) => producto.TipoProducto === tipo)
 }
 
-export const filtrarProductosPorGrupo = async (grupoId: string): Promise<Producto[]> => {
+export const filtrarProductosPorGrupo = async (grupoId: string): Promise<IGetProducto[]> => {
   await new Promise((resolve) => setTimeout(resolve, 50))
 
   if (grupoId === "todos" || !grupoId) {
@@ -1277,17 +1181,17 @@ export const filtrarProductosPorGrupo = async (grupoId: string): Promise<Product
   return mockProductos.filter((producto) => producto.GrupoProductoULID === grupoId)
 }
 
-export const obtenerProductosFavoritos = async (): Promise<Producto[]> => {
+export const obtenerProductosFavoritos = async (): Promise<IGetProducto[]> => {
   await new Promise((resolve) => setTimeout(resolve, 50))
   return mockProductos.filter((producto) => producto.Favorito)
 }
 
-export const obtenerProductosSuspendidos = async (): Promise<Producto[]> => {
+export const obtenerProductosSuspendidos = async (): Promise<IGetProducto[]> => {
   await new Promise((resolve) => setTimeout(resolve, 50))
   return mockProductos.filter((producto) => producto.Suspendido)
 }
 
-export const obtenerProductosActivos = async (): Promise<Producto[]> => {
+export const obtenerProductosActivos = async (): Promise<IGetProducto[]> => {
   await new Promise((resolve) => setTimeout(resolve, 50))
   return mockProductos.filter((producto) => !producto.Suspendido)
 }
