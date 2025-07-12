@@ -34,6 +34,7 @@ export async function obtenerProductosActionAPI(): Promise<ActionResult<IGetProd
     }
   }
 }
+
 export async function obtenerProductosAction(): Promise<ActionResult<IGetProducto[]>> {
   try {
     const productos = await ProductosService.obtenerProductos()

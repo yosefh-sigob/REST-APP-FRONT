@@ -1,9 +1,10 @@
-import { obtenerProductosAction, obtenerDatosRelacionadosAction } from "@/actions/productos.actions"
+import { obtenerProductosAction, obtenerProductosActionAPI, obtenerDatosRelacionadosAction } from "@/actions/productos.actions"
 import { ProductosView } from "@/components/productos/productos-view"
 
 export default async function ProductosPage() {
   // Cargar datos iniciales en paralelo
-  const [productosResult, datosRelacionadosResult] = await Promise.all([
+  const [productosResultApi, productosResult, datosRelacionadosResult] = await Promise.all([
+    obtenerProductosActionAPI(),
     obtenerProductosAction(),
     obtenerDatosRelacionadosAction(),
   ])
@@ -32,11 +33,19 @@ export default async function ProductosPage() {
   }
 
   return (
+  <>
     <ProductosView
       productosIniciales={productosResult.data || []}
       datosRelacionados={
         datosRelacionadosResult.data || { grupos: [], subgrupos: [], unidades: [], areasProduccion: [] }
       }
     />
-  )
+
+    {/* 👇 Esto es solo para visualizar en pantalla */}
+    <div className="mt-8 bg-gray-100 p-4">
+      <h3 className="font-bold mb-2">Contenido de productosResultApi:</h3>
+      <pre className="text-sm whitespace-pre-wrap">{JSON.stringify(productosResultApi, null, 2)}</pre>
+    </div>
+  </>
+)
 }

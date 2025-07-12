@@ -20,8 +20,9 @@ import {
   alternarSuspendidoAction,
   eliminarProductoAction,
 } from "@/actions/productos.actions"
-import type { Producto } from "@/lib/services/productos.service"
+// import { Producto } from "@/schemas/produtos.schemas"
 import { ProductosService } from "@/lib/services/productos.service"
+import { IGetProducto } from "@/interfaces/productos.interface"
 import { toast } from "sonner"
 import {
   Plus,
@@ -41,7 +42,7 @@ import {
 } from "lucide-react"
 
 interface ProductosViewProps {
-  productosIniciales: Producto[]
+  productosIniciales: IGetProducto[]
   datosRelacionados: {
     grupos: any[]
     subgrupos: any[]
@@ -52,14 +53,14 @@ interface ProductosViewProps {
 
 export function ProductosView({ productosIniciales, datosRelacionados }: ProductosViewProps) {
   // Estados principales
-  const [productos, setProductos] = useState<Producto[]>(productosIniciales)
+  const [productos, setProductos] = useState<IGetProducto[]>(productosIniciales)
   const [loading, setLoading] = useState(false)
   const [vistaActual, setVistaActual] = useState<"grid" | "lista">("grid")
 
   // Estados de modales
   const [modalFormulario, setModalFormulario] = useState(false)
   const [modalDetalle, setModalDetalle] = useState(false)
-  const [productoSeleccionado, setProductoSeleccionado] = useState<Producto | null>(null)
+  const [productoSeleccionado, setProductoSeleccionado] = useState<IGetProducto | null>(null)
 
   // Estados de filtros
   const [busqueda, setBusqueda] = useState("")
@@ -129,17 +130,17 @@ export function ProductosView({ productosIniciales, datosRelacionados }: Product
     setModalFormulario(true)
   }
 
-  const handleEditarProducto = (producto: Producto) => {
+  const handleEditarProducto = (producto: IGetProducto) => {
     setProductoSeleccionado(producto)
     setModalFormulario(true)
   }
 
-  const handleVerDetalle = (producto: Producto) => {
+  const handleVerDetalle = (producto: IGetProducto) => {
     setProductoSeleccionado(producto)
     setModalDetalle(true)
   }
 
-  const handleToggleFavorito = async (producto: Producto) => {
+  const handleToggleFavorito = async (producto: IGetProducto) => {
     try {
       const result = await alternarFavoritoAction(producto.ProductoULID)
       if (result.success && result.data) {
@@ -153,7 +154,7 @@ export function ProductosView({ productosIniciales, datosRelacionados }: Product
     }
   }
 
-  const handleToggleSuspendido = async (producto: Producto) => {
+  const handleToggleSuspendido = async (producto: IGetProducto) => {
     try {
       const result = await alternarSuspendidoAction(producto.ProductoULID)
       if (result.success && result.data) {
@@ -167,7 +168,7 @@ export function ProductosView({ productosIniciales, datosRelacionados }: Product
     }
   }
 
-  const handleEliminarProducto = async (producto: Producto) => {
+  const handleEliminarProducto = async (producto: IGetProducto) => {
     if (!confirm(`¿Está seguro de eliminar el producto "${producto.Nombredelproducto}"?`)) {
       return
     }
