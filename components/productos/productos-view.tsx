@@ -19,6 +19,7 @@ import {
   alternarFavoritoAction,
   alternarSuspendidoAction,
   eliminarProductoAction,
+  obtenerProductosActionAPI,
 } from "@/actions/productos.actions"
 // import { Producto } from "@/schemas/produtos.schemas"
 import { ProductosService } from "@/lib/services/productos.service"
@@ -75,8 +76,9 @@ export function ProductosView({ productosIniciales, datosRelacionados }: Product
   const recargarProductos = async () => {
     setLoading(true)
     try {
-      const result = await obtenerProductosAction()
+      const result = await obtenerProductosActionAPI()
       if (result.success && result.data) {
+        console.log('HOLA?', result.data);
         setProductos(result.data)
       } else {
         toast.error("Error al recargar productos")

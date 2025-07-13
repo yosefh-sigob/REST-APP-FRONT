@@ -18,6 +18,7 @@ const apiUrl = process.env.API_URL_LOCAL
 
 export async function obtenerProductosActionAPI(): Promise<ActionResult<IGetProducto[]>> {
   try {
+    console.log('APIURL', apiUrl)
     // axios get request to the API
     const response = await axios.get(`${apiUrl}/productos`)
     const productos: IGetProducto[] = response.data

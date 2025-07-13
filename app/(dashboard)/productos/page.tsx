@@ -40,12 +40,6 @@ export default async function ProductosPage() {
         datosRelacionadosResult.data || { grupos: [], subgrupos: [], unidades: [], areasProduccion: [] }
       }
     />
-
-    {/* 👇 Esto es solo para visualizar en pantalla */}
-    <div className="mt-8 bg-gray-100 p-4">
-      <h3 className="font-bold mb-2">Contenido de productosResultApi:</h3>
-      <pre className="text-sm whitespace-pre-wrap">{JSON.stringify(productosResultApi, null, 2)}</pre>
-    </div>
   </>
 )
 }
