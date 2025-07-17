@@ -14,7 +14,7 @@ export interface ActionResult<T = any> {
 }
 
 // env API_URL_LOCAL
-const apiUrl = process.env.API_URL_LOCAL
+const apiUrl = process.env.API_URL
 
 export async function obtenerProductosActionAPI(): Promise<ActionResult<IGetProducto[]>> {
   try {
