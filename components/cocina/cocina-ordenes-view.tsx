@@ -88,6 +88,7 @@ export default function CocinaOrdenesView({ initialOrders }: CocinaOrdenesViewPr
                     </Badge>
                   </CardTitle>
                   <CardDescription className="text-sm text-gray-500">
+                    Mesa: {order.tableNumber} <br />
                     Creada: {new Date(order.createdAt).toLocaleTimeString()}
                     {order.updatedAt && order.status !== "pending" && (
                       <span> | Actualizada: {new Date(order.updatedAt).toLocaleTimeString()}</span>
