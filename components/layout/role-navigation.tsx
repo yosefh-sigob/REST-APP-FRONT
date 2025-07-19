@@ -1,6 +1,6 @@
 "use client"
 
-import type React from "react"
+import React from "react"
 
 import type { User } from "@/interfaces/auth"
 import {
@@ -17,6 +17,8 @@ import {
   Receipt,
   ClipboardList,
 } from "lucide-react"
+import { getOrdenes } from "@/actions/cocinaOrdenes.actions"
+import { useOrders } from "@/contexts/orders-context"
 
 export interface NavigationItem {
   title: string
@@ -37,6 +39,8 @@ export function getRoleNavigation(user: User | null): NavigationItem[] {
       description: "Vista general del restaurante",
     },
   ]
+
+  const { pendingAndPreparingCount } = useOrders()
 
   switch (user.rol) {
     case "Administrador":
@@ -199,7 +203,7 @@ export function getRoleNavigation(user: User | null): NavigationItem[] {
           title: "Órdenes de Cocina",
           href: "/cocina/ordenes",
           icon: ChefHat,
-          badge: "5",
+          badge: `${pendingAndPreparingCount}`,
           description: "Órdenes pendientes",
         },
         {

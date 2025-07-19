@@ -1,5 +1,6 @@
 "use client"
 
+import { useOrders } from "@/contexts/orders-context"
 import { useState } from "react"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -14,7 +15,7 @@ interface CocinaOrdenesViewProps {
 }
 
 export default function CocinaOrdenesView({ initialOrders }: CocinaOrdenesViewProps) {
-  const [orders, setOrders] = useState<KitchenOrder[]>(initialOrders)
+  const { orders, setOrders } = useOrders()
 
   const updateOrderStatus = (orderId: string, newStatus: KitchenOrderStatus) => {
     setOrders((prevOrders) =>
@@ -50,15 +51,24 @@ export default function CocinaOrdenesView({ initialOrders }: CocinaOrdenesViewPr
     }
   }
 
+  const sortedOrders = orders.sort((a, b) => {
+    const statusOrder = {
+      preparing: 1,
+      pending: 2,
+      ready: 3,
+    }
+    return statusOrder[a.status] - statusOrder[b.status]
+  })
+
   return (
     <div className="p-4 md:p-6 lg:p-8">
       <h1 className="text-3xl font-bold mb-6">Órdenes de Cocina</h1>
       <ScrollArea className="h-[calc(100vh-150px)]">
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {orders.length === 0 ? (
+          {sortedOrders.length === 0 ? (
             <p className="col-span-full text-center text-gray-500">No hay órdenes pendientes.</p>
           ) : (
-            orders.map((order) => (
+            sortedOrders.map((order) => (
               <Card key={order.id} className="flex flex-col">
                 <CardHeader className="pb-2">
                   <CardTitle className="flex justify-between items-center">
