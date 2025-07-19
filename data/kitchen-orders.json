@@ -1,0 +1,84 @@
+[
+  {
+    "id": "order_001",
+    "tableNumber": 5,
+    "status": "pending",
+    "items": [
+      { "id": "item_001", "productId": "prod_001", "name": "Pizza Pepperoni", "quantity": 1, "notes": "Sin cebolla" },
+      { "id": "item_002", "productId": "prod_002", "name": "Ensalada César", "quantity": 2 }
+    ],
+    "createdAt": "2025-07-18T10:00:00Z"
+  },
+  {
+    "id": "order_002",
+    "tableNumber": 12,
+    "status": "preparing",
+    "items": [
+      {
+        "id": "item_003",
+        "productId": "prod_003",
+        "name": "Hamburguesa Clásica",
+        "quantity": 1,
+        "notes": "Punto medio"
+      },
+      { "id": "item_004", "productId": "prod_004", "name": "Papas Fritas", "quantity": 1 }
+    ],
+    "createdAt": "2025-07-18T10:15:00Z"
+  },
+  {
+    "id": "order_003",
+    "tableNumber": 3,
+    "status": "ready",
+    "items": [
+      { "id": "item_005", "productId": "prod_005", "name": "Tacos al Pastor", "quantity": 3 },
+      { "id": "item_006", "productId": "prod_006", "name": "Agua de Horchata", "quantity": 2 }
+    ],
+    "createdAt": "2025-07-18T09:45:00Z"
+  },
+  {
+    "id": "order_004",
+    "tableNumber": 7,
+    "status": "pending",
+    "items": [
+      { "id": "item_007", "productId": "prod_007", "name": "Sopa de Tortilla", "quantity": 1 },
+      { "id": "item_008", "productId": "prod_008", "name": "Quesadillas", "quantity": 2, "notes": "Con queso extra" }
+    ],
+    "createdAt": "2025-07-18T10:30:00Z"
+  },
+  {
+    "id": "order_005",
+    "tableNumber": 1,
+    "status": "pending",
+    "items": [
+      { "id": "item_009", "productId": "prod_009", "name": "Pasta Alfredo", "quantity": 1, "notes": "Sin perejil" },
+      { "id": "item_010", "productId": "prod_010", "name": "Pan de Ajo", "quantity": 1 }
+    ],
+    "createdAt": "2025-07-18T10:45:00Z"
+  },
+  {
+    "id": "order_006",
+    "tableNumber": 9,
+    "status": "preparing",
+    "items": [
+      {
+        "id": "item_011",
+        "productId": "prod_011",
+        "name": "Salmón a la Plancha",
+        "quantity": 1,
+        "notes": "Bien cocido"
+      },
+      { "id": "item_012", "productId": "prod_012", "name": "Verduras al Vapor", "quantity": 1 }
+    ],
+    "createdAt": "2025-07-18T11:00:00Z"
+  },
+  {
+    "id": "order_007",
+    "tableNumber": 4,
+    "status": "pending",
+    "items": [
+      { "id": "item_013", "productId": "prod_013", "name": "Burrito de Pollo", "quantity": 2, "notes": "Picante" },
+      { "id": "item_014", "productId": "prod_014", "name": "Guacamole", "quantity": 1 }
+    ],
+    "createdAt": "2025-07-18T11:10:00Z"
+  }
+]
