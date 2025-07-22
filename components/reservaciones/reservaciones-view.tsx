@@ -6,12 +6,15 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Calendar, Clock, Users, Phone, Mail, MapPin, Filter, Plus, Search } from "lucide-react"
+import { Calendar, Clock, Users, Phone, Mail, MapPin, Filter, Plus, Search, Eye } from "lucide-react"
+import { ReservacionDetailModal } from "./reservacion-detail-modal"
 import type { ReservacionesViewProps, Reservacion } from "@/interfaces/reservaciones.interface"
 
 export function ReservacionesView({ reservaciones }: ReservacionesViewProps) {
   const [filtroEstado, setFiltroEstado] = useState<string>("todos")
   const [busqueda, setBusqueda] = useState("")
+  const [selectedReservacion, setSelectedReservacion] = useState<Reservacion | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   const reservacionesFiltradas = reservaciones.filter((reservacion) => {
     const coincideBusqueda =
@@ -51,6 +54,40 @@ export function ReservacionesView({ reservaciones }: ReservacionesViewProps) {
         {tipo.charAt(0).toUpperCase() + tipo.slice(1)}
       </Badge>
     )
+  }
+
+  const handleVerDetalles = (reservacion: Reservacion) => {
+    setSelectedReservacion(reservacion)
+    setIsModalOpen(true)
+  }
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false)
+    setSelectedReservacion(null)
+  }
+
+  const handleConfirmar = (id: string) => {
+    // TODO: Implementar lógica para confirmar reservación
+    console.log("Confirmar reservación:", id)
+    handleCloseModal()
+  }
+
+  const handleCompletar = (id: string) => {
+    // TODO: Implementar lógica para completar reservación
+    console.log("Completar reservación:", id)
+    handleCloseModal()
+  }
+
+  const handleCancelar = (id: string) => {
+    // TODO: Implementar lógica para cancelar reservación
+    console.log("Cancelar reservación:", id)
+    handleCloseModal()
+  }
+
+  const handleEditar = (id: string) => {
+    // TODO: Implementar lógica para editar reservación
+    console.log("Editar reservación:", id)
+    handleCloseModal()
   }
 
   return (
@@ -165,26 +202,34 @@ export function ReservacionesView({ reservaciones }: ReservacionesViewProps) {
                         <span className="font-medium">Observaciones:</span> {reservacion.observaciones}
                       </div>
                     )}
-
-                    {reservacion.solicitudesEspeciales && (
-                      <div className="text-sm text-gray-600">
-                        <span className="font-medium">Solicitudes especiales:</span> {reservacion.solicitudesEspeciales}
-                      </div>
-                    )}
                   </div>
 
                   {/* Acciones */}
                   <div className="flex flex-col sm:flex-row lg:flex-col gap-2 lg:w-32">
-                    <Button variant="outline" size="sm" className="w-full bg-transparent">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full bg-transparent"
+                      onClick={() => handleVerDetalles(reservacion)}
+                    >
+                      <Eye className="w-3 h-3 mr-1" />
                       Ver Detalles
                     </Button>
                     {reservacion.estado === "pendiente" && (
-                      <Button size="sm" className="w-full bg-green-600 hover:bg-green-700">
+                      <Button
+                        size="sm"
+                        className="w-full bg-green-600 hover:bg-green-700"
+                        onClick={() => handleConfirmar(reservacion.id)}
+                      >
                         Confirmar
                       </Button>
                     )}
                     {reservacion.estado === "confirmada" && (
-                      <Button size="sm" className="w-full bg-blue-600 hover:bg-blue-700">
+                      <Button
+                        size="sm"
+                        className="w-full bg-blue-600 hover:bg-blue-700"
+                        onClick={() => handleCompletar(reservacion.id)}
+                      >
                         Completar
                       </Button>
                     )}
@@ -237,6 +282,17 @@ export function ReservacionesView({ reservaciones }: ReservacionesViewProps) {
           </CardContent>
         </Card>
       </div>
+
+      {/* Modal de Detalles */}
+      <ReservacionDetailModal
+        reservacion={selectedReservacion}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onConfirmar={handleConfirmar}
+        onCompletar={handleCompletar}
+        onCancelar={handleCancelar}
+        onEditar={handleEditar}
+      />
     </div>
   )
 }
