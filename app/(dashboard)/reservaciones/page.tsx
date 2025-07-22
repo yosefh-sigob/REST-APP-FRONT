@@ -1,6 +1,8 @@
-// import { ReservacionesView } from "@/components/reservaciones/reservaciones-view"
+import { ReservacionesView } from "@/components/reservaciones/reservaciones-view"
+import { getReservaciones } from "@/actions/reservaciones.actions"
 
 export default async function ReservacionesPage() {
-  return <div>ReservacionesView</div>
-  // return <ReservacionesView />
+  const reservaciones = await getReservaciones()
+
+  return <ReservacionesView reservaciones={reservaciones} />
 }
