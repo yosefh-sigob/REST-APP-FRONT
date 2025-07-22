@@ -1,238 +1,285 @@
 "use client"
 
-import { useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { useState, useMemo } from "react"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
+import { Badge } from "@/components/ui/badge"
+import { Card, CardContent } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Calendar, Clock, Users, Phone, Mail, MapPin, Filter, Plus, Search, Eye } from "lucide-react"
+import { Search, Eye, Calendar, Clock, Users, Phone, Mail, CheckCircle, XCircle, Clock3, Filter } from "lucide-react"
+import type { Reservacion, ReservacionesViewProps } from "@/interfaces/reservaciones.interface"
 import { ReservacionDetailModal } from "./reservacion-detail-modal"
-import type { ReservacionesViewProps, Reservacion } from "@/interfaces/reservaciones.interface"
+import { CrearReservacionForm } from "./crear-reservacion-form"
 
-export function ReservacionesView({ reservaciones }: ReservacionesViewProps) {
+export function ReservacionesView({ reservaciones: reservacionesIniciales }: ReservacionesViewProps) {
+  const [reservaciones, setReservaciones] = useState<Reservacion[]>(reservacionesIniciales)
+  const [searchTerm, setSearchTerm] = useState("")
   const [filtroEstado, setFiltroEstado] = useState<string>("todos")
-  const [busqueda, setBusqueda] = useState("")
   const [selectedReservacion, setSelectedReservacion] = useState<Reservacion | null>(null)
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [modalOpen, setModalOpen] = useState(false)
 
-  const reservacionesFiltradas = reservaciones.filter((reservacion) => {
-    const coincideBusqueda =
-      reservacion.clienteNombre.toLowerCase().includes(busqueda.toLowerCase()) ||
-      reservacion.clienteEmail.toLowerCase().includes(busqueda.toLowerCase()) ||
-      reservacion.clienteTelefono.includes(busqueda)
-
-    const coincideEstado = filtroEstado === "todos" || reservacion.estado === filtroEstado
-
-    return coincideBusqueda && coincideEstado
-  })
-
-  const getEstadoBadge = (estado: Reservacion["estado"]) => {
-    const variants = {
-      pendiente: "bg-yellow-100 text-yellow-800 border-yellow-200",
-      confirmada: "bg-green-100 text-green-800 border-green-200",
-      cancelada: "bg-red-100 text-red-800 border-red-200",
-      completada: "bg-blue-100 text-blue-800 border-blue-200",
-    }
-
-    return <Badge className={`${variants[estado]} border`}>{estado.charAt(0).toUpperCase() + estado.slice(1)}</Badge>
+  // Función para refrescar la lista después de crear una nueva reservación
+  const handleReservacionCreada = () => {
+    // En una aplicación real, aquí harías un refetch de los datos
+    // Por ahora, simplemente cerramos el modal y mostramos un mensaje
+    window.location.reload() // Temporal: recargar la página para ver la nueva reservación
   }
 
-  const getTipoEventoBadge = (tipo?: string) => {
-    if (!tipo) return null
+  // Filtrar reservaciones
+  const reservacionesFiltradas = useMemo(() => {
+    return reservaciones.filter((reservacion) => {
+      const matchesSearch =
+        reservacion.clienteNombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        reservacion.clienteEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        reservacion.clienteTelefono.includes(searchTerm)
 
-    const variants = {
-      cumpleanos: "bg-pink-100 text-pink-800",
-      aniversario: "bg-purple-100 text-purple-800",
-      negocio: "bg-gray-100 text-gray-800",
-      familiar: "bg-orange-100 text-orange-800",
-      otro: "bg-indigo-100 text-indigo-800",
+      const matchesEstado = filtroEstado === "todos" || reservacion.estado === filtroEstado
+
+      return matchesSearch && matchesEstado
+    })
+  }, [reservaciones, searchTerm, filtroEstado])
+
+  // Estadísticas
+  const estadisticas = useMemo(() => {
+    const total = reservaciones.length
+    const pendientes = reservaciones.filter((r) => r.estado === "pendiente").length
+    const confirmadas = reservaciones.filter((r) => r.estado === "confirmada").length
+    const completadas = reservaciones.filter((r) => r.estado === "completada").length
+    const canceladas = reservaciones.filter((r) => r.estado === "cancelada").length
+
+    return { total, pendientes, confirmadas, completadas, canceladas }
+  }, [reservaciones])
+
+  const handleVerDetalles = (reservacion: Reservacion) => {
+    setSelectedReservacion(reservacion)
+    setModalOpen(true)
+  }
+
+  const getEstadoBadge = (estado: Reservacion["estado"]) => {
+    const config = {
+      pendiente: { variant: "secondary" as const, icon: Clock3, text: "Pendiente" },
+      confirmada: { variant: "default" as const, icon: CheckCircle, text: "Confirmada" },
+      completada: { variant: "default" as const, icon: CheckCircle, text: "Completada" },
+      cancelada: { variant: "destructive" as const, icon: XCircle, text: "Cancelada" },
     }
 
+    const { variant, icon: Icon, text } = config[estado]
+
     return (
-      <Badge variant="outline" className={variants[tipo as keyof typeof variants]}>
-        {tipo.charAt(0).toUpperCase() + tipo.slice(1)}
+      <Badge variant={variant} className="gap-1">
+        <Icon className="h-3 w-3" />
+        {text}
       </Badge>
     )
   }
 
-  const handleVerDetalles = (reservacion: Reservacion) => {
-    setSelectedReservacion(reservacion)
-    setIsModalOpen(true)
+  const getTipoEventoBadge = (tipo: string) => {
+    const config = {
+      cumpleanos: { color: "bg-pink-100 text-pink-800", text: "Cumpleaños" },
+      aniversario: { color: "bg-red-100 text-red-800", text: "Aniversario" },
+      negocio: { color: "bg-blue-100 text-blue-800", text: "Negocio" },
+      familiar: { color: "bg-green-100 text-green-800", text: "Familiar" },
+      otro: { color: "bg-gray-100 text-gray-800", text: "Otro" },
+    }
+
+    const { color, text } = config[tipo as keyof typeof config] || config.otro
+
+    return (
+      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${color}`}>{text}</span>
+    )
   }
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false)
-    setSelectedReservacion(null)
+  const formatearFecha = (fecha: string) => {
+    return new Date(fecha).toLocaleDateString("es-ES", {
+      weekday: "short",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    })
   }
 
-  const handleConfirmar = (id: string) => {
-    // TODO: Implementar lógica para confirmar reservación
-    console.log("Confirmar reservación:", id)
-    handleCloseModal()
-  }
-
-  const handleCompletar = (id: string) => {
-    // TODO: Implementar lógica para completar reservación
-    console.log("Completar reservación:", id)
-    handleCloseModal()
-  }
-
-  const handleCancelar = (id: string) => {
-    // TODO: Implementar lógica para cancelar reservación
-    console.log("Cancelar reservación:", id)
-    handleCloseModal()
-  }
-
-  const handleEditar = (id: string) => {
-    // TODO: Implementar lógica para editar reservación
-    console.log("Editar reservación:", id)
-    handleCloseModal()
+  const formatearHora = (hora: string) => {
+    return hora
   }
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Reservaciones</h1>
-          <p className="text-gray-600 mt-1">Gestiona las reservaciones del restaurante</p>
+          <h1 className="text-2xl font-bold text-gray-900">Reservaciones</h1>
+          <p className="text-gray-600">Gestiona las reservaciones del restaurante</p>
         </div>
-        <Button className="bg-orange-600 hover:bg-orange-700">
-          <Plus className="w-4 h-4 mr-2" />
-          Nueva Reservación
-        </Button>
+        <CrearReservacionForm onReservacionCreada={handleReservacionCreada} />
+      </div>
+
+      {/* Estadísticas */}
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Total</p>
+                <p className="text-2xl font-bold">{estadisticas.total}</p>
+              </div>
+              <Calendar className="h-8 w-8 text-gray-400" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Pendientes</p>
+                <p className="text-2xl font-bold text-yellow-600">{estadisticas.pendientes}</p>
+              </div>
+              <Clock3 className="h-8 w-8 text-yellow-400" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Confirmadas</p>
+                <p className="text-2xl font-bold text-green-600">{estadisticas.confirmadas}</p>
+              </div>
+              <CheckCircle className="h-8 w-8 text-green-400" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Completadas</p>
+                <p className="text-2xl font-bold text-blue-600">{estadisticas.completadas}</p>
+              </div>
+              <CheckCircle className="h-8 w-8 text-blue-400" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Canceladas</p>
+                <p className="text-2xl font-bold text-red-600">{estadisticas.canceladas}</p>
+              </div>
+              <XCircle className="h-8 w-8 text-red-400" />
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Filtros */}
-      <Card>
-        <CardContent className="p-4">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                <Input
-                  placeholder="Buscar por nombre, email o teléfono..."
-                  value={busqueda}
-                  onChange={(e) => setBusqueda(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-            </div>
-            <div className="sm:w-48">
-              <Select value={filtroEstado} onValueChange={setFiltroEstado}>
-                <SelectTrigger>
-                  <Filter className="w-4 h-4 mr-2" />
-                  <SelectValue placeholder="Estado" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="todos">Todos los estados</SelectItem>
-                  <SelectItem value="pendiente">Pendiente</SelectItem>
-                  <SelectItem value="confirmada">Confirmada</SelectItem>
-                  <SelectItem value="cancelada">Cancelada</SelectItem>
-                  <SelectItem value="completada">Completada</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="flex flex-col sm:flex-row gap-4">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+          <Input
+            placeholder="Buscar por nombre, email o teléfono..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+        <Select value={filtroEstado} onValueChange={setFiltroEstado}>
+          <SelectTrigger className="w-full sm:w-48">
+            <Filter className="h-4 w-4 mr-2" />
+            <SelectValue placeholder="Filtrar por estado" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="todos">Todos los estados</SelectItem>
+            <SelectItem value="pendiente">Pendientes</SelectItem>
+            <SelectItem value="confirmada">Confirmadas</SelectItem>
+            <SelectItem value="completada">Completadas</SelectItem>
+            <SelectItem value="cancelada">Canceladas</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
 
       {/* Lista de Reservaciones */}
       <div className="grid gap-4">
         {reservacionesFiltradas.length === 0 ? (
           <Card>
             <CardContent className="p-8 text-center">
-              <div className="text-gray-400 mb-2">
-                <Calendar className="w-12 h-12 mx-auto" />
-              </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-1">No hay reservaciones</h3>
-              <p className="text-gray-600">No se encontraron reservaciones con los filtros aplicados.</p>
+              <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">No hay reservaciones</h3>
+              <p className="text-gray-600">
+                {searchTerm || filtroEstado !== "todos"
+                  ? "No se encontraron reservaciones con los filtros aplicados."
+                  : "Aún no hay reservaciones registradas."}
+              </p>
             </CardContent>
           </Card>
         ) : (
           reservacionesFiltradas.map((reservacion) => (
             <Card key={reservacion.id} className="hover:shadow-md transition-shadow">
               <CardContent className="p-6">
-                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                  {/* Información Principal */}
+                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                  {/* Información principal */}
                   <div className="flex-1 space-y-3">
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                       <h3 className="text-lg font-semibold text-gray-900">{reservacion.clienteNombre}</h3>
-                      <div className="flex gap-2">
+                      <div className="flex items-center gap-2">
                         {getEstadoBadge(reservacion.estado)}
-                        {getTipoEventoBadge(reservacion.tipoEvento)}
+                        {reservacion.tipoEvento && getTipoEventoBadge(reservacion.tipoEvento)}
                       </div>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-sm text-gray-600">
                       <div className="flex items-center gap-2">
-                        <Calendar className="w-4 h-4 text-orange-500" />
-                        <span>{new Date(reservacion.fechaReservacion).toLocaleDateString("es-ES")}</span>
+                        <Calendar className="h-4 w-4" />
+                        <span>{formatearFecha(reservacion.fechaReservacion)}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Clock className="w-4 h-4 text-orange-500" />
-                        <span>{reservacion.horaReservacion}</span>
+                        <Clock className="h-4 w-4" />
+                        <span>{formatearHora(reservacion.horaReservacion)}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Users className="w-4 h-4 text-orange-500" />
+                        <Users className="h-4 w-4" />
                         <span>{reservacion.numeroPersonas} personas</span>
                       </div>
                       {reservacion.mesaAsignada && (
                         <div className="flex items-center gap-2">
-                          <MapPin className="w-4 h-4 text-orange-500" />
-                          <span>Mesa {reservacion.mesaAsignada}</span>
+                          <span className="font-medium">Mesa {reservacion.mesaAsignada}</span>
                         </div>
                       )}
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-gray-600">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-600">
                       <div className="flex items-center gap-2">
-                        <Mail className="w-4 h-4 text-gray-400" />
-                        <span>{reservacion.clienteEmail}</span>
+                        <Mail className="h-4 w-4" />
+                        <span className="truncate">{reservacion.clienteEmail}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Phone className="w-4 h-4 text-gray-400" />
+                        <Phone className="h-4 w-4" />
                         <span>{reservacion.clienteTelefono}</span>
                       </div>
                     </div>
 
                     {reservacion.observaciones && (
-                      <div className="text-sm text-gray-600">
-                        <span className="font-medium">Observaciones:</span> {reservacion.observaciones}
-                      </div>
+                      <p className="text-sm text-gray-600 bg-gray-50 p-2 rounded">
+                        <strong>Observaciones:</strong> {reservacion.observaciones}
+                      </p>
                     )}
                   </div>
 
                   {/* Acciones */}
-                  <div className="flex flex-col sm:flex-row lg:flex-col gap-2 lg:w-32">
+                  <div className="flex flex-col sm:flex-row lg:flex-col gap-2">
                     <Button
                       variant="outline"
                       size="sm"
-                      className="w-full bg-transparent"
                       onClick={() => handleVerDetalles(reservacion)}
+                      className="gap-2"
                     >
-                      <Eye className="w-3 h-3 mr-1" />
+                      <Eye className="h-4 w-4" />
                       Ver Detalles
                     </Button>
-                    {reservacion.estado === "pendiente" && (
-                      <Button
-                        size="sm"
-                        className="w-full bg-green-600 hover:bg-green-700"
-                        onClick={() => handleConfirmar(reservacion.id)}
-                      >
-                        Confirmar
-                      </Button>
-                    )}
-                    {reservacion.estado === "confirmada" && (
-                      <Button
-                        size="sm"
-                        className="w-full bg-blue-600 hover:bg-blue-700"
-                        onClick={() => handleCompletar(reservacion.id)}
-                      >
-                        Completar
-                      </Button>
-                    )}
                   </div>
                 </div>
               </CardContent>
@@ -241,57 +288,15 @@ export function ReservacionesView({ reservaciones }: ReservacionesViewProps) {
         )}
       </div>
 
-      {/* Estadísticas */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Total</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-gray-900">{reservaciones.length}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Pendientes</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-yellow-600">
-              {reservaciones.filter((r) => r.estado === "pendiente").length}
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Confirmadas</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-600">
-              {reservaciones.filter((r) => r.estado === "confirmada").length}
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Completadas</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-blue-600">
-              {reservaciones.filter((r) => r.estado === "completada").length}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Modal de Detalles */}
+      {/* Modal de detalles */}
       <ReservacionDetailModal
         reservacion={selectedReservacion}
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        onConfirmar={handleConfirmar}
-        onCompletar={handleCompletar}
-        onCancelar={handleCancelar}
-        onEditar={handleEditar}
+        open={modalOpen}
+        onOpenChange={setModalOpen}
+        onConfirmar={() => {}}
+        onCompletar={() => {}}
+        onCancelar={() => {}}
+        onEditar={() => {}}
       />
     </div>
   )
