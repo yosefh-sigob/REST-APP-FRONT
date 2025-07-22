@@ -2,7 +2,7 @@
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import {
   Calendar,
   Clock,
@@ -122,6 +122,10 @@ export function ReservacionDetailModal({
               {reservacion.tipoEvento && getTipoEventoBadge(reservacion.tipoEvento)}
             </div>
           </DialogTitle>
+          <DialogDescription>
+            Información completa de la reservación para {reservacion.clienteNombre} el{" "}
+            {formatDate(reservacion.fechaReservacion)} a las {reservacion.horaReservacion}
+          </DialogDescription>
         </DialogHeader>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-h-[70vh] overflow-y-auto">
