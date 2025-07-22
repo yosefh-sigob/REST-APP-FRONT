@@ -1,4 +1,3 @@
-
 export interface IGetProducto {
   ProductoULID: string
   GrupoProductoULID?: string

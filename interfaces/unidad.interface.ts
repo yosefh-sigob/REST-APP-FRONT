@@ -1,4 +1,3 @@
-
 export interface IGetUnidad {
   UnidadULID: string
   ClaveUnidad: string

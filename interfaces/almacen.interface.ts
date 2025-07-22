@@ -1,4 +1,3 @@
-
 export interface IGetAlmacen {
   AlmacenULID: string
   ClaveAlmacen: string

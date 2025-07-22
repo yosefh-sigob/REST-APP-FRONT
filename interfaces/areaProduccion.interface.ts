@@ -1,4 +1,3 @@
-
 export interface IGetAreaProduccion {
   AreaProduccionULID: string
   ClaveArea: string
