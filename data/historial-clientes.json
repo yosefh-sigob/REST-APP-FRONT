@@ -1,0 +1,197 @@
+{
+  "1": [
+    {
+      "id": 1,
+      "clienteId": 1,
+      "fecha": "2024-01-20T19:30:00",
+      "mesa": 5,
+      "productos": [
+        {
+          "id": 1,
+          "nombre": "Ensalada César Vegana",
+          "cantidad": 1,
+          "precio": 185.0,
+          "categoria": "Ensaladas"
+        },
+        {
+          "id": 2,
+          "nombre": "Pasta sin Gluten",
+          "cantidad": 1,
+          "precio": 220.0,
+          "categoria": "Pastas"
+        },
+        {
+          "id": 3,
+          "nombre": "Agua Natural",
+          "cantidad": 2,
+          "precio": 25.0,
+          "categoria": "Bebidas"
+        }
+      ],
+      "total": 455.0,
+      "metodoPago": "tarjeta",
+      "mesero": "Carlos Mendoza",
+      "calificacion": 5,
+      "comentarios": "Excelente atención, la comida llegó rápido y estaba deliciosa.",
+      "duracion": 75
+    },
+    {
+      "id": 2,
+      "clienteId": 1,
+      "fecha": "2024-01-15T14:15:00",
+      "mesa": 12,
+      "productos": [
+        {
+          "id": 4,
+          "nombre": "Bowl Vegano",
+          "cantidad": 1,
+          "precio": 195.0,
+          "categoria": "Bowls"
+        },
+        {
+          "id": 5,
+          "nombre": "Smoothie Verde",
+          "cantidad": 1,
+          "precio": 85.0,
+          "categoria": "Bebidas"
+        }
+      ],
+      "total": 280.0,
+      "metodoPago": "efectivo",
+      "mesero": "Ana López",
+      "calificacion": 4,
+      "comentarios": "Muy bueno, aunque el smoothie estaba un poco dulce.",
+      "duracion": 45
+    },
+    {
+      "id": 3,
+      "clienteId": 1,
+      "fecha": "2024-01-10T20:00:00",
+      "mesa": 8,
+      "productos": [
+        {
+          "id": 6,
+          "nombre": "Pizza Vegana",
+          "cantidad": 1,
+          "precio": 285.0,
+          "categoria": "Pizzas"
+        },
+        {
+          "id": 7,
+          "nombre": "Té Verde",
+          "cantidad": 1,
+          "precio": 35.0,
+          "categoria": "Bebidas"
+        }
+      ],
+      "total": 320.0,
+      "metodoPago": "tarjeta",
+      "mesero": "Roberto Silva",
+      "calificacion": 5,
+      "comentarios": "La pizza estaba perfecta, definitivamente volveré.",
+      "duracion": 90
+    }
+  ],
+  "2": [
+    {
+      "id": 4,
+      "clienteId": 2,
+      "fecha": "2024-01-19T13:30:00",
+      "mesa": 3,
+      "productos": [
+        {
+          "id": 8,
+          "nombre": "Hamburguesa Vegana",
+          "cantidad": 1,
+          "precio": 245.0,
+          "categoria": "Hamburguesas"
+        },
+        {
+          "id": 9,
+          "nombre": "Papas Fritas",
+          "cantidad": 1,
+          "precio": 85.0,
+          "categoria": "Acompañamientos"
+        },
+        {
+          "id": 10,
+          "nombre": "Limonada",
+          "cantidad": 1,
+          "precio": 45.0,
+          "categoria": "Bebidas"
+        }
+      ],
+      "total": 375.0,
+      "metodoPago": "transferencia",
+      "mesero": "María González",
+      "calificacion": 5,
+      "comentarios": "Todo perfecto como siempre.",
+      "duracion": 60
+    },
+    {
+      "id": 5,
+      "clienteId": 2,
+      "fecha": "2024-01-12T18:45:00",
+      "mesa": 7,
+      "productos": [
+        {
+          "id": 11,
+          "nombre": "Tacos Veganos",
+          "cantidad": 3,
+          "precio": 65.0,
+          "categoria": "Tacos"
+        },
+        {
+          "id": 12,
+          "nombre": "Agua de Jamaica",
+          "cantidad": 1,
+          "precio": 35.0,
+          "categoria": "Bebidas"
+        }
+      ],
+      "total": 230.0,
+      "metodoPago": "efectivo",
+      "mesero": "Diego Morales",
+      "calificacion": 4,
+      "comentarios": "Los tacos estaban buenos, pero podrían tener más salsa.",
+      "duracion": 40
+    }
+  ],
+  "3": [
+    {
+      "id": 6,
+      "clienteId": 3,
+      "fecha": "2024-01-18T21:00:00",
+      "mesa": 15,
+      "productos": [
+        {
+          "id": 13,
+          "nombre": "Arrachera",
+          "cantidad": 1,
+          "precio": 385.0,
+          "categoria": "Carnes"
+        },
+        {
+          "id": 14,
+          "nombre": "Guacamole Picante",
+          "cantidad": 1,
+          "precio": 95.0,
+          "categoria": "Acompañamientos"
+        },
+        {
+          "id": 15,
+          "nombre": "Cerveza Artesanal",
+          "cantidad": 2,
+          "precio": 75.0,
+          "categoria": "Bebidas"
+        }
+      ],
+      "total": 630.0,
+      "metodoPago": "tarjeta",
+      "mesero": "Luis Ramírez",
+      "calificacion": 5,
+      "comentarios": "La arrachera estaba en su punto perfecto, muy recomendable.",
+      "duracion": 105
+    }
+  ]
+}

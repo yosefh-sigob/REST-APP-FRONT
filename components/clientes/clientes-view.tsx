@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Users, Search, Plus, Phone, Mail, Calendar, Star } from "lucide-react"
 import type { Cliente } from "@/interfaces/clientes.interface"
+import Link from "next/link"
 
 interface ClientesViewProps {
   clientes: Cliente[]
@@ -165,9 +166,11 @@ export function ClientesView({ clientes }: ClientesViewProps) {
                   )}
 
                   <div className="mt-4 flex space-x-2">
-                    <Button size="sm" variant="outline" className="flex-1 bg-transparent">
-                      Ver Historial
-                    </Button>
+                    <Link href={`/clientes/${cliente.id}`}>
+                      <Button size="sm" variant="outline" className="flex-1 bg-transparent">
+                        Ver Historial
+                      </Button>
+                    </Link>
                     <Button size="sm" className="flex-1">
                       Contactar
                     </Button>
