@@ -1,0 +1,118 @@
+[
+  {
+    "id": "mesa_001",
+    "numero": 1,
+    "capacidad": 4,
+    "estado": "ocupada",
+    "clientes": 4,
+    "tiempo": "45 min",
+    "mesero": "Juan Pérez",
+    "ubicacion": "Terraza",
+    "fechaOcupacion": "2024-01-25T14:30:00Z"
+  },
+  {
+    "id": "mesa_002",
+    "numero": 2,
+    "capacidad": 2,
+    "estado": "libre",
+    "clientes": 0,
+    "ubicacion": "Interior"
+  },
+  {
+    "id": "mesa_003",
+    "numero": 3,
+    "capacidad": 6,
+    "estado": "ocupada",
+    "clientes": 6,
+    "tiempo": "30 min",
+    "mesero": "María García",
+    "ubicacion": "Salón Principal",
+    "fechaOcupacion": "2024-01-25T15:00:00Z"
+  },
+  {
+    "id": "mesa_004",
+    "numero": 4,
+    "capacidad": 4,
+    "estado": "reservada",
+    "clientes": 4,
+    "horaReserva": "19:30",
+    "mesero": "Carlos López",
+    "ubicacion": "Ventana",
+    "observaciones": "Cumpleaños - decoración especial"
+  },
+  {
+    "id": "mesa_005",
+    "numero": 5,
+    "capacidad": 2,
+    "estado": "libre",
+    "clientes": 0,
+    "ubicacion": "Interior"
+  },
+  {
+    "id": "mesa_006",
+    "numero": 6,
+    "capacidad": 8,
+    "estado": "ocupada",
+    "clientes": 8,
+    "tiempo": "1h 15min",
+    "mesero": "Ana Martín",
+    "ubicacion": "Salón VIP",
+    "fechaOcupacion": "2024-01-25T13:15:00Z"
+  },
+  {
+    "id": "mesa_007",
+    "numero": 7,
+    "capacidad": 4,
+    "estado": "limpieza",
+    "clientes": 0,
+    "tiempo": "5 min",
+    "ubicacion": "Terraza"
+  },
+  {
+    "id": "mesa_008",
+    "numero": 8,
+    "capacidad": 2,
+    "estado": "libre",
+    "clientes": 0,
+    "ubicacion": "Interior"
+  },
+  {
+    "id": "mesa_009",
+    "numero": 9,
+    "capacidad": 6,
+    "estado": "reservada",
+    "clientes": 6,
+    "horaReserva": "20:00",
+    "mesero": "Diego Ruiz",
+    "ubicacion": "Salón Principal",
+    "observaciones": "Cena de empresa"
+  },
+  {
+    "id": "mesa_010",
+    "numero": 10,
+    "capacidad": 4,
+    "estado": "ocupada",
+    "clientes": 3,
+    "tiempo": "20 min",
+    "mesero": "Laura Sánchez",
+    "ubicacion": "Ventana",
+    "fechaOcupacion": "2024-01-25T15:40:00Z"
+  },
+  {
+    "id": "mesa_011",
+    "numero": 11,
+    "capacidad": 2,
+    "estado": "libre",
+    "clientes": 0,
+    "ubicacion": "Interior"
+  },
+  {
+    "id": "mesa_012",
+    "numero": 12,
+    "capacidad": 8,
+    "estado": "limpieza",
+    "clientes": 0,
+    "tiempo": "10 min",
+    "ubicacion": "Salón VIP"
+  }
+]
