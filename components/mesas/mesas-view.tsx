@@ -1,20 +1,18 @@
 "use client"
 
+import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { UtensilsCrossed, Users, Clock, Plus, Eye, Edit } from "lucide-react"
+import { UtensilsCrossed, Users, Clock, Plus, Eye, Edit, MapPin } from "lucide-react"
+import type { Mesa, EstadisticasMesas } from "@/interfaces/mesas.interface"
+import { MesaDetailModal } from "./mesa-detail-modal"
+import { MesaEditModal } from "./mesa-edit-modal"
 
-const MESAS_DATA = [
-  { id: 1, numero: 1, capacidad: 4, estado: "ocupada", clientes: 4, tiempo: "45 min", mesero: "Juan Pérez" },
-  { id: 2, numero: 2, capacidad: 2, estado: "libre", clientes: 0, tiempo: null, mesero: null },
-  { id: 3, numero: 3, capacidad: 6, estado: "ocupada", clientes: 6, tiempo: "30 min", mesero: "María García" },
-  { id: 4, numero: 4, capacidad: 4, estado: "reservada", clientes: 4, tiempo: "19:30", mesero: "Carlos López" },
-  { id: 5, numero: 5, capacidad: 2, estado: "libre", clientes: 0, tiempo: null, mesero: null },
-  { id: 6, numero: 6, capacidad: 8, estado: "ocupada", clientes: 8, tiempo: "1h 15min", mesero: "Ana Martín" },
-  { id: 7, numero: 7, capacidad: 4, estado: "limpieza", clientes: 0, tiempo: "5 min", mesero: null },
-  { id: 8, numero: 8, capacidad: 2, estado: "libre", clientes: 0, tiempo: null, mesero: null },
-]
+interface MesasViewProps {
+  mesas: Mesa[]
+  estadisticas: EstadisticasMesas
+}
 
 function getMesaStatusColor(estado: string) {
   switch (estado) {
@@ -31,10 +29,55 @@ function getMesaStatusColor(estado: string) {
   }
 }
 
-export function MesasView() {
-  const mesasOcupadas = MESAS_DATA.filter((mesa) => mesa.estado === "ocupada").length
-  const mesasLibres = MESAS_DATA.filter((mesa) => mesa.estado === "libre").length
-  const mesasReservadas = MESAS_DATA.filter((mesa) => mesa.estado === "reservada").length
+function formatearTiempo(fechaOcupacion?: string): string {
+  if (!fechaOcupacion) return ""
+
+  const ahora = new Date()
+  const ocupacion = new Date(fechaOcupacion)
+  const diferencia = ahora.getTime() - ocupacion.getTime()
+
+  const minutos = Math.floor(diferencia / (1000 * 60))
+  const horas = Math.floor(minutos / 60)
+
+  if (horas > 0) {
+    const minutosRestantes = minutos % 60
+    return `${horas}h ${minutosRestantes}min`
+  }
+
+  return `${minutos} min`
+}
+
+export function MesasView({ mesas, estadisticas }: MesasViewProps) {
+  const [selectedMesa, setSelectedMesa] = useState<Mesa | null>(null)
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+
+  const handleVerMesa = (mesa: Mesa) => {
+    setSelectedMesa(mesa)
+    setIsDetailModalOpen(true)
+  }
+
+  const handleEditarMesa = (mesa: Mesa) => {
+    setSelectedMesa(mesa)
+    setIsEditModalOpen(true)
+  }
+
+  const handleEditFromDetail = (mesa: Mesa) => {
+    setIsDetailModalOpen(false)
+    setIsEditModalOpen(true)
+  }
+
+  const handleCloseModals = () => {
+    setIsDetailModalOpen(false)
+    setIsEditModalOpen(false)
+    setSelectedMesa(null)
+  }
+
+  const handleSuccessEdit = () => {
+    handleCloseModals()
+    // En una implementación real, aquí recargaríamos los datos
+    window.location.reload()
+  }
 
   return (
     <div className="space-y-6">
@@ -58,10 +101,8 @@ export function MesasView() {
             <UtensilsCrossed className="h-4 w-4 text-gray-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{MESAS_DATA.length}</div>
-            <p className="text-xs text-gray-500 mt-1">
-              Capacidad total: {MESAS_DATA.reduce((acc, mesa) => acc + mesa.capacidad, 0)} personas
-            </p>
+            <div className="text-2xl font-bold">{estadisticas.totalMesas}</div>
+            <p className="text-xs text-gray-500 mt-1">Capacidad total: {estadisticas.capacidadTotal} personas</p>
           </CardContent>
         </Card>
 
@@ -71,10 +112,8 @@ export function MesasView() {
             <Users className="h-4 w-4 text-red-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-red-600">{mesasOcupadas}</div>
-            <p className="text-xs text-gray-500 mt-1">
-              {Math.round((mesasOcupadas / MESAS_DATA.length) * 100)}% ocupación
-            </p>
+            <div className="text-2xl font-bold text-red-600">{estadisticas.mesasOcupadas}</div>
+            <p className="text-xs text-gray-500 mt-1">{estadisticas.ocupacionPorcentaje}% ocupación</p>
           </CardContent>
         </Card>
 
@@ -84,7 +123,7 @@ export function MesasView() {
             <UtensilsCrossed className="h-4 w-4 text-green-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">{mesasLibres}</div>
+            <div className="text-2xl font-bold text-green-600">{estadisticas.mesasLibres}</div>
             <p className="text-xs text-gray-500 mt-1">Listas para asignar</p>
           </CardContent>
         </Card>
@@ -95,7 +134,7 @@ export function MesasView() {
             <Clock className="h-4 w-4 text-yellow-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-yellow-600">{mesasReservadas}</div>
+            <div className="text-2xl font-bold text-yellow-600">{estadisticas.mesasReservadas}</div>
             <p className="text-xs text-gray-500 mt-1">Próximas reservas</p>
           </CardContent>
         </Card>
@@ -108,10 +147,10 @@ export function MesasView() {
           <CardDescription>Vista general de todas las mesas del restaurante</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {MESAS_DATA.map((mesa) => (
-              <Card key={mesa.id} className="hover:shadow-md transition-shadow">
-                <CardContent className="p-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {mesas.map((mesa) => (
+              <Card key={mesa.id} className="hover:shadow-md transition-shadow flex flex-col">
+                <CardContent className="p-4 flex-1 flex flex-col">
                   <div className="flex items-center justify-between mb-3">
                     <h3 className="text-lg font-bold">Mesa {mesa.numero}</h3>
                     <Badge className={getMesaStatusColor(mesa.estado)}>
@@ -119,11 +158,18 @@ export function MesasView() {
                     </Badge>
                   </div>
 
-                  <div className="space-y-2 mb-4">
+                  <div className="space-y-2 mb-4 flex-1">
                     <p className="text-sm text-gray-600">
                       <Users className="h-4 w-4 inline mr-1" />
                       Capacidad: {mesa.capacidad} personas
                     </p>
+
+                    {mesa.ubicacion && (
+                      <p className="text-sm text-gray-600">
+                        <MapPin className="h-4 w-4 inline mr-1" />
+                        {mesa.ubicacion}
+                      </p>
+                    )}
 
                     {mesa.estado === "ocupada" && (
                       <>
@@ -133,9 +179,9 @@ export function MesasView() {
                         </p>
                         <p className="text-sm text-gray-600">
                           <Clock className="h-4 w-4 inline mr-1" />
-                          Tiempo: {mesa.tiempo}
+                          Tiempo: {mesa.fechaOcupacion ? formatearTiempo(mesa.fechaOcupacion) : mesa.tiempo}
                         </p>
-                        <p className="text-sm font-medium">Mesero: {mesa.mesero}</p>
+                        {mesa.mesero && <p className="text-sm font-medium">Mesero: {mesa.mesero}</p>}
                       </>
                     )}
 
@@ -143,9 +189,9 @@ export function MesasView() {
                       <>
                         <p className="text-sm text-gray-600">
                           <Clock className="h-4 w-4 inline mr-1" />
-                          Reserva: {mesa.tiempo}
+                          Reserva: {mesa.horaReserva}
                         </p>
-                        <p className="text-sm font-medium">Mesero: {mesa.mesero}</p>
+                        {mesa.mesero && <p className="text-sm font-medium">Mesero: {mesa.mesero}</p>}
                       </>
                     )}
 
@@ -157,12 +203,23 @@ export function MesasView() {
                     )}
                   </div>
 
-                  <div className="flex space-x-2">
-                    <Button size="sm" variant="outline" className="flex-1 bg-transparent">
+                  {/* Botones siempre en la parte inferior */}
+                  <div className="flex space-x-2 mt-auto">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="flex-1 bg-transparent"
+                      onClick={() => handleVerMesa(mesa)}
+                    >
                       <Eye className="h-3 w-3 mr-1" />
                       Ver
                     </Button>
-                    <Button size="sm" variant="outline" className="flex-1 bg-transparent">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="flex-1 bg-transparent"
+                      onClick={() => handleEditarMesa(mesa)}
+                    >
                       <Edit className="h-3 w-3 mr-1" />
                       Editar
                     </Button>
@@ -173,6 +230,21 @@ export function MesasView() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Modales */}
+      <MesaDetailModal
+        mesa={selectedMesa}
+        isOpen={isDetailModalOpen}
+        onClose={handleCloseModals}
+        onEdit={handleEditFromDetail}
+      />
+
+      <MesaEditModal
+        mesa={selectedMesa}
+        isOpen={isEditModalOpen}
+        onClose={handleCloseModals}
+        onSuccess={handleSuccessEdit}
+      />
     </div>
   )
 }
