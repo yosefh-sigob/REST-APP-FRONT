@@ -6,11 +6,11 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Users, Search, Plus, Phone, Mail, Calendar, Star } from 'lucide-react'
-import { type Cliente } from "@/interfaces/clientes.interface" // Importamos la interfaz
+import { Users, Search, Plus, Phone, Mail, Calendar, Star } from "lucide-react"
+import type { Cliente } from "@/interfaces/clientes.interface"
 
 interface ClientesViewProps {
-  clientes: Cliente[];
+  clientes: Cliente[]
 }
 
 export function ClientesView({ clientes }: ClientesViewProps) {
@@ -28,6 +28,8 @@ export function ClientesView({ clientes }: ClientesViewProps) {
     (c) => new Date(c.ultimaVisita) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
   ).length
   const gastoPromedio = totalClientes > 0 ? clientes.reduce((acc, c) => acc + c.gastoTotal, 0) / totalClientes : 0
+  const calificacionPromedio =
+    totalClientes > 0 ? clientes.reduce((acc, c) => acc + c.calificacion, 0) / totalClientes : 0
 
   return (
     <div className="space-y-6">
@@ -84,7 +86,7 @@ export function ClientesView({ clientes }: ClientesViewProps) {
             <Star className="h-4 w-4 text-yellow-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-yellow-600">4.75</div>
+            <div className="text-2xl font-bold text-yellow-600">{calificacionPromedio.toFixed(1)}</div>
             <p className="text-xs text-gray-500 mt-1">Satisfacción general</p>
           </CardContent>
         </Card>
