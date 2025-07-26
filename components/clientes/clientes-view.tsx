@@ -6,74 +6,28 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Users, Search, Plus, Phone, Mail, Calendar, Star } from "lucide-react"
+import { Users, Search, Plus, Phone, Mail, Calendar, Star } from 'lucide-react'
+import { type Cliente } from "@/interfaces/clientes.interface" // Importamos la interfaz
 
-const CLIENTES_DATA = [
-  {
-    id: 1,
-    nombre: "Juan Pérez",
-    email: "juan.perez@email.com",
-    telefono: "+52 555 123 4567",
-    fechaRegistro: "2024-01-15",
-    ultimaVisita: "2024-01-20",
-    totalVisitas: 12,
-    gastoTotal: 2450.5,
-    preferencias: ["Vegetariano", "Sin gluten"],
-    calificacion: 4.8,
-  },
-  {
-    id: 2,
-    nombre: "María García",
-    email: "maria.garcia@email.com",
-    telefono: "+52 555 234 5678",
-    fechaRegistro: "2024-01-10",
-    ultimaVisita: "2024-01-19",
-    totalVisitas: 8,
-    gastoTotal: 1680.25,
-    preferencias: ["Vegano"],
-    calificacion: 4.9,
-  },
-  {
-    id: 3,
-    nombre: "Carlos López",
-    email: "carlos.lopez@email.com",
-    telefono: "+52 555 345 6789",
-    fechaRegistro: "2024-01-05",
-    ultimaVisita: "2024-01-18",
-    totalVisitas: 15,
-    gastoTotal: 3200.75,
-    preferencias: ["Carnes", "Picante"],
-    calificacion: 4.7,
-  },
-  {
-    id: 4,
-    nombre: "Ana Martín",
-    email: "ana.martin@email.com",
-    telefono: "+52 555 456 7890",
-    fechaRegistro: "2024-01-12",
-    ultimaVisita: "2024-01-17",
-    totalVisitas: 6,
-    gastoTotal: 980.0,
-    preferencias: ["Mariscos"],
-    calificacion: 4.6,
-  },
-]
+interface ClientesViewProps {
+  clientes: Cliente[];
+}
 
-export function ClientesView() {
+export function ClientesView({ clientes }: ClientesViewProps) {
   const [searchTerm, setSearchTerm] = useState("")
 
-  const filteredClientes = CLIENTES_DATA.filter(
+  const filteredClientes = clientes.filter(
     (cliente) =>
       cliente.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
       cliente.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       cliente.telefono.includes(searchTerm),
   )
 
-  const totalClientes = CLIENTES_DATA.length
-  const clientesActivos = CLIENTES_DATA.filter(
+  const totalClientes = clientes.length
+  const clientesActivos = clientes.filter(
     (c) => new Date(c.ultimaVisita) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
   ).length
-  const gastoPromedio = CLIENTES_DATA.reduce((acc, c) => acc + c.gastoTotal, 0) / totalClientes
+  const gastoPromedio = totalClientes > 0 ? clientes.reduce((acc, c) => acc + c.gastoTotal, 0) / totalClientes : 0
 
   return (
     <div className="space-y-6">
