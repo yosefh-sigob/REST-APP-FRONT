@@ -74,11 +74,9 @@ export function MesasView({ mesas, estadisticas }: MesasViewProps) {
   }
 
   const handleSuccessEdit = () => {
-    // En una implementación real, aquí recargaríamos los datos
-    // Por ahora solo cerramos el modal
     handleCloseModals()
-    // Aquí podrías llamar a una función para refrescar los datos
-    // onRefresh?.()
+    // En una implementación real, aquí recargaríamos los datos
+    window.location.reload()
   }
 
   return (
@@ -151,8 +149,8 @@ export function MesasView({ mesas, estadisticas }: MesasViewProps) {
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {mesas.map((mesa) => (
-              <Card key={mesa.id} className="hover:shadow-md transition-shadow">
-                <CardContent className="p-4">
+              <Card key={mesa.id} className="hover:shadow-md transition-shadow flex flex-col">
+                <CardContent className="p-4 flex-1 flex flex-col">
                   <div className="flex items-center justify-between mb-3">
                     <h3 className="text-lg font-bold">Mesa {mesa.numero}</h3>
                     <Badge className={getMesaStatusColor(mesa.estado)}>
@@ -160,7 +158,7 @@ export function MesasView({ mesas, estadisticas }: MesasViewProps) {
                     </Badge>
                   </div>
 
-                  <div className="space-y-2 mb-4">
+                  <div className="space-y-2 mb-4 flex-1">
                     <p className="text-sm text-gray-600">
                       <Users className="h-4 w-4 inline mr-1" />
                       Capacidad: {mesa.capacidad} personas
@@ -205,7 +203,8 @@ export function MesasView({ mesas, estadisticas }: MesasViewProps) {
                     )}
                   </div>
 
-                  <div className="flex space-x-2">
+                  {/* Botones siempre en la parte inferior */}
+                  <div className="flex space-x-2 mt-auto">
                     <Button
                       size="sm"
                       variant="outline"

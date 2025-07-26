@@ -1,11 +1,10 @@
 "use client"
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { Users, Clock, MapPin, User, FileText, Calendar } from "lucide-react"
+import { Users, MapPin, Clock, User, FileText, Edit, Calendar } from "lucide-react"
 import type { Mesa } from "@/interfaces/mesas.interface"
 
 interface MesaDetailModalProps {
@@ -30,9 +29,17 @@ function getMesaStatusColor(estado: string) {
   }
 }
 
-function formatearTiempo(fechaOcupacion?: string): string {
-  if (!fechaOcupacion) return ""
+function formatearFecha(fecha: string): string {
+  return new Date(fecha).toLocaleString("es-ES", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  })
+}
 
+function calcularTiempoOcupacion(fechaOcupacion: string): string {
   const ahora = new Date()
   const ocupacion = new Date(fechaOcupacion)
   const diferencia = ahora.getTime() - ocupacion.getTime()
@@ -53,9 +60,9 @@ export function MesaDetailModal({ mesa, isOpen, onClose, onEdit }: MesaDetailMod
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-3">
+          <DialogTitle className="flex items-center justify-between">
             <span>Mesa {mesa.numero}</span>
             <Badge className={getMesaStatusColor(mesa.estado)}>
               {mesa.estado.charAt(0).toUpperCase() + mesa.estado.slice(1)}
@@ -63,119 +70,120 @@ export function MesaDetailModal({ mesa, isOpen, onClose, onEdit }: MesaDetailMod
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-6">
-          {/* Información Básica */}
-          <Card>
-            <CardContent className="p-4">
-              <h3 className="font-semibold mb-3">Información Básica</h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="flex items-center gap-2">
-                  <Users className="h-4 w-4 text-gray-500" />
-                  <span className="text-sm">Capacidad: {mesa.capacidad} personas</span>
-                </div>
-                {mesa.ubicacion && (
-                  <div className="flex items-center gap-2">
-                    <MapPin className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm">{mesa.ubicacion}</span>
-                  </div>
-                )}
+        <div className="space-y-4">
+          {/* Información básica */}
+          <div className="space-y-3">
+            <div className="flex items-center gap-2 text-sm">
+              <Users className="h-4 w-4 text-gray-500" />
+              <span>Capacidad: {mesa.capacidad} personas</span>
+            </div>
+
+            {mesa.ubicacion && (
+              <div className="flex items-center gap-2 text-sm">
+                <MapPin className="h-4 w-4 text-gray-500" />
+                <span>{mesa.ubicacion}</span>
               </div>
-            </CardContent>
-          </Card>
-
-          {/* Estado Actual */}
-          <Card>
-            <CardContent className="p-4">
-              <h3 className="font-semibold mb-3">Estado Actual</h3>
-              <div className="space-y-3">
-                {mesa.estado === "ocupada" && (
-                  <>
-                    <div className="flex items-center gap-2">
-                      <Users className="h-4 w-4 text-gray-500" />
-                      <span className="text-sm">
-                        Clientes: {mesa.clientes}/{mesa.capacidad}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Clock className="h-4 w-4 text-gray-500" />
-                      <span className="text-sm">
-                        Tiempo ocupada: {mesa.fechaOcupacion ? formatearTiempo(mesa.fechaOcupacion) : mesa.tiempo}
-                      </span>
-                    </div>
-                    {mesa.mesero && (
-                      <div className="flex items-center gap-2">
-                        <User className="h-4 w-4 text-gray-500" />
-                        <span className="text-sm">Mesero: {mesa.mesero}</span>
-                      </div>
-                    )}
-                    {mesa.fechaOcupacion && (
-                      <div className="flex items-center gap-2">
-                        <Calendar className="h-4 w-4 text-gray-500" />
-                        <span className="text-sm">Ocupada desde: {new Date(mesa.fechaOcupacion).toLocaleString()}</span>
-                      </div>
-                    )}
-                  </>
-                )}
-
-                {mesa.estado === "reservada" && (
-                  <>
-                    <div className="flex items-center gap-2">
-                      <Clock className="h-4 w-4 text-gray-500" />
-                      <span className="text-sm">Hora de reserva: {mesa.horaReserva}</span>
-                    </div>
-                    {mesa.mesero && (
-                      <div className="flex items-center gap-2">
-                        <User className="h-4 w-4 text-gray-500" />
-                        <span className="text-sm">Mesero asignado: {mesa.mesero}</span>
-                      </div>
-                    )}
-                  </>
-                )}
-
-                {mesa.estado === "limpieza" && (
-                  <div className="flex items-center gap-2">
-                    <Clock className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm">Tiempo restante: {mesa.tiempo}</span>
-                  </div>
-                )}
-
-                {mesa.estado === "libre" && (
-                  <div className="flex items-center gap-2 text-green-600">
-                    <Users className="h-4 w-4" />
-                    <span className="text-sm font-medium">Mesa disponible para asignar</span>
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Observaciones */}
-          {mesa.observaciones && (
-            <Card>
-              <CardContent className="p-4">
-                <h3 className="font-semibold mb-3 flex items-center gap-2">
-                  <FileText className="h-4 w-4" />
-                  Observaciones
-                </h3>
-                <p className="text-sm text-gray-600">{mesa.observaciones}</p>
-              </CardContent>
-            </Card>
-          )}
+            )}
+          </div>
 
           <Separator />
 
-          {/* Acciones */}
-          <div className="flex justify-end gap-3">
-            <Button variant="outline" onClick={onClose}>
-              Cerrar
-            </Button>
-            <Button
-              onClick={() => onEdit(mesa)}
-              className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700"
-            >
-              Editar Mesa
-            </Button>
+          {/* Información del estado actual */}
+          <div className="space-y-3">
+            <h4 className="font-medium text-sm text-gray-700">Estado Actual</h4>
+
+            {mesa.estado === "ocupada" && (
+              <>
+                <div className="flex items-center gap-2 text-sm">
+                  <Users className="h-4 w-4 text-gray-500" />
+                  <span>
+                    Clientes: {mesa.clientes}/{mesa.capacidad}
+                  </span>
+                </div>
+
+                {mesa.fechaOcupacion && (
+                  <div className="flex items-center gap-2 text-sm">
+                    <Clock className="h-4 w-4 text-gray-500" />
+                    <span>Tiempo ocupada: {calcularTiempoOcupacion(mesa.fechaOcupacion)}</span>
+                  </div>
+                )}
+
+                {mesa.mesero && (
+                  <div className="flex items-center gap-2 text-sm">
+                    <User className="h-4 w-4 text-gray-500" />
+                    <span>Mesero: {mesa.mesero}</span>
+                  </div>
+                )}
+              </>
+            )}
+
+            {mesa.estado === "reservada" && (
+              <>
+                {mesa.horaReserva && (
+                  <div className="flex items-center gap-2 text-sm">
+                    <Clock className="h-4 w-4 text-gray-500" />
+                    <span>Hora de reserva: {mesa.horaReserva}</span>
+                  </div>
+                )}
+
+                {mesa.mesero && (
+                  <div className="flex items-center gap-2 text-sm">
+                    <User className="h-4 w-4 text-gray-500" />
+                    <span>Mesero asignado: {mesa.mesero}</span>
+                  </div>
+                )}
+              </>
+            )}
+
+            {mesa.estado === "limpieza" && mesa.tiempo && (
+              <div className="flex items-center gap-2 text-sm">
+                <Clock className="h-4 w-4 text-gray-500" />
+                <span>Tiempo restante: {mesa.tiempo}</span>
+              </div>
+            )}
+
+            {mesa.estado === "libre" && <div className="text-sm text-green-600">Mesa disponible para asignar</div>}
           </div>
+
+          {/* Observaciones */}
+          {mesa.observaciones && (
+            <>
+              <Separator />
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <FileText className="h-4 w-4 text-gray-500" />
+                  <h4 className="font-medium text-sm text-gray-700">Observaciones</h4>
+                </div>
+                <p className="text-sm text-gray-600 bg-gray-50 p-2 rounded">{mesa.observaciones}</p>
+              </div>
+            </>
+          )}
+
+          {/* Información de fechas */}
+          <Separator />
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <Calendar className="h-4 w-4 text-gray-500" />
+              <h4 className="font-medium text-sm text-gray-700">Información</h4>
+            </div>
+
+            <div className="text-xs text-gray-500 space-y-1">
+              <div>Creada: {formatearFecha(mesa.fechaCreacion)}</div>
+              <div>Última actualización: {formatearFecha(mesa.fechaActualizacion)}</div>
+              {mesa.fechaOcupacion && <div>Ocupada desde: {formatearFecha(mesa.fechaOcupacion)}</div>}
+            </div>
+          </div>
+        </div>
+
+        {/* Botones de acción */}
+        <div className="flex gap-2 pt-4">
+          <Button variant="outline" onClick={() => onEdit(mesa)} className="flex-1">
+            <Edit className="h-4 w-4 mr-2" />
+            Editar
+          </Button>
+          <Button variant="outline" onClick={onClose} className="flex-1 bg-transparent">
+            Cerrar
+          </Button>
         </div>
       </DialogContent>
     </Dialog>

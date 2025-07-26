@@ -1,192 +1,168 @@
 "use server"
 
-import type { Mesa, EstadisticasMesas } from "@/interfaces/mesas.interface"
+import { revalidatePath } from "next/cache"
+import type { Mesa, EstadisticasMesas, ActualizarMesaData } from "@/interfaces/mesas.interface"
+import { actualizarMesaSchema } from "@/schemas/mesas.schemas"
 import mesasData from "@/data/mesas.json"
 
-// Simular delay de API
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+// Simulamos una base de datos en memoria
+const mesas: Mesa[] = mesasData as Mesa[]
 
 export async function obtenerMesas(): Promise<Mesa[]> {
-  await delay(500) // Simular latencia de API
+  // Simulamos delay de API
+  await new Promise((resolve) => setTimeout(resolve, 100))
 
-  try {
-    return mesasData as Mesa[]
-  } catch (error) {
-    console.error("Error al obtener mesas:", error)
-    throw new Error("No se pudieron cargar las mesas")
-  }
+  return mesas.filter((mesa) => mesa.activa).sort((a, b) => a.numero - b.numero)
 }
 
 export async function obtenerMesaPorId(id: string): Promise<Mesa | null> {
-  await delay(300)
+  await new Promise((resolve) => setTimeout(resolve, 50))
 
-  try {
-    const mesa = mesasData.find((m) => m.id === id)
-    return (mesa as Mesa) || null
-  } catch (error) {
-    console.error("Error al obtener mesa:", error)
-    throw new Error("No se pudo cargar la mesa")
-  }
+  const mesa = mesas.find((m) => m.id === id && m.activa)
+  return mesa || null
 }
 
 export async function obtenerEstadisticasMesas(): Promise<EstadisticasMesas> {
-  await delay(200)
+  await new Promise((resolve) => setTimeout(resolve, 50))
 
+  const mesasActivas = mesas.filter((mesa) => mesa.activa)
+  const totalMesas = mesasActivas.length
+  const mesasOcupadas = mesasActivas.filter((mesa) => mesa.estado === "ocupada").length
+  const mesasLibres = mesasActivas.filter((mesa) => mesa.estado === "libre").length
+  const mesasReservadas = mesasActivas.filter((mesa) => mesa.estado === "reservada").length
+  const mesasLimpieza = mesasActivas.filter((mesa) => mesa.estado === "limpieza").length
+  const capacidadTotal = mesasActivas.reduce((total, mesa) => total + mesa.capacidad, 0)
+  const ocupacionPorcentaje = totalMesas > 0 ? Math.round((mesasOcupadas / totalMesas) * 100) : 0
+
+  return {
+    totalMesas,
+    mesasOcupadas,
+    mesasLibres,
+    mesasReservadas,
+    mesasLimpieza,
+    capacidadTotal,
+    ocupacionPorcentaje,
+  }
+}
+
+export async function actualizarMesa(
+  id: string,
+  data: ActualizarMesaData,
+): Promise<{ success: boolean; message: string; mesa?: Mesa }> {
   try {
-    const mesas = mesasData as Mesa[]
-    const totalMesas = mesas.length
-    const mesasOcupadas = mesas.filter((m) => m.estado === "ocupada").length
-    const mesasLibres = mesas.filter((m) => m.estado === "libre").length
-    const mesasReservadas = mesas.filter((m) => m.estado === "reservada").length
-    const mesasLimpieza = mesas.filter((m) => m.estado === "limpieza").length
-    const capacidadTotal = mesas.reduce((acc, mesa) => acc + mesa.capacidad, 0)
-    const ocupacionPorcentaje = Math.round((mesasOcupadas / totalMesas) * 100)
+    // Validar datos
+    const validatedData = actualizarMesaSchema.parse(data)
+
+    await new Promise((resolve) => setTimeout(resolve, 200))
+
+    const mesaIndex = mesas.findIndex((m) => m.id === id && m.activa)
+    if (mesaIndex === -1) {
+      return { success: false, message: "Mesa no encontrada" }
+    }
+
+    const mesa = mesas[mesaIndex]
+
+    // Validaciones de negocio
+    if (validatedData.clientes && validatedData.clientes > mesa.capacidad) {
+      return { success: false, message: `La mesa solo tiene capacidad para ${mesa.capacidad} personas` }
+    }
+
+    // Actualizar mesa
+    const mesaActualizada: Mesa = {
+      ...mesa,
+      ...validatedData,
+      fechaActualizacion: new Date().toISOString(),
+    }
+
+    // Lógica específica por estado
+    if (validatedData.estado === "ocupada") {
+      mesaActualizada.fechaOcupacion = new Date().toISOString()
+      mesaActualizada.horaReserva = undefined
+    } else if (validatedData.estado === "libre") {
+      mesaActualizada.clientes = 0
+      mesaActualizada.mesero = undefined
+      mesaActualizada.fechaOcupacion = undefined
+      mesaActualizada.horaReserva = undefined
+    } else if (validatedData.estado === "limpieza") {
+      mesaActualizada.clientes = 0
+      mesaActualizada.mesero = undefined
+      mesaActualizada.fechaOcupacion = undefined
+      mesaActualizada.tiempo = "10 min"
+    }
+
+    mesas[mesaIndex] = mesaActualizada
+
+    revalidatePath("/mesas")
 
     return {
-      totalMesas,
-      mesasOcupadas,
-      mesasLibres,
-      mesasReservadas,
-      mesasLimpieza,
-      capacidadTotal,
-      ocupacionPorcentaje,
+      success: true,
+      message: "Mesa actualizada correctamente",
+      mesa: mesaActualizada,
     }
-  } catch (error) {
-    console.error("Error al obtener estadísticas:", error)
-    throw new Error("No se pudieron cargar las estadísticas")
-  }
-}
-
-export async function actualizarEstadoMesa(id: string, nuevoEstado: Mesa["estado"]): Promise<Mesa> {
-  await delay(800)
-
-  try {
-    // En una implementación real, aquí haríamos la llamada a la API
-    const mesa = mesasData.find((m) => m.id === id) as Mesa
-    if (!mesa) {
-      throw new Error("Mesa no encontrada")
-    }
-
-    // Simular actualización
-    const mesaActualizada = {
-      ...mesa,
-      estado: nuevoEstado,
-      // Actualizar campos según el estado
-      ...(nuevoEstado === "libre" && {
-        clientes: 0,
-        mesero: undefined,
-        tiempo: undefined,
-        fechaOcupacion: undefined,
-      }),
-      ...(nuevoEstado === "ocupada" && {
-        fechaOcupacion: new Date().toISOString(),
-      }),
-    }
-
-    return mesaActualizada
   } catch (error) {
     console.error("Error al actualizar mesa:", error)
-    throw new Error("No se pudo actualizar el estado de la mesa")
+    return { success: false, message: "Error al actualizar la mesa" }
   }
 }
 
-export async function actualizarMesaCompleta(id: string, datos: Partial<Mesa>): Promise<Mesa> {
-  await delay(1000)
-
-  try {
-    const mesa = mesasData.find((m) => m.id === id) as Mesa
-    if (!mesa) {
-      throw new Error("Mesa no encontrada")
-    }
-
-    // Simular actualización completa
-    const mesaActualizada = {
-      ...mesa,
-      ...datos,
-      // Mantener campos que no se deben cambiar
-      id: mesa.id,
-      numero: mesa.numero,
-      capacidad: mesa.capacidad,
-    }
-
-    return mesaActualizada
-  } catch (error) {
-    console.error("Error al actualizar mesa:", error)
-    throw new Error("No se pudo actualizar la mesa")
-  }
+export async function ocuparMesa(
+  id: string,
+  clientes: number,
+  mesero: string,
+  observaciones?: string,
+): Promise<{ success: boolean; message: string }> {
+  return actualizarMesa(id, {
+    estado: "ocupada",
+    clientes,
+    mesero,
+    observaciones,
+  })
 }
 
-export async function asignarMesero(mesaId: string, mesero: string): Promise<Mesa> {
-  await delay(600)
+export async function liberarMesa(id: string): Promise<{ success: boolean; message: string }> {
+  return actualizarMesa(id, {
+    estado: "libre",
+    clientes: 0,
+    observaciones: "Mesa liberada",
+  })
+}
 
+export async function asignarMesero(id: string, mesero: string): Promise<{ success: boolean; message: string }> {
   try {
-    const mesa = mesasData.find((m) => m.id === mesaId) as Mesa
-    if (!mesa) {
-      throw new Error("Mesa no encontrada")
+    await new Promise((resolve) => setTimeout(resolve, 100))
+
+    const mesaIndex = mesas.findIndex((m) => m.id === id && m.activa)
+    if (mesaIndex === -1) {
+      return { success: false, message: "Mesa no encontrada" }
     }
 
-    const mesaActualizada = { ...mesa, mesero }
+    mesas[mesaIndex] = {
+      ...mesas[mesaIndex],
+      mesero,
+      fechaActualizacion: new Date().toISOString(),
+    }
 
-    return mesaActualizada
+    revalidatePath("/mesas")
+
+    return { success: true, message: "Mesero asignado correctamente" }
   } catch (error) {
     console.error("Error al asignar mesero:", error)
-    throw new Error("No se pudo asignar el mesero")
+    return { success: false, message: "Error al asignar mesero" }
   }
 }
 
-export async function liberarMesa(mesaId: string): Promise<Mesa> {
-  await delay(700)
-
-  try {
-    const mesa = mesasData.find((m) => m.id === mesaId) as Mesa
-    if (!mesa) {
-      throw new Error("Mesa no encontrada")
-    }
-
-    const mesaLiberada = {
-      ...mesa,
-      estado: "libre" as const,
-      clientes: 0,
-      tiempo: undefined,
-      mesero: undefined,
-      fechaOcupacion: undefined,
-    }
-
-    return mesaLiberada
-  } catch (error) {
-    console.error("Error al liberar mesa:", error)
-    throw new Error("No se pudo liberar la mesa")
-  }
-}
-
-export async function ocuparMesa(mesaId: string, clientes: number, mesero?: string): Promise<Mesa> {
-  await delay(800)
-
-  try {
-    const mesa = mesasData.find((m) => m.id === mesaId) as Mesa
-    if (!mesa) {
-      throw new Error("Mesa no encontrada")
-    }
-
-    if (mesa.estado !== "libre" && mesa.estado !== "reservada") {
-      throw new Error("La mesa no está disponible")
-    }
-
-    if (clientes > mesa.capacidad) {
-      throw new Error("El número de clientes excede la capacidad de la mesa")
-    }
-
-    const mesaOcupada = {
-      ...mesa,
-      estado: "ocupada" as const,
-      clientes,
-      mesero,
-      fechaOcupacion: new Date().toISOString(),
-    }
-
-    return mesaOcupada
-  } catch (error) {
-    console.error("Error al ocupar mesa:", error)
-    throw new Error("No se pudo ocupar la mesa")
-  }
+export async function obtenerMeseros(): Promise<string[]> {
+  // Lista de meseros disponibles (en una app real vendría de la base de datos)
+  return [
+    "Juan Pérez",
+    "María García",
+    "Carlos López",
+    "Ana Martín",
+    "Luis Rodríguez",
+    "Sofia Hernández",
+    "Diego Morales",
+    "Carmen Ruiz",
+    "Roberto Silva",
+    "Elena Torres",
+  ]
 }

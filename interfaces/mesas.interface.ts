@@ -1,15 +1,20 @@
+export type EstadoMesa = "libre" | "ocupada" | "reservada" | "limpieza"
+
 export interface Mesa {
   id: string
   numero: number
   capacidad: number
-  estado: "libre" | "ocupada" | "reservada" | "limpieza"
-  clientes?: number
-  tiempo?: string
-  mesero?: string
+  estado: EstadoMesa
   ubicacion?: string
-  observaciones?: string
+  clientes?: number
+  mesero?: string
   fechaOcupacion?: string
   horaReserva?: string
+  tiempo?: string
+  observaciones?: string
+  activa: boolean
+  fechaCreacion: string
+  fechaActualizacion: string
 }
 
 export interface EstadisticasMesas {
@@ -20,4 +25,11 @@ export interface EstadisticasMesas {
   mesasLimpieza: number
   capacidadTotal: number
   ocupacionPorcentaje: number
+}
+
+export interface ActualizarMesaData {
+  estado?: EstadoMesa
+  clientes?: number
+  mesero?: string
+  observaciones?: string
 }
