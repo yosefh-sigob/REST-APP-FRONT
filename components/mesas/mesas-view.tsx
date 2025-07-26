@@ -1,10 +1,13 @@
 "use client"
 
+import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { UtensilsCrossed, Users, Clock, Plus, Eye, Edit, MapPin } from "lucide-react"
 import type { Mesa, EstadisticasMesas } from "@/interfaces/mesas.interface"
+import { MesaDetailModal } from "./mesa-detail-modal"
+import { MesaEditModal } from "./mesa-edit-modal"
 
 interface MesasViewProps {
   mesas: Mesa[]
@@ -45,6 +48,39 @@ function formatearTiempo(fechaOcupacion?: string): string {
 }
 
 export function MesasView({ mesas, estadisticas }: MesasViewProps) {
+  const [selectedMesa, setSelectedMesa] = useState<Mesa | null>(null)
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+
+  const handleVerMesa = (mesa: Mesa) => {
+    setSelectedMesa(mesa)
+    setIsDetailModalOpen(true)
+  }
+
+  const handleEditarMesa = (mesa: Mesa) => {
+    setSelectedMesa(mesa)
+    setIsEditModalOpen(true)
+  }
+
+  const handleEditFromDetail = (mesa: Mesa) => {
+    setIsDetailModalOpen(false)
+    setIsEditModalOpen(true)
+  }
+
+  const handleCloseModals = () => {
+    setIsDetailModalOpen(false)
+    setIsEditModalOpen(false)
+    setSelectedMesa(null)
+  }
+
+  const handleSuccessEdit = () => {
+    // En una implementación real, aquí recargaríamos los datos
+    // Por ahora solo cerramos el modal
+    handleCloseModals()
+    // Aquí podrías llamar a una función para refrescar los datos
+    // onRefresh?.()
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -158,7 +194,6 @@ export function MesasView({ mesas, estadisticas }: MesasViewProps) {
                           Reserva: {mesa.horaReserva}
                         </p>
                         {mesa.mesero && <p className="text-sm font-medium">Mesero: {mesa.mesero}</p>}
-                        {mesa.observaciones && <p className="text-xs text-gray-500 italic">{mesa.observaciones}</p>}
                       </>
                     )}
 
@@ -171,11 +206,21 @@ export function MesasView({ mesas, estadisticas }: MesasViewProps) {
                   </div>
 
                   <div className="flex space-x-2">
-                    <Button size="sm" variant="outline" className="flex-1 bg-transparent">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="flex-1 bg-transparent"
+                      onClick={() => handleVerMesa(mesa)}
+                    >
                       <Eye className="h-3 w-3 mr-1" />
                       Ver
                     </Button>
-                    <Button size="sm" variant="outline" className="flex-1 bg-transparent">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="flex-1 bg-transparent"
+                      onClick={() => handleEditarMesa(mesa)}
+                    >
                       <Edit className="h-3 w-3 mr-1" />
                       Editar
                     </Button>
@@ -186,6 +231,21 @@ export function MesasView({ mesas, estadisticas }: MesasViewProps) {
           </div>
         </CardContent>
       </Card>
+
+      {/* Modales */}
+      <MesaDetailModal
+        mesa={selectedMesa}
+        isOpen={isDetailModalOpen}
+        onClose={handleCloseModals}
+        onEdit={handleEditFromDetail}
+      />
+
+      <MesaEditModal
+        mesa={selectedMesa}
+        isOpen={isEditModalOpen}
+        onClose={handleCloseModals}
+        onSuccess={handleSuccessEdit}
+      />
     </div>
   )
 }

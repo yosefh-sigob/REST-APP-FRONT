@@ -7,8 +7,9 @@
     "clientes": 4,
     "tiempo": "45 min",
     "mesero": "Juan Pérez",
-    "ubicacion": "Terraza",
-    "fechaOcupacion": "2024-01-25T14:30:00Z"
+    "ubicacion": "Terraza Principal",
+    "fechaOcupacion": "2024-01-15T14:30:00.000Z",
+    "observaciones": "Cliente celebrando cumpleaños"
   },
   {
     "id": "mesa_002",
@@ -16,7 +17,8 @@
     "capacidad": 2,
     "estado": "libre",
     "clientes": 0,
-    "ubicacion": "Interior"
+    "ubicacion": "Salón Interior",
+    "observaciones": ""
   },
   {
     "id": "mesa_003",
@@ -27,7 +29,8 @@
     "tiempo": "30 min",
     "mesero": "María García",
     "ubicacion": "Salón Principal",
-    "fechaOcupacion": "2024-01-25T15:00:00Z"
+    "fechaOcupacion": "2024-01-15T15:00:00.000Z",
+    "observaciones": "Mesa familiar"
   },
   {
     "id": "mesa_004",
@@ -38,7 +41,7 @@
     "horaReserva": "19:30",
     "mesero": "Carlos López",
     "ubicacion": "Ventana",
-    "observaciones": "Cumpleaños - decoración especial"
+    "observaciones": "Reserva para cena romántica"
   },
   {
     "id": "mesa_005",
@@ -46,7 +49,8 @@
     "capacidad": 2,
     "estado": "libre",
     "clientes": 0,
-    "ubicacion": "Interior"
+    "ubicacion": "Barra",
+    "observaciones": ""
   },
   {
     "id": "mesa_006",
@@ -56,8 +60,9 @@
     "clientes": 8,
     "tiempo": "1h 15min",
     "mesero": "Ana Martín",
-    "ubicacion": "Salón VIP",
-    "fechaOcupacion": "2024-01-25T13:15:00Z"
+    "ubicacion": "Salón Privado",
+    "fechaOcupacion": "2024-01-15T13:15:00.000Z",
+    "observaciones": "Reunión de negocios"
   },
   {
     "id": "mesa_007",
@@ -66,7 +71,8 @@
     "estado": "limpieza",
     "clientes": 0,
     "tiempo": "5 min",
-    "ubicacion": "Terraza"
+    "ubicacion": "Terraza",
+    "observaciones": "Limpieza profunda"
   },
   {
     "id": "mesa_008",
@@ -74,7 +80,8 @@
     "capacidad": 2,
     "estado": "libre",
     "clientes": 0,
-    "ubicacion": "Interior"
+    "ubicacion": "Salón Interior",
+    "observaciones": ""
   },
   {
     "id": "mesa_009",
@@ -83,9 +90,9 @@
     "estado": "reservada",
     "clientes": 6,
     "horaReserva": "20:00",
-    "mesero": "Diego Ruiz",
-    "ubicacion": "Salón Principal",
-    "observaciones": "Cena de empresa"
+    "mesero": "Luis Rodríguez",
+    "ubicacion": "Terraza VIP",
+    "observaciones": "Celebración de aniversario"
   },
   {
     "id": "mesa_010",
@@ -93,10 +100,11 @@
     "capacidad": 4,
     "estado": "ocupada",
     "clientes": 3,
-    "tiempo": "20 min",
-    "mesero": "Laura Sánchez",
-    "ubicacion": "Ventana",
-    "fechaOcupacion": "2024-01-25T15:40:00Z"
+    "tiempo": "25 min",
+    "mesero": "Carmen Jiménez",
+    "ubicacion": "Salón Principal",
+    "fechaOcupacion": "2024-01-15T15:05:00.000Z",
+    "observaciones": ""
   },
   {
     "id": "mesa_011",
@@ -104,15 +112,18 @@
     "capacidad": 2,
     "estado": "libre",
     "clientes": 0,
-    "ubicacion": "Interior"
+    "ubicacion": "Ventana",
+    "observaciones": ""
   },
   {
     "id": "mesa_012",
     "numero": 12,
-    "capacidad": 8,
-    "estado": "limpieza",
-    "clientes": 0,
-    "tiempo": "10 min",
-    "ubicacion": "Salón VIP"
+    "capacidad": 10,
+    "estado": "reservada",
+    "clientes": 10,
+    "horaReserva": "21:00",
+    "mesero": "Pedro Sánchez",
+    "ubicacion": "Salón de Eventos",
+    "observaciones": "Evento corporativo"
   }
 ]

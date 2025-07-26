@@ -68,12 +68,51 @@ export async function actualizarEstadoMesa(id: string, nuevoEstado: Mesa["estado
     }
 
     // Simular actualización
-    const mesaActualizada = { ...mesa, estado: nuevoEstado }
+    const mesaActualizada = {
+      ...mesa,
+      estado: nuevoEstado,
+      // Actualizar campos según el estado
+      ...(nuevoEstado === "libre" && {
+        clientes: 0,
+        mesero: undefined,
+        tiempo: undefined,
+        fechaOcupacion: undefined,
+      }),
+      ...(nuevoEstado === "ocupada" && {
+        fechaOcupacion: new Date().toISOString(),
+      }),
+    }
 
     return mesaActualizada
   } catch (error) {
     console.error("Error al actualizar mesa:", error)
     throw new Error("No se pudo actualizar el estado de la mesa")
+  }
+}
+
+export async function actualizarMesaCompleta(id: string, datos: Partial<Mesa>): Promise<Mesa> {
+  await delay(1000)
+
+  try {
+    const mesa = mesasData.find((m) => m.id === id) as Mesa
+    if (!mesa) {
+      throw new Error("Mesa no encontrada")
+    }
+
+    // Simular actualización completa
+    const mesaActualizada = {
+      ...mesa,
+      ...datos,
+      // Mantener campos que no se deben cambiar
+      id: mesa.id,
+      numero: mesa.numero,
+      capacidad: mesa.capacidad,
+    }
+
+    return mesaActualizada
+  } catch (error) {
+    console.error("Error al actualizar mesa:", error)
+    throw new Error("No se pudo actualizar la mesa")
   }
 }
 
@@ -117,5 +156,37 @@ export async function liberarMesa(mesaId: string): Promise<Mesa> {
   } catch (error) {
     console.error("Error al liberar mesa:", error)
     throw new Error("No se pudo liberar la mesa")
+  }
+}
+
+export async function ocuparMesa(mesaId: string, clientes: number, mesero?: string): Promise<Mesa> {
+  await delay(800)
+
+  try {
+    const mesa = mesasData.find((m) => m.id === mesaId) as Mesa
+    if (!mesa) {
+      throw new Error("Mesa no encontrada")
+    }
+
+    if (mesa.estado !== "libre" && mesa.estado !== "reservada") {
+      throw new Error("La mesa no está disponible")
+    }
+
+    if (clientes > mesa.capacidad) {
+      throw new Error("El número de clientes excede la capacidad de la mesa")
+    }
+
+    const mesaOcupada = {
+      ...mesa,
+      estado: "ocupada" as const,
+      clientes,
+      mesero,
+      fechaOcupacion: new Date().toISOString(),
+    }
+
+    return mesaOcupada
+  } catch (error) {
+    console.error("Error al ocupar mesa:", error)
+    throw new Error("No se pudo ocupar la mesa")
   }
 }
