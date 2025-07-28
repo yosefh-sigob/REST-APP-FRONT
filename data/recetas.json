@@ -1,57 +1,58 @@
 [
   {
-    "id": "rec_01HQZX1234567890ABCDEF",
+    "id": "REC001",
     "nombre": "Hamburguesa Clásica",
-    "descripcion": "Hamburguesa tradicional con carne de res, lechuga, tomate y cebolla",
     "categoria": "Platos Principales",
+    "descripcion": "Hamburguesa con carne de res, lechuga, tomate, cebolla y queso",
     "tiempoPreparacion": 15,
-    "dificultad": "Fácil",
     "porciones": 1,
-    "costo": 8500,
-    "precio": 18000,
-    "imagen": "/placeholder.svg?height=200&width=300&text=Hamburguesa",
+    "dificultad": "Fácil",
+    "costo": 5.5,
+    "precio": 12.0,
+    "estado": "Activa",
+    "imagen": "/placeholder.svg?height=200&width=300",
     "ingredientes": [
       {
-        "id": "ing_01",
-        "nombre": "Pan de hamburguesa",
+        "id": "ING001",
+        "nombre": "Carne molida de res",
+        "cantidad": 150,
+        "unidad": "gr",
+        "costo": 2.5
+      },
+      {
+        "id": "ING002",
+        "nombre": "Pan para hamburguesa",
         "cantidad": 1,
         "unidad": "unidad",
-        "costo": 800
+        "costo": 0.8
       },
       {
-        "id": "ing_02",
-        "nombre": "Carne de res molida",
-        "cantidad": 150,
-        "unidad": "gramos",
-        "costo": 4500
-      },
-      {
-        "id": "ing_03",
-        "nombre": "Lechuga",
-        "cantidad": 2,
-        "unidad": "hojas",
-        "costo": 200
-      },
-      {
-        "id": "ing_04",
-        "nombre": "Tomate",
-        "cantidad": 3,
-        "unidad": "rodajas",
-        "costo": 300
-      },
-      {
-        "id": "ing_05",
-        "nombre": "Cebolla",
-        "cantidad": 2,
-        "unidad": "rodajas",
-        "costo": 150
-      },
-      {
-        "id": "ing_06",
+        "id": "ING003",
         "nombre": "Queso cheddar",
-        "cantidad": 1,
-        "unidad": "loncha",
-        "costo": 600
+        "cantidad": 30,
+        "unidad": "gr",
+        "costo": 0.6
+      },
+      {
+        "id": "ING004",
+        "nombre": "Lechuga",
+        "cantidad": 20,
+        "unidad": "gr",
+        "costo": 0.3
+      },
+      {
+        "id": "ING005",
+        "nombre": "Tomate",
+        "cantidad": 40,
+        "unidad": "gr",
+        "costo": 0.4
+      },
+      {
+        "id": "ING006",
+        "nombre": "Cebolla",
+        "cantidad": 15,
+        "unidad": "gr",
+        "costo": 0.2
       }
     ],
     "instrucciones": [
@@ -69,70 +70,169 @@
       },
       {
         "paso": 4,
-        "descripcion": "Tostar el pan ligeramente"
+        "descripcion": "Agregar el queso en el último minuto de cocción"
       },
       {
         "paso": 5,
-        "descripcion": "Armar la hamburguesa: pan, lechuga, tomate, carne, queso, cebolla y pan superior"
+        "descripcion": "Tostar ligeramente el pan"
+      },
+      {
+        "paso": 6,
+        "descripcion": "Montar la hamburguesa con lechuga, tomate, cebolla y la carne"
       }
     ],
-    "notas": "Servir inmediatamente mientras esté caliente. Acompañar con papas fritas.",
-    "activa": true,
-    "fechaCreacion": "2024-01-15T10:30:00Z",
-    "fechaActualizacion": "2024-01-20T14:45:00Z"
+    "notas": "Asegurar que la carne alcance temperatura interna de 70°C",
+    "fechaCreacion": "2024-01-15T10:00:00.000Z",
+    "fechaActualizacion": "2024-01-20T14:30:00.000Z",
+    "creadoPor": "Chef María González"
   },
   {
-    "id": "rec_02HQZX1234567890ABCDEF",
-    "nombre": "Pasta Carbonara",
-    "descripcion": "Pasta italiana con salsa cremosa de huevo, queso parmesano y panceta",
+    "id": "REC002",
+    "nombre": "Pollo a la Plancha",
     "categoria": "Platos Principales",
+    "descripcion": "Pechuga de pollo marinada con hierbas y especias",
     "tiempoPreparacion": 20,
-    "dificultad": "Intermedio",
-    "porciones": 2,
-    "costo": 6800,
-    "precio": 16000,
-    "imagen": "/placeholder.svg?height=200&width=300&text=Carbonara",
+    "porciones": 1,
+    "dificultad": "Fácil",
+    "costo": 4.2,
+    "precio": 10.5,
+    "estado": "Activa",
+    "imagen": "/placeholder.svg?height=200&width=300",
     "ingredientes": [
       {
-        "id": "ing_07",
-        "nombre": "Spaghetti",
+        "id": "ING007",
+        "nombre": "Pechuga de pollo",
         "cantidad": 200,
-        "unidad": "gramos",
-        "costo": 1200
+        "unidad": "gr",
+        "costo": 3.0
       },
       {
-        "id": "ing_08",
-        "nombre": "Panceta",
-        "cantidad": 100,
-        "unidad": "gramos",
-        "costo": 2500
+        "id": "ING008",
+        "nombre": "Aceite de oliva",
+        "cantidad": 15,
+        "unidad": "ml",
+        "costo": 0.3
       },
       {
-        "id": "ing_09",
-        "nombre": "Huevos",
+        "id": "ING009",
+        "nombre": "Limón",
+        "cantidad": 0.5,
+        "unidad": "unidad",
+        "costo": 0.2
+      },
+      {
+        "id": "ING010",
+        "nombre": "Ajo",
         "cantidad": 2,
-        "unidad": "unidades",
-        "costo": 800
+        "unidad": "dientes",
+        "costo": 0.1
       },
       {
-        "id": "ing_10",
-        "nombre": "Queso parmesano",
-        "cantidad": 50,
-        "unidad": "gramos",
-        "costo": 1800
+        "id": "ING011",
+        "nombre": "Romero fresco",
+        "cantidad": 3,
+        "unidad": "gr",
+        "costo": 0.3
       },
       {
-        "id": "ing_11",
-        "nombre": "Pimienta negra",
-        "cantidad": 1,
-        "unidad": "pizca",
-        "costo": 50
+        "id": "ING012",
+        "nombre": "Sal y pimienta",
+        "cantidad": 2,
+        "unidad": "gr",
+        "costo": 0.05
       }
     ],
     "instrucciones": [
       {
         "paso": 1,
-        "descripcion": "Hervir agua con sal y cocinar la pasta al dente"
+        "descripcion": "Marinar el pollo con aceite, limón, ajo picado y romero por 30 minutos"
+      },
+      {
+        "paso": 2,
+        "descripcion": "Precalentar la plancha a fuego medio"
+      },
+      {
+        "paso": 3,
+        "descripcion": "Sazonar el pollo con sal y pimienta"
+      },
+      {
+        "paso": 4,
+        "descripcion": "Cocinar 6-7 minutos por cada lado hasta dorar"
+      },
+      {
+        "paso": 5,
+        "descripcion": "Verificar que esté bien cocido (temperatura interna 75°C)"
+      },
+      {
+        "paso": 6,
+        "descripcion": "Dejar reposar 2 minutos antes de servir"
+      }
+    ],
+    "notas": "No sobrecocinar para mantener la jugosidad",
+    "fechaCreacion": "2024-01-16T09:15:00.000Z",
+    "fechaActualizacion": "2024-01-18T11:45:00.000Z",
+    "creadoPor": "Chef Carlos Ruiz"
+  },
+  {
+    "id": "REC003",
+    "nombre": "Pasta Carbonara",
+    "categoria": "Platos Principales",
+    "descripcion": "Pasta con salsa cremosa de huevo, queso y panceta",
+    "tiempoPreparacion": 25,
+    "porciones": 2,
+    "dificultad": "Intermedio",
+    "costo": 6.8,
+    "precio": 15.0,
+    "estado": "Activa",
+    "imagen": "/placeholder.svg?height=200&width=300",
+    "ingredientes": [
+      {
+        "id": "ING013",
+        "nombre": "Spaghetti",
+        "cantidad": 200,
+        "unidad": "gr",
+        "costo": 1.2
+      },
+      {
+        "id": "ING014",
+        "nombre": "Panceta",
+        "cantidad": 100,
+        "unidad": "gr",
+        "costo": 2.5
+      },
+      {
+        "id": "ING015",
+        "nombre": "Huevos",
+        "cantidad": 3,
+        "unidad": "unidades",
+        "costo": 0.9
+      },
+      {
+        "id": "ING016",
+        "nombre": "Queso parmesano",
+        "cantidad": 80,
+        "unidad": "gr",
+        "costo": 1.8
+      },
+      {
+        "id": "ING017",
+        "nombre": "Pimienta negra",
+        "cantidad": 2,
+        "unidad": "gr",
+        "costo": 0.1
+      },
+      {
+        "id": "ING018",
+        "nombre": "Sal",
+        "cantidad": 5,
+        "unidad": "gr",
+        "costo": 0.05
+      }
+    ],
+    "instrucciones": [
+      {
+        "paso": 1,
+        "descripcion": "Hervir agua con sal para la pasta"
       },
       {
         "paso": 2,
@@ -140,76 +240,95 @@
       },
       {
         "paso": 3,
-        "descripcion": "Batir los huevos con el queso parmesano rallado"
+        "descripcion": "Batir huevos con queso parmesano rallado"
       },
       {
         "paso": 4,
-        "descripcion": "Escurrir la pasta reservando un poco del agua de cocción"
+        "descripcion": "Cocinar la pasta al dente según instrucciones del paquete"
       },
       {
         "paso": 5,
-        "descripcion": "Mezclar la pasta caliente con la panceta"
+        "descripcion": "Escurrir pasta reservando 1 taza del agua de cocción"
       },
       {
         "paso": 6,
-        "descripcion": "Retirar del fuego y agregar la mezcla de huevo, mezclando rápidamente"
+        "descripcion": "Mezclar pasta caliente con panceta fuera del fuego"
       },
       {
         "paso": 7,
-        "descripcion": "Agregar agua de pasta si es necesario para crear cremosidad"
+        "descripcion": "Agregar mezcla de huevo y queso removiendo rápidamente"
+      },
+      {
+        "paso": 8,
+        "descripcion": "Ajustar consistencia con agua de pasta si es necesario"
       }
     ],
-    "notas": "Es importante retirar del fuego antes de agregar los huevos para evitar que se corten.",
-    "activa": true,
-    "fechaCreacion": "2024-01-10T09:15:00Z",
-    "fechaActualizacion": "2024-01-18T16:20:00Z"
+    "notas": "Importante no cocinar los huevos, la pasta caliente debe cremarlos",
+    "fechaCreacion": "2024-01-12T16:20:00.000Z",
+    "fechaActualizacion": "2024-01-22T10:15:00.000Z",
+    "creadoPor": "Chef Ana Martínez"
   },
   {
-    "id": "rec_03HQZX1234567890ABCDEF",
+    "id": "REC004",
     "nombre": "Ensalada César",
-    "descripcion": "Ensalada fresca con lechuga romana, crutones, queso parmesano y aderezo césar",
     "categoria": "Ensaladas",
+    "descripcion": "Ensalada clásica con lechuga romana, crutones y aderezo césar",
     "tiempoPreparacion": 10,
-    "dificultad": "Fácil",
     "porciones": 2,
-    "costo": 4200,
-    "precio": 12000,
-    "imagen": "/placeholder.svg?height=200&width=300&text=Ensalada+César",
+    "dificultad": "Fácil",
+    "costo": 3.5,
+    "precio": 8.5,
+    "estado": "Activa",
+    "imagen": "/placeholder.svg?height=200&width=300",
     "ingredientes": [
       {
-        "id": "ing_12",
+        "id": "ING019",
         "nombre": "Lechuga romana",
-        "cantidad": 1,
-        "unidad": "cabeza",
-        "costo": 1500
+        "cantidad": 200,
+        "unidad": "gr",
+        "costo": 1.2
       },
       {
-        "id": "ing_13",
-        "nombre": "Pan para crutones",
-        "cantidad": 2,
-        "unidad": "rebanadas",
-        "costo": 400
+        "id": "ING020",
+        "nombre": "Pan tostado",
+        "cantidad": 50,
+        "unidad": "gr",
+        "costo": 0.4
       },
       {
-        "id": "ing_14",
+        "id": "ING021",
         "nombre": "Queso parmesano",
-        "cantidad": 30,
-        "unidad": "gramos",
-        "costo": 1200
+        "cantidad": 40,
+        "unidad": "gr",
+        "costo": 0.9
       },
       {
-        "id": "ing_15",
-        "nombre": "Aderezo césar",
+        "id": "ING022",
+        "nombre": "Mayonesa",
         "cantidad": 60,
         "unidad": "ml",
-        "costo": 800
+        "costo": 0.3
       },
       {
-        "id": "ing_16",
-        "nombre": "Aceite de oliva",
-        "cantidad": 15,
-        "unidad": "ml",
-        "costo": 300
+        "id": "ING023",
+        "nombre": "Anchoas",
+        "cantidad": 3,
+        "unidad": "filetes",
+        "costo": 0.5
+      },
+      {
+        "id": "ING024",
+        "nombre": "Ajo",
+        "cantidad": 1,
+        "unidad": "diente",
+        "costo": 0.05
+      },
+      {
+        "id": "ING025",
+        "nombre": "Limón",
+        "cantidad": 0.5,
+        "unidad": "unidad",
+        "costo": 0.15
       }
     ],
     "instrucciones": [
@@ -219,320 +338,214 @@
       },
       {
         "paso": 2,
-        "descripcion": "Cortar el pan en cubos y tostar con aceite de oliva hasta dorar"
+        "descripcion": "Preparar crutones cortando pan en cubos y tostando"
       },
       {
         "paso": 3,
-        "descripcion": "Rallar el queso parmesano"
+        "descripcion": "Preparar aderezo mezclando mayonesa, anchoas, ajo y limón"
       },
       {
         "paso": 4,
-        "descripcion": "En un bowl grande, mezclar la lechuga con el aderezo césar"
+        "descripcion": "Mezclar lechuga con el aderezo"
       },
       {
         "paso": 5,
-        "descripcion": "Agregar los crutones y el queso parmesano"
+        "descripcion": "Agregar crutones y queso parmesano rallado"
       },
       {
         "paso": 6,
-        "descripcion": "Mezclar suavemente y servir inmediatamente"
+        "descripcion": "Servir inmediatamente"
       }
     ],
-    "notas": "Los crutones se pueden preparar con anticipación y almacenar en recipiente hermético.",
-    "activa": true,
-    "fechaCreacion": "2024-01-12T11:00:00Z",
-    "fechaActualizacion": "2024-01-22T13:30:00Z"
+    "notas": "Servir inmediatamente para mantener crutones crujientes",
+    "fechaCreacion": "2024-01-10T14:30:00.000Z",
+    "fechaActualizacion": "2024-01-19T09:20:00.000Z",
+    "creadoPor": "Chef Laura Fernández"
   },
   {
-    "id": "rec_04HQZX1234567890ABCDEF",
-    "nombre": "Pollo a la Plancha",
-    "descripcion": "Pechuga de pollo marinada y cocida a la plancha con hierbas aromáticas",
-    "categoria": "Platos Principales",
-    "tiempoPreparacion": 25,
-    "dificultad": "Fácil",
-    "porciones": 1,
-    "costo": 7200,
-    "precio": 15000,
-    "imagen": "/placeholder.svg?height=200&width=300&text=Pollo+Plancha",
-    "ingredientes": [
-      {
-        "id": "ing_17",
-        "nombre": "Pechuga de pollo",
-        "cantidad": 200,
-        "unidad": "gramos",
-        "costo": 5000
-      },
-      {
-        "id": "ing_18",
-        "nombre": "Aceite de oliva",
-        "cantidad": 20,
-        "unidad": "ml",
-        "costo": 400
-      },
-      {
-        "id": "ing_19",
-        "nombre": "Limón",
-        "cantidad": 0.5,
-        "unidad": "unidad",
-        "costo": 300
-      },
-      {
-        "id": "ing_20",
-        "nombre": "Ajo",
-        "cantidad": 2,
-        "unidad": "dientes",
-        "costo": 200
-      },
-      {
-        "id": "ing_21",
-        "nombre": "Romero fresco",
-        "cantidad": 2,
-        "unidad": "ramitas",
-        "costo": 300
-      },
-      {
-        "id": "ing_22",
-        "nombre": "Sal y pimienta",
-        "cantidad": 1,
-        "unidad": "al gusto",
-        "costo": 100
-      }
-    ],
-    "instrucciones": [
-      {
-        "paso": 1,
-        "descripcion": "Marinar el pollo con aceite, limón, ajo picado, romero, sal y pimienta por 15 minutos"
-      },
-      {
-        "paso": 2,
-        "descripcion": "Calentar la plancha a fuego medio-alto"
-      },
-      {
-        "paso": 3,
-        "descripcion": "Cocinar el pollo 6-7 minutos por cada lado hasta que esté dorado"
-      },
-      {
-        "paso": 4,
-        "descripcion": "Verificar que la temperatura interna sea de 75°C"
-      },
-      {
-        "paso": 5,
-        "descripcion": "Dejar reposar 3 minutos antes de servir"
-      }
-    ],
-    "notas": "Acompañar con vegetales asados o ensalada fresca. No sobrecocinar para mantener jugosidad.",
-    "activa": true,
-    "fechaCreacion": "2024-01-08T14:20:00Z",
-    "fechaActualizacion": "2024-01-25T10:15:00Z"
-  },
-  {
-    "id": "rec_05HQZX1234567890ABCDEF",
-    "nombre": "Tiramisú",
-    "descripcion": "Postre italiano con capas de bizcochos, café, mascarpone y cacao",
+    "id": "REC005",
+    "nombre": "Brownie de Chocolate",
     "categoria": "Postres",
-    "tiempoPreparacion": 30,
+    "descripcion": "Brownie húmedo con chocolate negro y nueces",
+    "tiempoPreparacion": 45,
+    "porciones": 8,
     "dificultad": "Intermedio",
-    "porciones": 6,
-    "costo": 8900,
-    "precio": 22000,
-    "imagen": "/placeholder.svg?height=200&width=300&text=Tiramisú",
+    "costo": 4.2,
+    "precio": 6.5,
+    "estado": "Activa",
+    "imagen": "/placeholder.svg?height=200&width=300",
     "ingredientes": [
       {
-        "id": "ing_23",
-        "nombre": "Bizcochos de soletilla",
+        "id": "ING026",
+        "nombre": "Chocolate negro",
         "cantidad": 200,
-        "unidad": "gramos",
-        "costo": 1800
+        "unidad": "gr",
+        "costo": 2.0
       },
       {
-        "id": "ing_24",
-        "nombre": "Café espresso",
-        "cantidad": 300,
-        "unidad": "ml",
-        "costo": 1200
+        "id": "ING027",
+        "nombre": "Mantequilla",
+        "cantidad": 100,
+        "unidad": "gr",
+        "costo": 0.8
       },
       {
-        "id": "ing_25",
-        "nombre": "Queso mascarpone",
-        "cantidad": 250,
-        "unidad": "gramos",
-        "costo": 3500
+        "id": "ING028",
+        "nombre": "Azúcar",
+        "cantidad": 150,
+        "unidad": "gr",
+        "costo": 0.3
       },
       {
-        "id": "ing_26",
+        "id": "ING029",
         "nombre": "Huevos",
         "cantidad": 3,
         "unidad": "unidades",
-        "costo": 1200
+        "costo": 0.9
       },
       {
-        "id": "ing_27",
-        "nombre": "Azúcar",
-        "cantidad": 100,
-        "unidad": "gramos",
-        "costo": 300
+        "id": "ING030",
+        "nombre": "Harina",
+        "cantidad": 80,
+        "unidad": "gr",
+        "costo": 0.15
       },
       {
-        "id": "ing_28",
-        "nombre": "Cacao en polvo",
-        "cantidad": 20,
-        "unidad": "gramos",
-        "costo": 400
-      },
-      {
-        "id": "ing_29",
-        "nombre": "Licor de café",
-        "cantidad": 30,
-        "unidad": "ml",
-        "costo": 500
+        "id": "ING031",
+        "nombre": "Nueces",
+        "cantidad": 60,
+        "unidad": "gr",
+        "costo": 1.2
       }
     ],
     "instrucciones": [
       {
         "paso": 1,
-        "descripcion": "Separar las yemas de las claras de huevo"
+        "descripcion": "Precalentar horno a 180°C"
       },
       {
         "paso": 2,
-        "descripcion": "Batir las yemas con el azúcar hasta blanquear"
+        "descripcion": "Derretir chocolate con mantequilla a baño maría"
       },
       {
         "paso": 3,
-        "descripcion": "Incorporar el mascarpone a la mezcla de yemas"
+        "descripcion": "Batir huevos con azúcar hasta blanquear"
       },
       {
         "paso": 4,
-        "descripcion": "Batir las claras a punto de nieve e incorporar suavemente"
+        "descripcion": "Incorporar chocolate derretido a la mezcla de huevos"
       },
       {
         "paso": 5,
-        "descripcion": "Mezclar el café con el licor de café"
+        "descripcion": "Tamizar harina e incorporar suavemente"
       },
       {
         "paso": 6,
-        "descripcion": "Mojar los bizcochos en el café y colocar una capa en el molde"
+        "descripcion": "Agregar nueces picadas"
       },
       {
         "paso": 7,
-        "descripcion": "Cubrir con la crema de mascarpone y repetir las capas"
+        "descripcion": "Verter en molde engrasado y hornear 25-30 minutos"
       },
       {
         "paso": 8,
-        "descripcion": "Refrigerar por al menos 4 horas"
-      },
-      {
-        "paso": 9,
-        "descripcion": "Espolvorear con cacao antes de servir"
+        "descripcion": "Dejar enfriar antes de cortar"
       }
     ],
-    "notas": "Es mejor prepararlo el día anterior para que los sabores se integren completamente.",
-    "activa": true,
-    "fechaCreacion": "2024-01-05T16:45:00Z",
-    "fechaActualizacion": "2024-01-20T12:00:00Z"
+    "notas": "No sobrecocinar para mantener textura húmeda",
+    "fechaCreacion": "2024-01-08T11:45:00.000Z",
+    "fechaActualizacion": "2024-01-21T15:30:00.000Z",
+    "creadoPor": "Chef Patricia López"
   },
   {
-    "id": "rec_06HQZX1234567890ABCDEF",
+    "id": "REC006",
     "nombre": "Sopa de Tomate",
-    "descripcion": "Sopa cremosa de tomate con albahaca fresca y crema",
     "categoria": "Sopas",
-    "tiempoPreparacion": 35,
-    "dificultad": "Fácil",
+    "descripcion": "Sopa cremosa de tomate con albahaca fresca",
+    "tiempoPreparacion": 30,
     "porciones": 4,
-    "costo": 5600,
-    "precio": 14000,
-    "imagen": "/placeholder.svg?height=200&width=300&text=Sopa+Tomate",
+    "dificultad": "Fácil",
+    "costo": 2.8,
+    "precio": 7.0,
+    "estado": "Inactiva",
+    "imagen": "/placeholder.svg?height=200&width=300",
     "ingredientes": [
       {
-        "id": "ing_30",
-        "nombre": "Tomates maduros",
+        "id": "ING032",
+        "nombre": "Tomates frescos",
         "cantidad": 800,
-        "unidad": "gramos",
-        "costo": 2400
+        "unidad": "gr",
+        "costo": 1.6
       },
       {
-        "id": "ing_31",
+        "id": "ING033",
         "nombre": "Cebolla",
-        "cantidad": 1,
-        "unidad": "unidad",
-        "costo": 500
+        "cantidad": 100,
+        "unidad": "gr",
+        "costo": 0.3
       },
       {
-        "id": "ing_32",
+        "id": "ING034",
         "nombre": "Ajo",
-        "cantidad": 3,
+        "cantidad": 2,
         "unidad": "dientes",
-        "costo": 300
+        "costo": 0.1
       },
       {
-        "id": "ing_33",
+        "id": "ING035",
         "nombre": "Caldo de vegetales",
         "cantidad": 500,
         "unidad": "ml",
-        "costo": 800
+        "costo": 0.4
       },
       {
-        "id": "ing_34",
+        "id": "ING036",
         "nombre": "Crema de leche",
         "cantidad": 100,
         "unidad": "ml",
-        "costo": 600
+        "costo": 0.6
       },
       {
-        "id": "ing_35",
+        "id": "ING037",
         "nombre": "Albahaca fresca",
         "cantidad": 10,
         "unidad": "hojas",
-        "costo": 400
-      },
-      {
-        "id": "ing_36",
-        "nombre": "Aceite de oliva",
-        "cantidad": 30,
-        "unidad": "ml",
-        "costo": 600
+        "costo": 0.4
       }
     ],
     "instrucciones": [
       {
         "paso": 1,
-        "descripcion": "Pelar y cortar los tomates en trozos grandes"
+        "descripcion": "Pelar y picar tomates, cebolla y ajo"
       },
       {
         "paso": 2,
-        "descripcion": "Picar finamente la cebolla y el ajo"
+        "descripcion": "Sofreír cebolla y ajo hasta transparentar"
       },
       {
         "paso": 3,
-        "descripcion": "Calentar aceite y sofreír cebolla y ajo hasta transparentar"
+        "descripcion": "Agregar tomates y cocinar 10 minutos"
       },
       {
         "paso": 4,
-        "descripcion": "Agregar los tomates y cocinar 10 minutos"
+        "descripcion": "Añadir caldo y cocinar 15 minutos más"
       },
       {
         "paso": 5,
-        "descripcion": "Añadir el caldo y cocinar 15 minutos más"
-      },
-      {
-        "paso": 6,
         "descripcion": "Licuar hasta obtener consistencia suave"
       },
       {
+        "paso": 6,
+        "descripcion": "Incorporar crema y albahaca picada"
+      },
+      {
         "paso": 7,
-        "descripcion": "Colar y volver al fuego"
-      },
-      {
-        "paso": 8,
-        "descripcion": "Incorporar la crema y albahaca picada"
-      },
-      {
-        "paso": 9,
-        "descripcion": "Sazonar con sal y pimienta al gusto"
+        "descripcion": "Sazonar con sal y pimienta"
       }
     ],
-    "notas": "Servir caliente con crutones o pan tostado. Se puede congelar sin la crema.",
-    "activa": true,
-    "fechaCreacion": "2024-01-14T13:30:00Z",
-    "fechaActualizacion": "2024-01-28T15:45:00Z"
+    "notas": "Decorar con hojas de albahaca fresca al servir",
+    "fechaCreacion": "2024-01-05T13:20:00.000Z",
+    "fechaActualizacion": "2024-01-15T16:45:00.000Z",
+    "creadoPor": "Chef Roberto Sánchez"
   }
 ]

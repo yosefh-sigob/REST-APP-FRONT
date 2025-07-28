@@ -14,34 +14,35 @@ export interface Instruccion {
 export interface Receta {
   id: string
   nombre: string
-  descripcion: string
   categoria: string
-  tiempoPreparacion: number // en minutos
-  dificultad: "Fácil" | "Intermedio" | "Difícil"
+  descripcion: string
+  tiempoPreparacion: number
   porciones: number
-  costo: number // costo total en centavos
-  precio: number // precio de venta en centavos
+  dificultad: "Fácil" | "Intermedio" | "Difícil"
+  costo: number
+  precio: number
+  estado: "Activa" | "Inactiva"
   imagen: string
   ingredientes: Ingrediente[]
   instrucciones: Instruccion[]
   notas?: string
-  activa: boolean
   fechaCreacion: string
   fechaActualizacion: string
+  creadoPor: string
 }
 
 export interface RecetaFiltros {
   categoria?: string
   dificultad?: string
-  tiempoMaximo?: number
+  estado?: string
   busqueda?: string
-  activa?: boolean
 }
 
-export interface RecetaEstadisticas {
-  totalRecetas: number
-  recetasActivas: number
-  categorias: { [key: string]: number }
+export interface EstadisticasRecetas {
+  total: number
+  activas: number
+  inactivas: number
+  porCategoria: { [key: string]: number }
   costoPromedio: number
-  tiempoPromedio: number
+  tiempoPromedioPreparacion: number
 }
