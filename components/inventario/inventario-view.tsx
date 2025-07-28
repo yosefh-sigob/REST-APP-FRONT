@@ -260,14 +260,19 @@ export default function InventarioView({ inventario: inventarioInicial, estadist
             <div className="space-y-2">
               <Label>Categoría</Label>
               <Select
-                value={filtros.categoria || "Todas las categorías"}
-                onValueChange={(value) => aplicarFiltros({ ...filtros, categoria: value as CategoriaInventario })}
+                value={filtros.categoria || "todas"}
+                onValueChange={(value) =>
+                  aplicarFiltros({
+                    ...filtros,
+                    categoria: value === "todas" ? undefined : (value as CategoriaInventario),
+                  })
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Todas las categorías" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Todas las categorías</SelectItem>
+                  <SelectItem value="todas">Todas las categorías</SelectItem>
                   {categorias.map((categoria) => (
                     <SelectItem key={categoria} value={categoria}>
                       {categoria}
@@ -280,14 +285,16 @@ export default function InventarioView({ inventario: inventarioInicial, estadist
             <div className="space-y-2">
               <Label>Estado</Label>
               <Select
-                value={filtros.estado || "Todos los estados"}
-                onValueChange={(value) => aplicarFiltros({ ...filtros, estado: value as EstadoInventario })}
+                value={filtros.estado || "todos"}
+                onValueChange={(value) =>
+                  aplicarFiltros({ ...filtros, estado: value === "todos" ? undefined : (value as EstadoInventario) })
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Todos los estados" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Todos los estados</SelectItem>
+                  <SelectItem value="todos">Todos los estados</SelectItem>
                   {estados.map((estado) => (
                     <SelectItem key={estado} value={estado}>
                       {estado.replace("_", " ")}
