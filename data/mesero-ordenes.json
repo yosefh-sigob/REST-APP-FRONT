@@ -1,0 +1,190 @@
+[
+  {
+    "id": "ORD-001",
+    "mesaId": "mesa-001",
+    "numeroMesa": 5,
+    "meseroId": "mesero-001",
+    "meseroNombre": "Carlos Rodríguez",
+    "clienteNombre": "Juan Pérez",
+    "estado": "pendiente",
+    "items": [
+      {
+        "id": "item-001",
+        "productoId": "prod-001",
+        "nombre": "Hamburguesa Clásica",
+        "cantidad": 2,
+        "precio": 12.99,
+        "subtotal": 25.98,
+        "notas": "Sin cebolla"
+      },
+      {
+        "id": "item-002",
+        "productoId": "prod-002",
+        "nombre": "Papas Fritas",
+        "cantidad": 1,
+        "precio": 4.99,
+        "subtotal": 4.99,
+        "notas": ""
+      },
+      {
+        "id": "item-003",
+        "productoId": "prod-003",
+        "nombre": "Coca Cola",
+        "cantidad": 2,
+        "precio": 2.5,
+        "subtotal": 5.0,
+        "notas": "Con hielo"
+      }
+    ],
+    "total": 35.97,
+    "fechaCreacion": "2024-01-15T14:30:00Z",
+    "fechaActualizacion": "2024-01-15T14:30:00Z",
+    "tiempoEstimado": 25,
+    "observaciones": "Cliente con prisa"
+  },
+  {
+    "id": "ORD-002",
+    "mesaId": "mesa-003",
+    "numeroMesa": 8,
+    "meseroId": "mesero-001",
+    "meseroNombre": "Carlos Rodríguez",
+    "clienteNombre": "María García",
+    "estado": "en_preparacion",
+    "items": [
+      {
+        "id": "item-004",
+        "productoId": "prod-004",
+        "nombre": "Pizza Margherita",
+        "cantidad": 1,
+        "precio": 18.99,
+        "subtotal": 18.99,
+        "notas": "Extra queso"
+      },
+      {
+        "id": "item-005",
+        "productoId": "prod-005",
+        "nombre": "Ensalada César",
+        "cantidad": 1,
+        "precio": 8.99,
+        "subtotal": 8.99,
+        "notas": ""
+      }
+    ],
+    "total": 27.98,
+    "fechaCreacion": "2024-01-15T13:45:00Z",
+    "fechaActualizacion": "2024-01-15T14:15:00Z",
+    "tiempoEstimado": 15,
+    "observaciones": ""
+  },
+  {
+    "id": "ORD-003",
+    "mesaId": "mesa-007",
+    "numeroMesa": 12,
+    "meseroId": "mesero-001",
+    "meseroNombre": "Carlos Rodríguez",
+    "clienteNombre": "Roberto Silva",
+    "estado": "lista",
+    "items": [
+      {
+        "id": "item-006",
+        "productoId": "prod-006",
+        "nombre": "Salmón a la Plancha",
+        "cantidad": 1,
+        "precio": 24.99,
+        "subtotal": 24.99,
+        "notas": "Término medio"
+      },
+      {
+        "id": "item-007",
+        "productoId": "prod-007",
+        "nombre": "Vino Tinto",
+        "cantidad": 1,
+        "precio": 15.99,
+        "subtotal": 15.99,
+        "notas": ""
+      }
+    ],
+    "total": 40.98,
+    "fechaCreacion": "2024-01-15T12:30:00Z",
+    "fechaActualizacion": "2024-01-15T14:45:00Z",
+    "tiempoEstimado": 0,
+    "observaciones": "Plato especial del día"
+  },
+  {
+    "id": "ORD-004",
+    "mesaId": "mesa-002",
+    "numeroMesa": 3,
+    "meseroId": "mesero-002",
+    "meseroNombre": "Ana López",
+    "clienteNombre": "Luis Martínez",
+    "estado": "entregada",
+    "items": [
+      {
+        "id": "item-008",
+        "productoId": "prod-008",
+        "nombre": "Tacos de Pollo",
+        "cantidad": 3,
+        "precio": 3.99,
+        "subtotal": 11.97,
+        "notas": "Picante"
+      },
+      {
+        "id": "item-009",
+        "productoId": "prod-009",
+        "nombre": "Agua Mineral",
+        "cantidad": 2,
+        "precio": 1.99,
+        "subtotal": 3.98,
+        "notas": ""
+      }
+    ],
+    "total": 15.95,
+    "fechaCreacion": "2024-01-15T11:15:00Z",
+    "fechaActualizacion": "2024-01-15T12:00:00Z",
+    "tiempoEstimado": 0,
+    "observaciones": ""
+  },
+  {
+    "id": "ORD-005",
+    "mesaId": "mesa-005",
+    "numeroMesa": 10,
+    "meseroId": "mesero-001",
+    "meseroNombre": "Carlos Rodríguez",
+    "clienteNombre": "Carmen Ruiz",
+    "estado": "pendiente",
+    "items": [
+      {
+        "id": "item-010",
+        "productoId": "prod-010",
+        "nombre": "Pasta Carbonara",
+        "cantidad": 1,
+        "precio": 16.99,
+        "subtotal": 16.99,
+        "notas": ""
+      },
+      {
+        "id": "item-011",
+        "productoId": "prod-011",
+        "nombre": "Pan de Ajo",
+        "cantidad": 1,
+        "precio": 3.99,
+        "subtotal": 3.99,
+        "notas": ""
+      },
+      {
+        "id": "item-012",
+        "productoId": "prod-012",
+        "nombre": "Limonada",
+        "cantidad": 1,
+        "precio": 2.99,
+        "subtotal": 2.99,
+        "notas": "Sin azúcar"
+      }
+    ],
+    "total": 23.97,
+    "fechaCreacion": "2024-01-15T15:00:00Z",
+    "fechaActualizacion": "2024-01-15T15:00:00Z",
+    "tiempoEstimado": 20,
+    "observaciones": "Mesa para dos personas"
+  }
+]
