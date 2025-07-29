@@ -29,6 +29,6 @@ export default function HomePage() {
   if (isAuthenticated) {
     return null // Se redirigirá automáticamente
   }
-  console.log('test')
+
   return <LoginForm />
 }
