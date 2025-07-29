@@ -1,11 +1,13 @@
 "use client"
 
+"use server"
+
 import { useAuth } from "@/contexts/auth-context"
-import { LoginForm } from "@/components/auth/login-form"
 import { useEffect } from "react"
 import { useRouter } from "next/navigation"
+import { HomeView } from "@/components/home/home-view"
 
-export default function HomePage() {
+export default async function HomePage() {
   const { isAuthenticated, isLoading } = useAuth()
   const router = useRouter()
 
@@ -30,5 +32,5 @@ export default function HomePage() {
     return null // Se redirigirá automáticamente
   }
 
-  return <LoginForm />
+  return <HomeView />
 }

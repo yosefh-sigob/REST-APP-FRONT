@@ -1,204 +1,275 @@
 "use client"
 
-import { AuthenticatedLayout } from "@/components/layout/authenticated-layout"
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { BarChart3, Users, ShoppingCart, TrendingUp, Calendar, Package, DollarSign, Clock } from "lucide-react"
-import { useAuth } from "@/contexts/auth-context"
-
-const STATS_CARDS = [
-  {
-    title: "Ventas Hoy",
-    value: "$12,450",
-    change: "+12%",
-    icon: DollarSign,
-    color: "text-green-600",
-  },
-  {
-    title: "Órdenes",
-    value: "156",
-    change: "+8%",
-    icon: ShoppingCart,
-    color: "text-blue-600",
-  },
-  {
-    title: "Clientes",
-    value: "89",
-    change: "+15%",
-    icon: Users,
-    color: "text-purple-600",
-  },
-  {
-    title: "Productos",
-    value: "234",
-    change: "+3%",
-    icon: Package,
-    color: "text-orange-600",
-  },
-]
-
-const RECENT_ACTIVITIES = [
-  {
-    id: 1,
-    action: "Nueva orden #1234",
-    time: "Hace 2 minutos",
-    status: "pending",
-  },
-  {
-    id: 2,
-    action: "Cliente registrado: Juan Pérez",
-    time: "Hace 5 minutos",
-    status: "success",
-  },
-  {
-    id: 3,
-    action: "Producto agotado: Hamburguesa Clásica",
-    time: "Hace 10 minutos",
-    status: "warning",
-  },
-  {
-    id: 4,
-    action: "Reservación confirmada para las 8:00 PM",
-    time: "Hace 15 minutos",
-    status: "info",
-  },
-]
+import {
+  MenuIcon as Restaurant,
+  Users,
+  ShoppingCart,
+  BarChart3,
+  Settings,
+  Star,
+  Clock,
+  TrendingUp,
+  ChefHat,
+  Utensils,
+} from "lucide-react"
+import Link from "next/link"
 
 export function HomeView() {
-  const { user } = useAuth()
+  const [selectedLicense] = useState("Pro") // Mock license level
+
+  const features = [
+    {
+      title: "Gestión de Productos",
+      description: "Administra tu catálogo completo de productos y precios",
+      icon: <ShoppingCart className="h-6 w-6" />,
+      href: "/productos",
+      license: "Gratis",
+    },
+    {
+      title: "Control de Mesas",
+      description: "Gestiona las mesas y su disponibilidad en tiempo real",
+      icon: <Utensils className="h-6 w-6" />,
+      href: "/mesas",
+      license: "Lite",
+    },
+    {
+      title: "Punto de Venta",
+      description: "Sistema POS completo para procesar órdenes",
+      icon: <Restaurant className="h-6 w-6" />,
+      href: "/ventas/pos",
+      license: "Pro",
+    },
+    {
+      title: "Gestión de Clientes",
+      description: "Base de datos completa de clientes y historial",
+      icon: <Users className="h-6 w-6" />,
+      href: "/clientes",
+      license: "Lite",
+    },
+    {
+      title: "Cocina",
+      description: "Panel de control para el área de cocina",
+      icon: <ChefHat className="h-6 w-6" />,
+      href: "/cocina/ordenes",
+      license: "Pro",
+    },
+    {
+      title: "Reportes",
+      description: "Análisis detallado de ventas y rendimiento",
+      icon: <BarChart3 className="h-6 w-6" />,
+      href: "/reportes",
+      license: "Pro",
+    },
+    {
+      title: "Inventario",
+      description: "Control de stock y materias primas",
+      icon: <Settings className="h-6 w-6" />,
+      href: "/inventario",
+      license: "Franquicia",
+    },
+    {
+      title: "Reservaciones",
+      description: "Sistema de reservas para mesas",
+      icon: <Clock className="h-6 w-6" />,
+      href: "/reservaciones",
+      license: "Pro",
+    },
+  ]
+
+  const stats = [
+    {
+      title: "Órdenes Hoy",
+      value: "127",
+      change: "+12%",
+      icon: <ShoppingCart className="h-4 w-4" />,
+    },
+    {
+      title: "Ventas del Día",
+      value: "$3,247",
+      change: "+8%",
+      icon: <TrendingUp className="h-4 w-4" />,
+    },
+    {
+      title: "Mesas Ocupadas",
+      value: "8/12",
+      change: "67%",
+      icon: <Utensils className="h-4 w-4" />,
+    },
+    {
+      title: "Productos Activos",
+      value: "156",
+      change: "+3",
+      icon: <Star className="h-4 w-4" />,
+    },
+  ]
+
+  const getLicenseLevel = (requiredLicense: string) => {
+    const levels = ["Gratis", "Lite", "Pro", "Franquicia"]
+    const currentLevel = levels.indexOf(selectedLicense)
+    const requiredLevel = levels.indexOf(requiredLicense)
+    return currentLevel >= requiredLevel
+  }
+
+  const getLicenseBadgeColor = (license: string) => {
+    switch (license) {
+      case "Gratis":
+        return "bg-green-100 text-green-800"
+      case "Lite":
+        return "bg-blue-100 text-blue-800"
+      case "Pro":
+        return "bg-purple-100 text-purple-800"
+      case "Franquicia":
+        return "bg-orange-100 text-orange-800"
+      default:
+        return "bg-gray-100 text-gray-800"
+    }
+  }
 
   return (
-    <AuthenticatedLayout>
-      <div className="space-y-6">
-        {/* Welcome Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">
-              ¡Bienvenido, {user?.nombreCompleto?.split(" ")[0] || "Usuario"}!
-            </h1>
-            <p className="text-gray-600 mt-1">Aquí tienes un resumen de tu restaurante hoy</p>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Badge variant="outline" className="text-sm">
-              {user?.rol}
-            </Badge>
-            <Badge variant="secondary" className="text-sm">
-              {user?.nivelLicencia}
-            </Badge>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="bg-white shadow-sm border-b">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-6">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">Panel de Control</h1>
+              <p className="text-gray-600 mt-1">Bienvenido al sistema de gestión de restaurante</p>
+            </div>
+            <div className="flex items-center space-x-4">
+              <Badge className={getLicenseBadgeColor(selectedLicense)}>Licencia {selectedLicense}</Badge>
+            </div>
           </div>
         </div>
+      </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {STATS_CARDS.map((stat, index) => {
-            const Icon = stat.icon
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          {stats.map((stat, index) => (
+            <Card key={index}>
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">{stat.title}</p>
+                    <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+                  </div>
+                  <div className="flex flex-col items-end">
+                    {stat.icon}
+                    <span className="text-sm text-green-600 font-medium">{stat.change}</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Features Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {features.map((feature, index) => {
+            const hasAccess = getLicenseLevel(feature.license)
+
             return (
-              <Card key={index}>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium text-gray-600">{stat.title}</CardTitle>
-                  <Icon className={`h-4 w-4 ${stat.color}`} />
+              <Card
+                key={index}
+                className={`transition-all duration-200 ${
+                  hasAccess ? "hover:shadow-lg cursor-pointer" : "opacity-60 cursor-not-allowed"
+                }`}
+              >
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div
+                        className={`p-2 rounded-lg ${
+                          hasAccess ? "bg-blue-100 text-blue-600" : "bg-gray-100 text-gray-400"
+                        }`}
+                      >
+                        {feature.icon}
+                      </div>
+                      <div>
+                        <CardTitle className="text-lg">{feature.title}</CardTitle>
+                      </div>
+                    </div>
+                    <Badge variant="outline" className={getLicenseBadgeColor(feature.license)}>
+                      {feature.license}
+                    </Badge>
+                  </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">{stat.value}</div>
-                  <p className="text-xs text-green-600 flex items-center mt-1">
-                    <TrendingUp className="h-3 w-3 mr-1" />
-                    {stat.change} desde ayer
-                  </p>
+                  <CardDescription className="mb-4">{feature.description}</CardDescription>
+
+                  {hasAccess ? (
+                    <Link href={feature.href}>
+                      <Button className="w-full">Acceder</Button>
+                    </Link>
+                  ) : (
+                    <div className="space-y-2">
+                      <Button disabled className="w-full">
+                        Requiere {feature.license}
+                      </Button>
+                      <p className="text-xs text-gray-500 text-center">
+                        Actualiza tu licencia para acceder a esta función
+                      </p>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             )
           })}
         </div>
 
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Recent Activity */}
-          <Card className="lg:col-span-2">
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Clock className="h-5 w-5 mr-2" />
-                Actividad Reciente
-              </CardTitle>
-              <CardDescription>Últimas actividades en tu restaurante</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {RECENT_ACTIVITIES.map((activity) => (
-                  <div key={activity.id} className="flex items-center space-x-3 p-3 rounded-lg bg-gray-50">
-                    <div
-                      className={`w-2 h-2 rounded-full ${
-                        activity.status === "success"
-                          ? "bg-green-500"
-                          : activity.status === "warning"
-                            ? "bg-yellow-500"
-                            : activity.status === "info"
-                              ? "bg-blue-500"
-                              : "bg-gray-500"
-                      }`}
-                    />
-                    <div className="flex-1">
-                      <p className="text-sm font-medium">{activity.action}</p>
-                      <p className="text-xs text-gray-500">{activity.time}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Quick Actions */}
+        {/* Quick Actions */}
+        <div className="mt-8">
           <Card>
             <CardHeader>
               <CardTitle>Acciones Rápidas</CardTitle>
-              <CardDescription>Accesos directos a funciones principales</CardDescription>
+              <CardDescription>Accesos directos a las funciones más utilizadas</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-3">
-              <Button className="w-full justify-start bg-transparent" variant="outline">
-                <ShoppingCart className="h-4 w-4 mr-2" />
-                Nueva Venta
-              </Button>
-              <Button className="w-full justify-start bg-transparent" variant="outline">
-                <Calendar className="h-4 w-4 mr-2" />
-                Ver Reservaciones
-              </Button>
-              <Button className="w-full justify-start bg-transparent" variant="outline">
-                <Package className="h-4 w-4 mr-2" />
-                Gestionar Productos
-              </Button>
-              <Button className="w-full justify-start bg-transparent" variant="outline">
-                <BarChart3 className="h-4 w-4 mr-2" />
-                Ver Reportes
-              </Button>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Link href="/productos">
+                  <Button variant="outline" className="w-full justify-start bg-transparent">
+                    <ShoppingCart className="mr-2 h-4 w-4" />
+                    Nuevo Producto
+                  </Button>
+                </Link>
+                <Link href="/ventas/pos">
+                  <Button variant="outline" className="w-full justify-start bg-transparent">
+                    <Restaurant className="mr-2 h-4 w-4" />
+                    Nueva Orden
+                  </Button>
+                </Link>
+                <Link href="/mesas">
+                  <Button variant="outline" className="w-full justify-start bg-transparent">
+                    <Utensils className="mr-2 h-4 w-4" />
+                    Ver Mesas
+                  </Button>
+                </Link>
+              </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Company Info */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Información de la Empresa</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Empresa</p>
-                <p className="text-lg font-semibold">{user?.nombreEmpresa}</p>
+        {/* License Info */}
+        <div className="mt-8">
+          <Card className="border-blue-200 bg-blue-50">
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-3">
+                <Star className="h-5 w-5 text-blue-600" />
+                <div>
+                  <h3 className="font-semibold text-blue-900">Licencia Actual: {selectedLicense}</h3>
+                  <p className="text-blue-700 text-sm">
+                    Tienes acceso a todas las funciones de nivel {selectedLicense} y anteriores.
+                  </p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm font-medium text-gray-600">Plan Actual</p>
-                <Badge variant="secondary" className="mt-1">
-                  {user?.nivelLicencia}
-                </Badge>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-gray-600">Usuario Activo</p>
-                <p className="text-lg font-semibold">{user?.nombreCompleto}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
       </div>
-    </AuthenticatedLayout>
+    </div>
   )
 }
