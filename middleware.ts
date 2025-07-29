@@ -1,37 +1,15 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
-
-// Rutas que requieren autenticación
-const protectedRoutes = [
-  "/main",
-  "/dashboard",
-  "/cajero",
-  "/mesero",
-  "/cocina",
-  "/productos",
-  "/inventario",
-  "/clientes",
-  "/mesas",
-  "/reservaciones",
-  "/reportes",
-  "/ventas",
-  "/facturas",
-  "/recetas",
-  "/encuestas",
-  "/configuracion",
-]
-
-// Rutas públicas que no requieren autenticación
-const publicRoutes = ["/", "/login", "/acceso-denegado"]
+import { PROTECTED_ROUTES, PUBLIC_ROUTES, APP_ROUTES } from "@/lib/config/routes"
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // Verificar si la ruta requiere autenticación
-  const isProtectedRoute = protectedRoutes.some((route) => pathname.startsWith(route))
+  const isProtectedRoute = PROTECTED_ROUTES.some((route) => pathname.startsWith(route))
 
   // Verificar si es una ruta pública
-  const isPublicRoute = publicRoutes.some((route) => pathname === route || pathname.startsWith(route))
+  const isPublicRoute = PUBLIC_ROUTES.some((route) => pathname === route || pathname.startsWith(route))
 
   // Si es una ruta protegida, verificar autenticación
   if (isProtectedRoute) {
@@ -39,7 +17,7 @@ export function middleware(request: NextRequest) {
 
     if (!token) {
       // Redirigir a página de acceso denegado con la URL original
-      const url = new URL("/acceso-denegado", request.url)
+      const url = new URL(APP_ROUTES.PUBLIC.ACCESS_DENIED, request.url)
       url.searchParams.set("redirect", pathname)
       return NextResponse.redirect(url)
     }
