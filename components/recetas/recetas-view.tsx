@@ -117,58 +117,6 @@ export default function RecetasView({ recetas: recetasIniciales, estadisticas, c
           Nueva Receta
         </Button>
       </div>
-
-      {/* Estadísticas */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Total Recetas</p>
-                <p className="text-2xl font-bold">{estadisticas.total}</p>
-              </div>
-              <BookOpen className="h-8 w-8 text-blue-600" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Recetas Activas</p>
-                <p className="text-2xl font-bold text-green-600">{estadisticas.activas}</p>
-              </div>
-              <TrendingUp className="h-8 w-8 text-green-600" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Costo Promedio</p>
-                <p className="text-2xl font-bold">{formatearPrecio(estadisticas.costoPromedio)}</p>
-              </div>
-              <DollarSign className="h-8 w-8 text-orange-600" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Tiempo Promedio</p>
-                <p className="text-2xl font-bold">{Math.round(estadisticas.tiempoPromedioPreparacion)} min</p>
-              </div>
-              <Timer className="h-8 w-8 text-purple-600" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
       {/* Filtros */}
       <Card>
         <CardContent className="p-4">
@@ -183,42 +131,42 @@ export default function RecetasView({ recetas: recetasIniciales, estadisticas, c
               />
             </div>
 
-            <Select value={categoriaFiltro} onValueChange={setCategoriaFiltro}>
-              <SelectTrigger className="w-full lg:w-48">
-                <SelectValue placeholder="Categoría" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todas las categorías</SelectItem>
-                {categorias.map((categoria) => (
-                  <SelectItem key={categoria} value={categoria}>
-                    {categoria}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Select value={dificultadFiltro} onValueChange={setDificultadFiltro}>
-              <SelectTrigger className="w-full lg:w-48">
-                <SelectValue placeholder="Dificultad" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todas</SelectItem>
-                <SelectItem value="Fácil">Fácil</SelectItem>
-                <SelectItem value="Intermedio">Intermedio</SelectItem>
-                <SelectItem value="Difícil">Difícil</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Select value={estadoFiltro} onValueChange={setEstadoFiltro}>
-              <SelectTrigger className="w-full lg:w-48">
-                <SelectValue placeholder="Estado" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todos los estados</SelectItem>
-                <SelectItem value="Activa">Activa</SelectItem>
-                <SelectItem value="Inactiva">Inactiva</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="flex flex-row  gap-2 justify-between lg:justify-start">
+              <Select value={categoriaFiltro} onValueChange={setCategoriaFiltro}>
+                <SelectTrigger className="w-full lg:w-48">
+                  <SelectValue placeholder="Categoría" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todas las categorías</SelectItem>
+                  {categorias.map((categoria) => (
+                    <SelectItem key={categoria} value={categoria}>
+                      {categoria}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select value={dificultadFiltro} onValueChange={setDificultadFiltro}>
+                <SelectTrigger className="w-full lg:w-48">
+                  <SelectValue placeholder="Dificultad" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todas</SelectItem>
+                  <SelectItem value="Fácil">Fácil</SelectItem>
+                  <SelectItem value="Intermedio">Intermedio</SelectItem>
+                  <SelectItem value="Difícil">Difícil</SelectItem>
+                </SelectContent>
+              </Select>
+              <Select value={estadoFiltro} onValueChange={setEstadoFiltro}>
+                <SelectTrigger className="w-full lg:w-48">
+                  <SelectValue placeholder="Estado" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos los estados</SelectItem>
+                  <SelectItem value="Activa">Activa</SelectItem>
+                  <SelectItem value="Inactiva">Inactiva</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
 
             <Button variant="outline" onClick={limpiarFiltros} className="w-full lg:w-auto bg-transparent">
               <Filter className="h-4 w-4 mr-2" />

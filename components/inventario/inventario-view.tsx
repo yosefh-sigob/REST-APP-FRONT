@@ -125,9 +125,9 @@ export default function InventarioView({ inventario: inventarioInicial, estadist
   }
 
   const formatearMoneda = (cantidad: number) => {
-    return new Intl.NumberFormat("es-ES", {
+    return new Intl.NumberFormat("es-MX", {
       style: "currency",
-      currency: "EUR",
+      currency: "MXN",
     }).format(cantidad)
   }
 
@@ -242,7 +242,7 @@ export default function InventarioView({ inventario: inventarioInicial, estadist
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4 md:grid-cols-4">
+          <div className="flex flex-wrap gap-4 md:grid-cols-4">
             <div className="space-y-2">
               <Label htmlFor="busqueda">Buscar</Label>
               <div className="relative">
@@ -250,7 +250,7 @@ export default function InventarioView({ inventario: inventarioInicial, estadist
                 <Input
                   id="busqueda"
                   placeholder="Nombre, proveedor, ubicación..."
-                  className="pl-8"
+                  className="pl-8 w-52"
                   value={filtros.busqueda || ""}
                   onChange={(e) => aplicarFiltros({ ...filtros, busqueda: e.target.value })}
                 />
