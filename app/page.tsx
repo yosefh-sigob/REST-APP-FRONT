@@ -1,13 +1,11 @@
 "use client"
 
-"use server"
-
 import { useAuth } from "@/contexts/auth-context"
 import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { HomeView } from "@/components/home/home-view"
 
-export default async function HomePage() {
+export default function HomePage() {
   const { isAuthenticated, isLoading } = useAuth()
   const router = useRouter()
 

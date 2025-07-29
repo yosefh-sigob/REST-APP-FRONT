@@ -1,7 +1,6 @@
 "use client"
 
 import React, { createContext, useContext, useState, useEffect } from "react"
-import { getOrdenes } from "@/actions/cocinaOrdenes.actions"
 import type { KitchenOrder } from "@/interfaces/ordenes.interface"
 
 interface OrdersContextProps {
@@ -17,8 +16,15 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   useEffect(() => {
     async function fetchOrders() {
-      const fetchedOrders = await getOrdenes()
-      setOrders(fetchedOrders)
+      try {
+        const response = await fetch('/api/ordenes')
+        if (response.ok) {
+          const fetchedOrders = await response.json()
+          setOrders(fetchedOrders)
+        }
+      } catch (error) {
+        console.error('Error fetching orders:', error)
+      }
     }
 
     fetchOrders()

@@ -17,7 +17,6 @@ import {
   Receipt,
   ClipboardList,
 } from "lucide-react"
-import { getOrdenes } from "@/actions/cocinaOrdenes.actions"
 import { useOrders } from "@/contexts/orders-context"
 
 export interface NavigationItem {

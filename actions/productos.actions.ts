@@ -5,6 +5,8 @@ import { ProductosService } from "@/lib/services/productos.service"
 import { ProductoFormSchema, type ProductoFormData } from "@/schemas/productos.schemas"
 import { revalidatePath } from "next/cache"
 import axios from "axios"
+import { promises as fs } from "fs"
+import path from "path"
 
 export interface ActionResult<T = any> {
   success: boolean
@@ -339,6 +341,203 @@ export async function obtenerEstadisticasAction(): Promise<ActionResult<any>> {
     return {
       success: false,
       error: error instanceof Error ? error.message : "Error desconocido al obtener estadísticas",
+    }
+  }
+}
+
+// ===== FUNCIONES CRUD CON DATOS LOCALES =====
+// Simulando llamadas a API usando archivos JSON locales
+
+// Obtener todos los productos desde datos locales
+export async function obtenerProductosLocal(): Promise<ActionResult<IGetProducto[]>> {
+  try {
+    const filePath = path.join(process.cwd(), "data", "productos.json")
+    const fileContents = await fs.readFile(filePath, "utf-8")
+    const productos: IGetProducto[] = JSON.parse(fileContents)
+    
+    return {
+      success: true,
+      data: productos,
+    }
+  } catch (error) {
+    console.error("Error fetching productos from local data:", error)
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Error desconocido al obtener productos",
+    }
+  }
+}
+
+// Obtener producto por ID desde datos locales
+export async function obtenerProductoPorIdLocal(ProductoULID: string): Promise<ActionResult<IGetProducto | null>> {
+  try {
+    const result = await obtenerProductosLocal()
+    if (!result.success || !result.data) {
+      return {
+        success: false,
+        error: "Error al obtener productos",
+      }
+    }
+    
+    const producto = result.data.find(p => p.ProductoULID === ProductoULID)
+    
+    return {
+      success: true,
+      data: producto || null,
+    }
+  } catch (error) {
+    console.error("Error fetching producto by ID from local data:", error)
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Error desconocido al obtener producto",
+    }
+  }
+}
+
+// Crear producto en datos locales
+export async function crearProductoLocal(producto: Omit<IGetProducto, 'ProductoULID'>): Promise<ActionResult<IGetProducto>> {
+  try {
+    const filePath = path.join(process.cwd(), "data", "productos.json")
+    const result = await obtenerProductosLocal()
+    
+    if (!result.success || !result.data) {
+      return {
+        success: false,
+        error: "Error al obtener productos existentes",
+      }
+    }
+    
+    const productos = result.data
+    const newProducto: IGetProducto = {
+      ...producto,
+      ProductoULID: `prod_${Date.now()}` // Generación simple de ID
+    }
+    
+    productos.push(newProducto)
+    
+    await fs.writeFile(filePath, JSON.stringify(productos, null, 2), "utf-8")
+    revalidatePath("/productos")
+    
+    return {
+      success: true,
+      data: newProducto,
+      message: "Producto creado exitosamente",
+    }
+  } catch (error) {
+    console.error("Error creating producto in local data:", error)
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Error desconocido al crear producto",
+    }
+  }
+}
+
+// Actualizar producto en datos locales
+export async function actualizarProductoLocal(ProductoULID: string, producto: Partial<IGetProducto>): Promise<ActionResult<IGetProducto>> {
+  try {
+    const filePath = path.join(process.cwd(), "data", "productos.json")
+    const result = await obtenerProductosLocal()
+    
+    if (!result.success || !result.data) {
+      return {
+        success: false,
+        error: "Error al obtener productos existentes",
+      }
+    }
+    
+    const productos = result.data
+    const productoIndex = productos.findIndex(p => p.ProductoULID === ProductoULID)
+    
+    if (productoIndex === -1) {
+      return {
+        success: false,
+        error: "Producto no encontrado",
+      }
+    }
+    
+    productos[productoIndex] = { ...productos[productoIndex], ...producto }
+    
+    await fs.writeFile(filePath, JSON.stringify(productos, null, 2), "utf-8")
+    revalidatePath("/productos")
+    
+    return {
+      success: true,
+      data: productos[productoIndex],
+      message: "Producto actualizado exitosamente",
+    }
+  } catch (error) {
+    console.error("Error updating producto in local data:", error)
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Error desconocido al actualizar producto",
+    }
+  }
+}
+
+// Eliminar producto de datos locales
+export async function eliminarProductoLocal(ProductoULID: string): Promise<ActionResult<boolean>> {
+  try {
+    const filePath = path.join(process.cwd(), "data", "productos.json")
+    const result = await obtenerProductosLocal()
+    
+    if (!result.success || !result.data) {
+      return {
+        success: false,
+        error: "Error al obtener productos existentes",
+      }
+    }
+    
+    const productos = result.data
+    const filteredProductos = productos.filter(p => p.ProductoULID !== ProductoULID)
+    
+    if (filteredProductos.length === productos.length) {
+      return {
+        success: false,
+        error: "Producto no encontrado",
+      }
+    }
+    
+    await fs.writeFile(filePath, JSON.stringify(filteredProductos, null, 2), "utf-8")
+    revalidatePath("/productos")
+    
+    return {
+      success: true,
+      data: true,
+      message: "Producto eliminado exitosamente",
+    }
+  } catch (error) {
+    console.error("Error deleting producto from local data:", error)
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Error desconocido al eliminar producto",
+    }
+  }
+}
+
+// Buscar productos por tipo
+export async function obtenerProductosPorTipoLocal(tipo: string): Promise<ActionResult<IGetProducto[]>> {
+  try {
+    const result = await obtenerProductosLocal()
+    if (!result.success || !result.data) {
+      return {
+        success: false,
+        error: "Error al obtener productos",
+      }
+    }
+    
+    const productosFiltrados = result.data.filter(p => 
+      p.TipoProducto?.toLowerCase().includes(tipo.toLowerCase())
+    )
+    
+    return {
+      success: true,
+      data: productosFiltrados,
+    }
+  } catch (error) {
+    console.error("Error searching productos by type:", error)
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Error desconocido al buscar productos",
     }
   }
 }
