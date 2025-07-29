@@ -323,7 +323,7 @@ function RecetasGrid({
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       {recetas.map((receta) => (
         <Card key={receta.id} className="overflow-hidden hover:shadow-lg transition-shadow">
           <div className="aspect-video relative overflow-hidden bg-gray-100">
