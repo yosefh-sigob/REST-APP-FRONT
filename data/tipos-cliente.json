@@ -1,0 +1,26 @@
+[
+  {
+    "id": "TC-001",
+    "nombre": "General",
+    "descripcion": "Cliente sin clasificación específica.",
+    "activo": true
+  },
+  {
+    "id": "TC-002",
+    "nombre": "VIP",
+    "descripcion": "Cliente frecuente con beneficios especiales.",
+    "activo": true
+  },
+  {
+    "id": "TC-003",
+    "nombre": "Corporativo",
+    "descripcion": "Cliente que representa a una empresa.",
+    "activo": true
+  },
+  {
+    "id": "TC-004",
+    "nombre": "Problemático",
+    "descripcion": "Cliente con historial de quejas o problemas.",
+    "activo": false
+  }
+]

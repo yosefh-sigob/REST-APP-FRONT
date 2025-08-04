@@ -6,6 +6,7 @@ import type { Subgrupo } from "@/interfaces/subgrupos.interface"
 import type { IGetUnidad } from "@/interfaces/unidad.interface"
 import type { IGetAreaProduccion } from "@/interfaces/areaProduccion.interface"
 import type { IGetAlmacen } from "@/interfaces/almacen.interface"
+import type { ITipoCliente } from "@/interfaces/tipos-cliente.interface"
 import {
   type GrupoFormValues,
   grupoSchema,
@@ -17,6 +18,8 @@ import {
   areaProduccionSchema,
   type AlmacenFormValues,
   almacenSchema,
+  type TipoClienteFormValues,
+  tipoClienteSchema,
 } from "@/schemas/catalogos.schemas"
 import { generateULID } from "@/lib/utils/ulid"
 import initialGrupos from "@/data/grupos.json"
@@ -24,6 +27,7 @@ import initialSubgrupos from "@/data/subgrupos.json"
 import initialUnidades from "@/data/unidades.json"
 import initialAreasProduccion from "@/data/areas-produccion.json"
 import initialAlmacenes from "@/data/almacenes.json"
+import initialTiposCliente from "@/data/tipos-cliente.json"
 
 // --- Simulación de Base de Datos en Memoria ---
 let grupos: Grupo[] = [...initialGrupos]
@@ -31,6 +35,7 @@ let subgrupos: Subgrupo[] = [...initialSubgrupos]
 let unidades: IGetUnidad[] = [...initialUnidades]
 let areasProduccion: IGetAreaProduccion[] = [...initialAreasProduccion]
 let almacenes: IGetAlmacen[] = [...initialAlmacenes]
+let tiposCliente: ITipoCliente[] = [...initialTiposCliente]
 
 // --- Acciones para Grupos ---
 
@@ -356,4 +361,73 @@ export async function deleteAlmacen(id: string): Promise<{ success: boolean; mes
 
   revalidatePath("/catalogos/almacenes")
   return { success: true, message: "Almacén eliminado exitosamente." }
+}
+
+// --- Acciones para Tipos de Cliente ---
+
+export async function getTiposCliente(): Promise<ITipoCliente[]> {
+  await new Promise((resolve) => setTimeout(resolve, 50))
+  return JSON.parse(JSON.stringify(tiposCliente))
+}
+
+export async function createTipoCliente(data: TipoClienteFormValues): Promise<{ success: boolean; message: string }> {
+  const validation = tipoClienteSchema.safeParse(data)
+  if (!validation.success) {
+    const errorMessages = validation.error.issues.map((issue) => issue.message).join(", ")
+    return { success: false, message: `Error de validación: ${errorMessages}` }
+  }
+
+  const existingTipo = tiposCliente.find((t) => t.nombre.toUpperCase() === validation.data.nombre.toUpperCase())
+  if (existingTipo) {
+    return { success: false, message: "Ya existe un tipo de cliente con ese nombre." }
+  }
+
+  const newTipoCliente: ITipoCliente = {
+    id: `TC-${generateULID()}`,
+    nombre: validation.data.nombre,
+    descripcion: validation.data.descripcion || "",
+    activo: validation.data.activo,
+  }
+
+  tiposCliente.push(newTipoCliente)
+  revalidatePath("/catalogos/tipos-cliente")
+  return { success: true, message: "Tipo de cliente creado exitosamente." }
+}
+
+export async function updateTipoCliente(
+  id: string,
+  data: TipoClienteFormValues,
+): Promise<{ success: boolean; message: string }> {
+  const validation = tipoClienteSchema.safeParse(data)
+  if (!validation.success) {
+    const errorMessages = validation.error.issues.map((issue) => issue.message).join(", ")
+    return { success: false, message: `Error de validación: ${errorMessages}` }
+  }
+
+  const index = tiposCliente.findIndex((t) => t.id === id)
+  if (index === -1) return { success: false, message: "Tipo de cliente no encontrado." }
+
+  const existingTipo = tiposCliente.find((t) => t.nombre.toUpperCase() === data.nombre.toUpperCase() && t.id !== id)
+  if (existingTipo) {
+    return { success: false, message: "Ya existe otro tipo de cliente con ese nombre." }
+  }
+
+  tiposCliente[index] = {
+    ...tiposCliente[index],
+    nombre: data.nombre,
+    descripcion: data.descripcion || "",
+    activo: data.activo,
+  }
+
+  revalidatePath("/catalogos/tipos-cliente")
+  return { success: true, message: "Tipo de cliente actualizado exitosamente." }
+}
+
+export async function deleteTipoCliente(id: string): Promise<{ success: boolean; message: string }> {
+  const initialLength = tiposCliente.length
+  tiposCliente = tiposCliente.filter((t) => t.id !== id)
+  if (tiposCliente.length === initialLength) return { success: false, message: "Tipo de cliente no encontrado." }
+
+  revalidatePath("/catalogos/tipos-cliente")
+  return { success: true, message: "Tipo de cliente eliminado exitosamente." }
 }

@@ -110,3 +110,20 @@ export const almacenSchema = z.object({
 })
 
 export type AlmacenFormValues = z.infer<typeof almacenSchema>
+
+// Esquema para Tipos de Cliente
+export const tipoClienteSchema = z.object({
+  id: z.string().optional(),
+  nombre: z
+    .string({ required_error: "El nombre es requerido." })
+    .min(3, { message: "El nombre debe tener al menos 3 caracteres." })
+    .max(50, { message: "El nombre no puede tener más de 50 caracteres." }),
+  descripcion: z
+    .string()
+    .max(200, { message: "La descripción no puede tener más de 200 caracteres." })
+    .optional()
+    .or(z.literal("")),
+  activo: z.boolean().default(true),
+})
+
+export type TipoClienteFormValues = z.infer<typeof tipoClienteSchema>
