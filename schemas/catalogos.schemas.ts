@@ -83,3 +83,30 @@ export const areaProduccionSchema = z.object({
 })
 
 export type AreaProduccionFormValues = z.infer<typeof areaProduccionSchema>
+
+// Esquema para Almacenes
+export const almacenSchema = z.object({
+  AlmacenULID: z.string().optional(),
+  ClaveAlmacen: z
+    .string({ required_error: "La clave es requerida." })
+    .min(3, { message: "La clave debe tener al menos 3 caracteres." })
+    .max(20, { message: "La clave no puede tener más de 20 caracteres." })
+    .regex(/^[A-Z0-9_]+$/, { message: "La clave solo puede contener letras mayúsculas, números y guiones bajos." }),
+  Nombre: z
+    .string({ required_error: "El nombre es requerido." })
+    .min(3, { message: "El nombre debe tener al menos 3 caracteres." })
+    .max(100, { message: "El nombre no puede tener más de 100 caracteres." }),
+  Descripcion: z
+    .string()
+    .max(250, { message: "La descripción no puede tener más de 250 caracteres." })
+    .optional()
+    .or(z.literal("")),
+  Direccion: z
+    .string()
+    .max(250, { message: "La dirección no puede tener más de 250 caracteres." })
+    .optional()
+    .or(z.literal("")),
+  Activo: z.boolean().default(true),
+})
+
+export type AlmacenFormValues = z.infer<typeof almacenSchema>
