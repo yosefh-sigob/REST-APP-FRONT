@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache"
 import type { Grupo } from "@/interfaces/grupos.interface"
 import type { Subgrupo } from "@/interfaces/subgrupos.interface"
 import type { IGetUnidad } from "@/interfaces/unidad.interface"
+import type { IGetAreaProduccion } from "@/interfaces/areaProduccion.interface"
 import {
   type GrupoFormValues,
   grupoSchema,
@@ -11,16 +12,20 @@ import {
   subgrupoSchema,
   type UnidadFormValues,
   unidadSchema,
+  type AreaProduccionFormValues,
+  areaProduccionSchema,
 } from "@/schemas/catalogos.schemas"
 import { generateULID } from "@/lib/utils/ulid"
 import initialGrupos from "@/data/grupos.json"
 import initialSubgrupos from "@/data/subgrupos.json"
 import initialUnidades from "@/data/unidades.json"
+import initialAreasProduccion from "@/data/areas-produccion.json"
 
 // --- Simulación de Base de Datos en Memoria ---
 let grupos: Grupo[] = [...initialGrupos]
 let subgrupos: Subgrupo[] = [...initialSubgrupos]
 let unidades: IGetUnidad[] = [...initialUnidades]
+let areasProduccion: IGetAreaProduccion[] = [...initialAreasProduccion]
 
 // --- Acciones para Grupos ---
 
@@ -193,4 +198,79 @@ export async function deleteUnidad(id: string): Promise<{ success: boolean; mess
 
   revalidatePath("/catalogos/unidades")
   return { success: true, message: "Unidad eliminada exitosamente." }
+}
+
+// --- Acciones para Áreas de Producción ---
+
+export async function getAreasProduccion(): Promise<IGetAreaProduccion[]> {
+  await new Promise((resolve) => setTimeout(resolve, 50))
+  return JSON.parse(JSON.stringify(areasProduccion))
+}
+
+export async function createAreaProduccion(
+  data: AreaProduccionFormValues,
+): Promise<{ success: boolean; message: string }> {
+  const validation = areaProduccionSchema.safeParse(data)
+  if (!validation.success) {
+    const errorMessages = validation.error.issues.map((issue) => issue.message).join(", ")
+    return { success: false, message: `Error de validación: ${errorMessages}` }
+  }
+
+  // Verificar que la clave no exista
+  const existingArea = areasProduccion.find((a) => a.clave === validation.data.clave)
+  if (existingArea) {
+    return { success: false, message: "Ya existe un área de producción con esa clave." }
+  }
+
+  const newArea: IGetAreaProduccion = {
+    id: `AREA-${generateULID()}`,
+    clave: validation.data.clave,
+    descripcion: validation.data.descripcion,
+    impresora: validation.data.impresora || "",
+    activa: validation.data.activa,
+  }
+
+  areasProduccion.push(newArea)
+  revalidatePath("/catalogos/areas-produccion")
+  return { success: true, message: "Área de producción creada exitosamente." }
+}
+
+export async function updateAreaProduccion(
+  id: string,
+  data: AreaProduccionFormValues,
+): Promise<{ success: boolean; message: string }> {
+  const validation = areaProduccionSchema.safeParse(data)
+  if (!validation.success) {
+    const errorMessages = validation.error.issues.map((issue) => issue.message).join(", ")
+    return { success: false, message: `Error de validación: ${errorMessages}` }
+  }
+
+  const index = areasProduccion.findIndex((a) => a.id === id)
+  if (index === -1) return { success: false, message: "Área de producción no encontrada." }
+
+  // Verificar que la clave no exista en otra área
+  const existingArea = areasProduccion.find((a) => a.clave === validation.data.clave && a.id !== id)
+  if (existingArea) {
+    return { success: false, message: "Ya existe otra área de producción con esa clave." }
+  }
+
+  areasProduccion[index] = {
+    ...areasProduccion[index],
+    clave: validation.data.clave,
+    descripcion: validation.data.descripcion,
+    impresora: validation.data.impresora || "",
+    activa: validation.data.activa,
+  }
+
+  revalidatePath("/catalogos/areas-produccion")
+  return { success: true, message: "Área de producción actualizada exitosamente." }
+}
+
+export async function deleteAreaProduccion(id: string): Promise<{ success: boolean; message: string }> {
+  const initialLength = areasProduccion.length
+  areasProduccion = areasProduccion.filter((a) => a.id !== id)
+  if (areasProduccion.length === initialLength) return { success: false, message: "Área de producción no encontrada." }
+
+  revalidatePath("/catalogos/areas-produccion")
+  return { success: true, message: "Área de producción eliminada exitosamente." }
 }

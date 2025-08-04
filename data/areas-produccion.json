@@ -1,0 +1,44 @@
+[
+  {
+    "id": "AREA-01H8XYZ123456789",
+    "clave": "COC",
+    "descripcion": "Cocina Principal",
+    "impresora": "Impresora_Cocina_01",
+    "activa": true
+  },
+  {
+    "id": "AREA-01H8XYZ123456790",
+    "clave": "BAR",
+    "descripcion": "Bar y Bebidas",
+    "impresora": "Impresora_Bar_01",
+    "activa": true
+  },
+  {
+    "id": "AREA-01H8XYZ123456791",
+    "clave": "PAN",
+    "descripcion": "Panadería",
+    "impresora": "Impresora_Panaderia_01",
+    "activa": true
+  },
+  {
+    "id": "AREA-01H8XYZ123456792",
+    "clave": "POST",
+    "descripcion": "Postres y Repostería",
+    "impresora": "Impresora_Postres_01",
+    "activa": true
+  },
+  {
+    "id": "AREA-01H8XYZ123456793",
+    "clave": "FRIO",
+    "descripcion": "Cocina Fría",
+    "impresora": "",
+    "activa": true
+  },
+  {
+    "id": "AREA-01H8XYZ123456794",
+    "clave": "GRILL",
+    "descripcion": "Parrilla y Asados",
+    "impresora": "Impresora_Grill_01",
+    "activa": false
+  }
+]

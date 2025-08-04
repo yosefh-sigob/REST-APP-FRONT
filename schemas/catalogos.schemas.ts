@@ -61,3 +61,25 @@ export const unidadSchema = z.object({
 })
 
 export type UnidadFormValues = z.infer<typeof unidadSchema>
+
+// Esquema para Áreas de Producción
+export const areaProduccionSchema = z.object({
+  id: z.string().optional(),
+  clave: z
+    .string({ required_error: "La clave es requerida." })
+    .min(2, { message: "La clave debe tener al menos 2 caracteres." })
+    .max(10, { message: "La clave no puede tener más de 10 caracteres." })
+    .regex(/^[A-Z0-9]+$/, { message: "La clave solo puede contener letras mayúsculas y números." }),
+  descripcion: z
+    .string({ required_error: "La descripción es requerida." })
+    .min(3, { message: "La descripción debe tener al menos 3 caracteres." })
+    .max(100, { message: "La descripción no puede tener más de 100 caracteres." }),
+  impresora: z
+    .string()
+    .max(50, { message: "El nombre de la impresora no puede tener más de 50 caracteres." })
+    .optional()
+    .or(z.literal("")),
+  activa: z.boolean().default(true),
+})
+
+export type AreaProduccionFormValues = z.infer<typeof areaProduccionSchema>
