@@ -2,6 +2,7 @@
 
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Link } from "next/link"
 import {
   Database,
   Package,
@@ -153,24 +154,26 @@ export function CatalogosView() {
         {CATALOGOS.map((catalogo) => {
           const Icon = catalogo.icon
           return (
-            <Card key={catalogo.id} className="hover:shadow-lg transition-shadow cursor-pointer">
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <div className={`p-2 rounded-lg ${catalogo.color} text-white`}>
-                    <Icon className="h-5 w-5" />
+            <Link href={`/catalogos/${catalogo.id}`} passHref key={catalogo.id}>
+              <Card className="hover:shadow-lg transition-shadow">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <div className={`p-2 rounded-lg ${catalogo.color} text-white`}>
+                      <Icon className="h-5 w-5" />
+                    </div>
+                    {getStatusBadge(catalogo.status)}
                   </div>
-                  {getStatusBadge(catalogo.status)}
-                </div>
-                <CardTitle className="text-lg">{catalogo.title}</CardTitle>
-                <CardDescription className="text-sm">{catalogo.description}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center justify-between">
-                  <span className="text-2xl font-bold text-gray-900">{catalogo.count}</span>
-                  <span className="text-sm text-gray-500">registros</span>
-                </div>
-              </CardContent>
-            </Card>
+                  <CardTitle className="text-lg">{catalogo.title}</CardTitle>
+                  <CardDescription className="text-sm">{catalogo.description}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center justify-between">
+                    <span className="text-2xl font-bold text-gray-900">{catalogo.count}</span>
+                    <span className="text-sm text-gray-500">registros</span>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
           )
         })}
       </div>
