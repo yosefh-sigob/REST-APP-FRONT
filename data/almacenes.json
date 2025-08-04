@@ -1,42 +1,34 @@
 [
   {
-    "id": "01JGQM8K2P3Q4R5S6T7U8V9W0X",
-    "clave_almacen": "ALM01",
+    "id": "ALM-001",
+    "clave": "ALM01",
     "nombre": "Almacén Principal",
     "descripcion": "Almacén principal para ingredientes secos y no perecederos",
     "direccion": "Bodega 1, Planta Baja",
-    "activo": true,
-    "fecha_creacion": "2024-01-15T10:00:00Z",
-    "fecha_actualizacion": "2024-01-15T10:00:00Z"
+    "activo": true
   },
   {
-    "id": "01JGQM8K2P3Q4R5S6T7U8V9W1Y",
-    "clave_almacen": "ALM02",
+    "id": "ALM-002",
+    "clave": "ALM02",
     "nombre": "Cámara Fría",
     "descripcion": "Almacén refrigerado para productos perecederos",
     "direccion": "Cámara de refrigeración, Cocina",
-    "activo": true,
-    "fecha_creacion": "2024-01-15T10:05:00Z",
-    "fecha_actualizacion": "2024-01-15T10:05:00Z"
+    "activo": true
   },
   {
-    "id": "01JGQM8K2P3Q4R5S6T7U8V9W2Z",
-    "clave_almacen": "ALM03",
+    "id": "ALM-003",
+    "clave": "ALM03",
     "nombre": "Almacén de Bebidas",
     "descripcion": "Almacén específico para bebidas alcohólicas y no alcohólicas",
     "direccion": "Bodega 2, Bar",
-    "activo": true,
-    "fecha_creacion": "2024-01-15T10:10:00Z",
-    "fecha_actualizacion": "2024-01-15T10:10:00Z"
+    "activo": true
   },
   {
-    "id": "01JGQM8K2P3Q4R5S6T7U8V9W3A",
-    "clave_almacen": "ALM04",
+    "id": "ALM-004",
+    "clave": "ALM04",
     "nombre": "Almacén de Limpieza",
     "descripcion": "Productos de limpieza y mantenimiento",
     "direccion": "Cuarto de limpieza, Sótano",
-    "activo": false,
-    "fecha_creacion": "2024-01-15T10:15:00Z",
-    "fecha_actualizacion": "2024-01-15T10:15:00Z"
+    "activo": false
   }
 ]

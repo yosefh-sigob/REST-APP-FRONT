@@ -1,12 +1,13 @@
 "use client"
 
-import { PlusCircle } from "lucide-react"
+import { useState } from "react"
+import Link from "next/link"
+import { ArrowLeft, Plus, Users } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { DataTable } from "@/components/ui/data-table"
-import { Heading } from "@/components/ui/heading"
-import { Separator } from "@/components/ui/separator"
-import { tiposClienteColumns } from "./tipos-cliente-columns"
 import { TipoClienteFormModal } from "./tipo-cliente-form-modal"
+import { tiposClienteColumns } from "./tipos-cliente-columns"
 import type { ITipoCliente } from "@/interfaces/tipos-cliente.interface"
 
 interface TiposClienteViewProps {
@@ -14,21 +15,69 @@ interface TiposClienteViewProps {
 }
 
 export function TiposClienteView({ data }: TiposClienteViewProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [editingTipo, setEditingTipo] = useState<ITipoCliente | null>(null)
+
+  const handleEdit = (tipo: ITipoCliente) => {
+    setEditingTipo(tipo)
+    setIsModalOpen(true)
+  }
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false)
+    setEditingTipo(null)
+  }
+
   return (
-    <div className="flex-1 space-y-4 p-4 pt-6 md:p-8">
-      <div className="flex items-start justify-between">
-        <Heading
-          title={`Tipos de Cliente (${data.length})`}
-          description="Gestiona los tipos de cliente para tu restaurante"
-        />
-        <TipoClienteFormModal>
-          <Button>
-            <PlusCircle className="mr-2 h-4 w-4" /> Añadir Nuevo
-          </Button>
-        </TipoClienteFormModal>
+    <div className="space-y-6">
+      {/* Header con botón de regreso */}
+      <div className="flex items-center gap-4">
+        <Button variant="outline" size="sm" asChild>
+          <Link href="/catalogos">
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Volver a Catálogos
+          </Link>
+        </Button>
       </div>
-      <Separator />
-      <DataTable columns={tiposClienteColumns} data={data} filterKey="nombre" />
+
+      {/* Título y descripción */}
+      <div className="flex items-center justify-between">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <Users className="h-6 w-6 text-primary" />
+            <h1 className="text-3xl font-bold tracking-tight">Tipos de Cliente</h1>
+          </div>
+          <p className="text-muted-foreground">Gestiona la clasificación de clientes del restaurante</p>
+        </div>
+        <Button onClick={() => setIsModalOpen(true)}>
+          <Plus className="h-4 w-4 mr-2" />
+          Nuevo Tipo
+        </Button>
+      </div>
+
+      {/* Tabla de datos */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Lista de Tipos de Cliente</CardTitle>
+          <CardDescription>Administra los tipos de cliente de tu restaurante ({data.length} registros)</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <DataTable
+            columns={tiposClienteColumns}
+            data={data}
+            searchKey="nombre"
+            searchPlaceholder="Buscar por nombre..."
+          />
+        </CardContent>
+      </Card>
+
+      {/* Modal de formulario */}
+      <TipoClienteFormModal>
+        <Button>
+          <Plus className="h-4 w-4 mr-2" />
+          Nuevo Tipo
+        </Button>
+      </TipoClienteFormModal>
     </div>
   )
 }

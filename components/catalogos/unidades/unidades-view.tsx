@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { ArrowLeft, Plus } from "lucide-react"
+import { ArrowLeft, Plus, Scale } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { DataTable } from "@/components/ui/data-table"
@@ -32,7 +32,7 @@ export function UnidadesView({ unidades }: UnidadesViewProps) {
     <div className="space-y-6">
       {/* Botón de regreso */}
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="sm" asChild>
+        <Button variant="outline" size="sm" asChild>
           <Link href="/catalogos">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Volver a Catálogos
@@ -40,13 +40,14 @@ export function UnidadesView({ unidades }: UnidadesViewProps) {
         </Button>
       </div>
 
-      {/* Header */}
+      {/* Título y descripción */}
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Unidades de Medida</h1>
-          <p className="text-muted-foreground">
-            Gestiona las unidades de medida utilizadas en el inventario y productos.
-          </p>
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <Scale className="h-6 w-6 text-primary" />
+            <h1 className="text-3xl font-bold tracking-tight">Unidades de Medida</h1>
+          </div>
+          <p className="text-muted-foreground">Gestiona las unidades de medida utilizadas en el inventario y productos</p>
         </div>
         <Button onClick={() => setIsModalOpen(true)}>
           <Plus className="h-4 w-4 mr-2" />
@@ -57,8 +58,8 @@ export function UnidadesView({ unidades }: UnidadesViewProps) {
       {/* Tabla de datos */}
       <Card>
         <CardHeader>
-          <CardTitle>Lista de Unidades</CardTitle>
-          <CardDescription>Administra todas las unidades de medida del sistema.</CardDescription>
+          <CardTitle>Lista de Unidades de Medida</CardTitle>
+          <CardDescription>Administra las unidades de medida del sistema</CardDescription>
         </CardHeader>
         <CardContent>
           <DataTable

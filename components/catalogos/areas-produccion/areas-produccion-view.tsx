@@ -8,17 +8,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { DataTable } from "@/components/ui/data-table"
 import { AreaProduccionFormModal } from "./area-produccion-form-modal"
 import { areasProduccionColumns } from "./areas-produccion-columns"
-import type { IGetAreaProduccion } from "@/interfaces/areaProduccion.interface"
+import type { IAreaProduccion } from "@/interfaces/areaProduccion.interface"
 
 interface AreasProduccionViewProps {
-  areasProduccion: IGetAreaProduccion[]
+  areasProduccion: IAreaProduccion[]
 }
 
 export function AreasProduccionView({ areasProduccion }: AreasProduccionViewProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [editingArea, setEditingArea] = useState<IGetAreaProduccion | null>(null)
+  const [editingArea, setEditingArea] = useState<IAreaProduccion | null>(null)
 
-  const handleEdit = (area: IGetAreaProduccion) => {
+  const handleEdit = (area: IAreaProduccion) => {
     setEditingArea(area)
     setIsModalOpen(true)
   }

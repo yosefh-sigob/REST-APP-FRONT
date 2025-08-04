@@ -1,12 +1,10 @@
 "use client"
 
 import { useState } from "react"
-import { ArrowLeft, Plus } from "lucide-react"
 import Link from "next/link"
-
+import { ArrowLeft, Plus, CreditCard } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Heading } from "@/components/ui/heading"
-import { Separator } from "@/components/ui/separator"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { DataTable } from "@/components/ui/data-table"
 import { MetodoPagoFormModal } from "./metodo-pago-form-modal"
 import { columns } from "./metodos-pago-columns"
@@ -17,27 +15,64 @@ interface MetodosPagoViewProps {
 }
 
 export function MetodosPagoView({ metodosPago }: MetodosPagoViewProps) {
-  const [open, setOpen] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [editingMetodo, setEditingMetodo] = useState<IMetodoPago | null>(null)
+
+  const handleEdit = (metodo: IMetodoPago) => {
+    setEditingMetodo(metodo)
+    setIsModalOpen(true)
+  }
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false)
+    setEditingMetodo(null)
+  }
 
   return (
-    <>
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
+    <div className="space-y-6">
+      {/* Header con botón de regreso */}
+      <div className="flex items-center gap-4">
+        <Button variant="outline" size="sm" asChild>
           <Link href="/catalogos">
-            <Button variant="outline" size="icon">
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Volver a Catálogos
           </Link>
-          <Heading title="Métodos de Pago" description="Gestiona los métodos de pago del restaurante" />
+        </Button>
+      </div>
+
+      {/* Título y descripción */}
+      <div className="flex items-center justify-between">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <CreditCard className="h-6 w-6 text-primary" />
+            <h1 className="text-3xl font-bold tracking-tight">Métodos de Pago</h1>
+          </div>
+          <p className="text-muted-foreground">Gestiona las formas de pago aceptadas en el restaurante</p>
         </div>
-        <Button onClick={() => setOpen(true)}>
-          <Plus className="mr-2 h-4 w-4" />
+        <Button onClick={() => setIsModalOpen(true)}>
+          <Plus className="h-4 w-4 mr-2" />
           Nuevo Método
         </Button>
       </div>
-      <Separator />
-      <DataTable searchKey="nombre" columns={columns} data={metodosPago} />
-      <MetodoPagoFormModal isOpen={open} onClose={() => setOpen(false)} />
-    </>
+
+      {/* Tabla de datos */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Lista de Métodos de Pago</CardTitle>
+          <CardDescription>Administra los métodos de pago de tu restaurante</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <DataTable
+            columns={columns}
+            data={metodosPago}
+            searchKey="nombre"
+            searchPlaceholder="Buscar por nombre..."
+          />
+        </CardContent>
+      </Card>
+
+      {/* Modal de formulario */}
+      <MetodoPagoFormModal isOpen={isModalOpen} onClose={handleCloseModal} initialData={editingMetodo} />
+    </div>
   )
 }

@@ -1,0 +1,42 @@
+[
+  {
+    "id": "EST-001",
+    "clave": "LIBRE",
+    "nombre": "Libre",
+    "descripcion": "Mesa disponible para ocupar",
+    "color": "#22c55e",
+    "activo": true
+  },
+  {
+    "id": "EST-002",
+    "clave": "OCUPADA",
+    "nombre": "Ocupada",
+    "descripcion": "Mesa actualmente ocupada por clientes",
+    "color": "#ef4444",
+    "activo": true
+  },
+  {
+    "id": "EST-003",
+    "clave": "RESERVADA",
+    "nombre": "Reservada",
+    "descripcion": "Mesa reservada para un cliente específico",
+    "color": "#f59e0b",
+    "activo": true
+  },
+  {
+    "id": "EST-004",
+    "clave": "LIMPIEZA",
+    "nombre": "En Limpieza",
+    "descripcion": "Mesa siendo limpiada después de uso",
+    "color": "#3b82f6",
+    "activo": true
+  },
+  {
+    "id": "EST-005",
+    "clave": "MANTENIMIENTO",
+    "nombre": "En Mantenimiento",
+    "descripcion": "Mesa fuera de servicio por mantenimiento",
+    "color": "#6b7280",
+    "activo": false
+  }
+]

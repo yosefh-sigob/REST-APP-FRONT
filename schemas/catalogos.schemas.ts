@@ -98,3 +98,36 @@ export const metodoPagoSchema = z.object({
 })
 
 export type MetodoPagoFormValues = z.infer<typeof metodoPagoSchema>
+
+// Esquema para Estado de Mesa
+export const estadoMesaSchema = z.object({
+  nombre: z.string().min(1, "El nombre es requerido").max(50, "El nombre no puede tener más de 50 caracteres"),
+  descripcion: z.string().optional(),
+  color: z.string().regex(/^#[0-9A-Fa-f]{6}$/, "Debe ser un color hexadecimal válido"),
+  activo: z.boolean().default(true),
+})
+
+export type EstadoMesaFormValues = z.infer<typeof estadoMesaSchema>
+
+// Esquema para Estado de Orden
+export const estadoOrdenSchema = z.object({
+  nombre: z.string().min(1, "El nombre es requerido").max(50, "El nombre no puede tener más de 50 caracteres"),
+  descripcion: z.string().optional(),
+  color: z.string().regex(/^#[0-9A-Fa-f]{6}$/, "Debe ser un color hexadecimal válido"),
+  permite_cancelacion: z.boolean().default(true),
+  activo: z.boolean().default(true),
+})
+
+export type EstadoOrdenFormValues = z.infer<typeof estadoOrdenSchema>
+
+// Esquema para Tipo de Reservación
+export const tipoReservacionSchema = z.object({
+  nombre: z.string().min(1, "El nombre es requerido").max(50, "El nombre no puede tener más de 50 caracteres"),
+  descripcion: z.string().optional(),
+  requiere_anticipo: z.boolean().default(false),
+  porcentaje_anticipo: z.number().min(0).max(100).optional(),
+  tiempo_limite_horas: z.number().min(1).max(168).default(2), // 1 hora a 1 semana
+  activo: z.boolean().default(true),
+})
+
+export type TipoReservacionFormValues = z.infer<typeof tipoReservacionSchema>

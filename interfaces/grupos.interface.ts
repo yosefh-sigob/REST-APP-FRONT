@@ -1,3 +1,26 @@
+export interface IGrupo {
+  id: string
+  clave: string
+  nombre: string
+  descripcion?: string
+  activo: boolean
+}
+
+export interface ICreateGrupo {
+  clave: string
+  nombre: string
+  descripcion?: string
+  activo: boolean
+}
+
+export interface IUpdateGrupo {
+  clave: string
+  nombre: string
+  descripcion?: string
+  activo: boolean
+}
+
+// Mantener la interfaz existente para compatibilidad
 export interface IGetGrupoProducto {
   GrupoProductoULID: string
   ClaveGrupo: string
@@ -18,3 +41,6 @@ export interface IGetGrupoProducto {
   UsuarioULID: string
   EmpresaULID: string
 }
+
+// Alias para compatibilidad
+export type Grupo = IGrupo

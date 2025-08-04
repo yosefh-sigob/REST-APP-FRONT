@@ -1,3 +1,25 @@
+export interface IUnidad {
+  id: string
+  clave: string
+  nombre: string
+  abreviacion: string
+  activo: boolean
+}
+
+export interface ICreateUnidad {
+  clave: string
+  nombre: string
+  abreviacion: string
+  activo: boolean
+}
+
+export interface IUpdateUnidad {
+  clave: string
+  nombre: string
+  abreviacion: string
+  activo: boolean
+}
+
 export interface IGetUnidad {
   UnidadULID: string
   ClaveUnidad: string

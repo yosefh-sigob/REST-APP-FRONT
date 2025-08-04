@@ -18,68 +18,59 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
 import { toast } from "@/hooks/use-toast"
-import { createAreaProduccion, updateAreaProduccion } from "@/actions/catalogos.actions"
-import { areaProduccionSchema, type AreaProduccionFormValues } from "@/schemas/catalogos.schemas"
-import type { IAreaProduccion } from "@/interfaces/areaProduccion.interface"
+import { createEstadoMesa, updateEstadoMesa } from "@/actions/catalogos.actions"
+import { estadoMesaSchema, type EstadoMesaFormValues } from "@/schemas/catalogos.schemas"
+import type { IEstadoMesa } from "@/interfaces/estados-mesa.interface"
 
-interface AreaProduccionFormModalProps {
+interface EstadoMesaFormModalProps {
   isOpen: boolean
   onClose: () => void
-  area?: IAreaProduccion | null
+  estado?: IEstadoMesa | null
 }
 
-export function AreaProduccionFormModal({ isOpen, onClose, area }: AreaProduccionFormModalProps) {
-  const isEditing = !!area
+export function EstadoMesaFormModal({ isOpen, onClose, estado }: EstadoMesaFormModalProps) {
+  const isEditing = !!estado
 
-  const form = useForm<AreaProduccionFormValues>({
-    // resolver: zodResolver(areaProduccionSchema), // Comentado temporalmente por problemas de versión de Zod
+  const form = useForm<EstadoMesaFormValues>({
+    // resolver: zodResolver(estadoMesaSchema), // Comentado temporalmente por problemas de versión de Zod
     defaultValues: {
-      clave: "",
+      nombre: "",
       descripcion: "",
-      impresora: "",
-      activa: true,
+      color: "#22c55e",
+      activo: true,
     },
   })
 
-  const { handleSubmit, control, reset, formState, setValue, watch } = form
+  const { handleSubmit, control, reset, formState } = form
   const { isSubmitting } = formState
-
-  // Observar el campo clave para convertir a mayúsculas
-  const claveValue = watch("clave")
-
-  useEffect(() => {
-    if (claveValue) {
-      setValue("clave", claveValue.toUpperCase())
-    }
-  }, [claveValue, setValue])
 
   useEffect(() => {
     if (isOpen) {
-      if (area) {
+      if (estado) {
         reset({
-          clave: area.clave,
-          descripcion: area.descripcion,
-          impresora: area.impresora || "",
-          activa: area.activa,
+          nombre: estado.nombre,
+          descripcion: estado.descripcion || "",
+          color: estado.color,
+          activo: estado.activo,
         })
       } else {
         reset({
-          clave: "",
+          nombre: "",
           descripcion: "",
-          impresora: "",
-          activa: true,
+          color: "#22c55e",
+          activo: true,
         })
       }
     }
-  }, [isOpen, area, reset])
+  }, [isOpen, estado, reset])
 
-  const onSubmit = async (data: AreaProduccionFormValues) => {
+  const onSubmit = async (data: EstadoMesaFormValues) => {
     try {
       let result
-      if (isEditing && area) {
-        result = await updateAreaProduccion(area.id, data)
+      if (isEditing && estado) {
+        result = await updateEstadoMesa(estado.id, data)
       } else {
-        result = await createAreaProduccion(data)
+        result = await createEstadoMesa(data)
       }
 
       if (result.success) {
@@ -108,11 +99,11 @@ export function AreaProduccionFormModal({ isOpen, onClose, area }: AreaProduccio
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{isEditing ? "Editar Área de Producción" : "Nueva Área de Producción"}</DialogTitle>
+          <DialogTitle>{isEditing ? "Editar Estado de Mesa" : "Nuevo Estado de Mesa"}</DialogTitle>
           <DialogDescription>
             {isEditing
-              ? "Modifica los datos del área de producción."
-              : "Completa los datos para crear una nueva área de producción."}
+              ? "Modifica los datos del estado de mesa."
+              : "Completa los datos para crear un nuevo estado de mesa."}
           </DialogDescription>
         </DialogHeader>
 
@@ -120,19 +111,13 @@ export function AreaProduccionFormModal({ isOpen, onClose, area }: AreaProduccio
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={control}
-              name="clave"
+              name="nombre"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Clave *</FormLabel>
+                  <FormLabel>Nombre *</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="COC, BAR, PAN..."
-                      {...field}
-                      className="font-mono"
-                      onChange={(e) => field.onChange(e.target.value.toUpperCase())}
-                    />
+                    <Input placeholder="Disponible, Ocupada, Reservada..." {...field} />
                   </FormControl>
-                  <FormDescription>Identificador único del área (solo mayúsculas y números)</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -143,9 +128,9 @@ export function AreaProduccionFormModal({ isOpen, onClose, area }: AreaProduccio
               name="descripcion"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Descripción *</FormLabel>
+                  <FormLabel>Descripción</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Descripción del área de producción..." className="resize-none" {...field} />
+                    <Textarea placeholder="Descripción del estado de mesa..." className="resize-none" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -154,14 +139,17 @@ export function AreaProduccionFormModal({ isOpen, onClose, area }: AreaProduccio
 
             <FormField
               control={control}
-              name="impresora"
+              name="color"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Impresora</FormLabel>
+                  <FormLabel>Color *</FormLabel>
                   <FormControl>
-                    <Input placeholder="Nombre de la impresora (opcional)" {...field} />
+                    <div className="flex items-center gap-2">
+                      <Input type="color" className="w-12 h-10 p-1 border" {...field} />
+                      <Input placeholder="#22c55e" {...field} />
+                    </div>
                   </FormControl>
-                  <FormDescription>Nombre de la impresora asociada a esta área</FormDescription>
+                  <FormDescription>Color que representará este estado en el sistema</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -169,12 +157,12 @@ export function AreaProduccionFormModal({ isOpen, onClose, area }: AreaProduccio
 
             <FormField
               control={control}
-              name="activa"
+              name="activo"
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                   <div className="space-y-0.5">
-                    <FormLabel className="text-base">Área Activa</FormLabel>
-                    <FormDescription>Determina si el área está disponible para uso</FormDescription>
+                    <FormLabel className="text-base">Estado Activo</FormLabel>
+                    <FormDescription>Determina si el estado está disponible para uso</FormDescription>
                   </div>
                   <FormControl>
                     <Switch checked={field.value} onCheckedChange={field.onChange} />

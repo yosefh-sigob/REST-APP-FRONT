@@ -2,12 +2,13 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { ArrowLeft, Plus } from "lucide-react"
-import type { Grupo } from "@/interfaces/grupos.interface"
+import { ArrowLeft, Plus, Package } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { DataTable } from "@/components/ui/data-table"
-import { createColumns } from "./grupos-columns"
 import { GrupoFormModal } from "./grupo-form-modal"
+import { createColumns } from "./grupos-columns"
+import type { Grupo } from "@/interfaces/grupos.interface"
 
 interface GruposViewProps {
   grupos: Grupo[]
@@ -15,48 +16,65 @@ interface GruposViewProps {
 
 export function GruposView({ grupos = [] }: GruposViewProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [selectedGrupo, setSelectedGrupo] = useState<Grupo | undefined>(undefined)
+  const [editingGrupo, setEditingGrupo] = useState<Grupo | null>(null)
 
-  const handleOpenModal = (grupo?: Grupo) => {
-    setSelectedGrupo(grupo)
+  const handleEdit = (grupo: Grupo) => {
+    setEditingGrupo(grupo)
     setIsModalOpen(true)
   }
 
   const handleCloseModal = () => {
-    setSelectedGrupo(undefined)
     setIsModalOpen(false)
+    setEditingGrupo(null)
   }
 
-  const columns = createColumns(handleOpenModal)
+  const columns = createColumns(handleEdit)
 
   return (
-    <div className="p-4 sm:p-6 md:p-8">
-      {/* Header */}
-      <div className="mb-6">
-        <Link href="/catalogos">
-          <Button variant="ghost" className="mb-4">
-            <ArrowLeft className="mr-2 h-4 w-4" />
+    <div className="space-y-6">
+      {/* Header con botón de regreso */}
+      <div className="flex items-center gap-4">
+        <Button variant="outline" size="sm" asChild>
+          <Link href="/catalogos">
+            <ArrowLeft className="h-4 w-4 mr-2" />
             Volver a Catálogos
-          </Button>
-        </Link>
-
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight">Grupos de Productos</h1>
-            <p className="text-muted-foreground">Gestiona las categorías principales de productos del restaurante</p>
-          </div>
-          <Button onClick={() => handleOpenModal()}>
-            <Plus className="mr-2 h-4 w-4" />
-            Nuevo Grupo
-          </Button>
-        </div>
+          </Link>
+        </Button>
       </div>
 
-      {/* Tabla */}
-      <DataTable columns={columns} data={grupos} searchKey="nombre" searchPlaceholder="Buscar grupos..." />
+      {/* Título y descripción */}
+      <div className="flex items-center justify-between">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <Package className="h-6 w-6 text-primary" />
+            <h1 className="text-3xl font-bold tracking-tight">Grupos de Productos</h1>
+          </div>
+          <p className="text-muted-foreground">Gestiona las categorías principales de productos del restaurante</p>
+        </div>
+        <Button onClick={() => setIsModalOpen(true)}>
+          <Plus className="h-4 w-4 mr-2" />
+          Nuevo Grupo
+        </Button>
+      </div>
 
-      {/* Modal */}
-      <GrupoFormModal isOpen={isModalOpen} onClose={handleCloseModal} grupo={selectedGrupo} />
+      {/* Tabla de datos */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Lista de Grupos de Productos</CardTitle>
+          <CardDescription>Administra las categorías principales de productos de tu restaurante</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <DataTable
+            columns={columns}
+            data={grupos}
+            searchKey="nombre"
+            searchPlaceholder="Buscar por nombre..."
+          />
+        </CardContent>
+      </Card>
+
+      {/* Modal de formulario */}
+      <GrupoFormModal isOpen={isModalOpen} onClose={handleCloseModal} grupo={editingGrupo || undefined} />
     </div>
   )
 }

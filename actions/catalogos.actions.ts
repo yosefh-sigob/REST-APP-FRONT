@@ -14,6 +14,7 @@ import type { IUnidad, ICreateUnidad, IUpdateUnidad } from "@/interfaces/unidad.
 import type { IAlmacen, ICreateAlmacen, IUpdateAlmacen } from "@/interfaces/almacen.interface"
 import type { ITipoCliente, ICreateTipoCliente, IUpdateTipoCliente } from "@/interfaces/tipos-cliente.interface"
 import type { IMetodoPago, ICreateMetodoPago, IUpdateMetodoPago } from "@/interfaces/metodos-pago.interface"
+import type { IEstadoMesa, ICreateEstadoMesa, IUpdateEstadoMesa } from "@/interfaces/estados-mesa.interface"
 
 // Importar datos mock
 import areasProduccionData from "@/data/areas-produccion.json"
@@ -23,6 +24,7 @@ import unidadesData from "@/data/unidades.json"
 import almacenesData from "@/data/almacenes.json"
 import tiposClienteData from "@/data/tipos-cliente.json"
 import metodosPagoData from "@/data/metodos-pago.json"
+import estadosMesaData from "@/data/estados-mesa.json"
 
 // ============================================================================
 // ÁREAS DE PRODUCCIÓN
@@ -426,7 +428,7 @@ export async function createAlmacen(data: ICreateAlmacen): Promise<{ success: bo
     await new Promise((resolve) => setTimeout(resolve, 500))
 
     const existingAlmacen = almacenesData.find(
-      (almacen) => almacen.clave_almacen.toLowerCase() === data.clave_almacen.toLowerCase(),
+      (almacen) => almacen.clave.toLowerCase() === data.clave.toLowerCase(),
     )
     if (existingAlmacen) {
       return {
@@ -452,9 +454,9 @@ export async function updateAlmacen(id: string, data: IUpdateAlmacen): Promise<{
   try {
     await new Promise((resolve) => setTimeout(resolve, 500))
 
-    if (data.clave_almacen) {
+    if (data.clave) {
       const existingAlmacen = almacenesData.find(
-        (almacen) => almacen.id !== id && almacen.clave_almacen.toLowerCase() === data.clave_almacen.toLowerCase(),
+        (almacen) => almacen.id !== id && almacen.clave.toLowerCase() === data.clave!.toLowerCase(),
       )
       if (existingAlmacen) {
         return {
@@ -549,7 +551,7 @@ export async function updateTipoCliente(
 
     if (data.nombre) {
       const existingTipo = tiposClienteData.find(
-        (tipo) => tipo.id !== id && tipo.nombre.toLowerCase() === data.nombre.toLowerCase(),
+        (tipo) => tipo.id !== id && tipo.nombre.toLowerCase() === data.nombre!.toLowerCase(),
       )
       if (existingTipo) {
         return {
@@ -644,7 +646,7 @@ export async function updateMetodoPago(
 
     if (data.nombre) {
       const existingMetodo = metodosPagoData.find(
-        (metodo) => metodo.id !== id && metodo.nombre.toLowerCase() === data.nombre.toLowerCase(),
+        (metodo) => metodo.id !== id && metodo.nombre.toLowerCase() === data.nombre!.toLowerCase(),
       )
       if (existingMetodo) {
         return {
@@ -680,6 +682,99 @@ export async function deleteMetodoPago(id: string): Promise<{ success: boolean; 
     return {
       success: false,
       message: "Error al eliminar el método de pago",
+    }
+  }
+}
+
+// ============================================================================
+// ESTADOS DE MESA
+// ============================================================================
+
+export async function getEstadosMesa(): Promise<{ success: boolean; data: IEstadoMesa[]; message: string }> {
+  try {
+    await new Promise((resolve) => setTimeout(resolve, 100))
+    return {
+      success: true,
+      data: estadosMesaData as IEstadoMesa[],
+      message: "Estados de mesa obtenidos exitosamente",
+    }
+  } catch (error) {
+    return {
+      success: false,
+      data: [],
+      message: "Error al obtener los estados de mesa",
+    }
+  }
+}
+
+export async function createEstadoMesa(data: ICreateEstadoMesa): Promise<{ success: boolean; message: string }> {
+  try {
+    await new Promise((resolve) => setTimeout(resolve, 500))
+
+    const existingEstado = estadosMesaData.find((estado) => estado.nombre.toLowerCase() === data.nombre.toLowerCase())
+    if (existingEstado) {
+      return {
+        success: false,
+        message: "Ya existe un estado de mesa con ese nombre",
+      }
+    }
+
+    revalidatePath("/catalogos/estados-mesa")
+    return {
+      success: true,
+      message: "Estado de mesa creado exitosamente",
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: "Error al crear el estado de mesa",
+    }
+  }
+}
+
+export async function updateEstadoMesa(
+  id: string,
+  data: IUpdateEstadoMesa,
+): Promise<{ success: boolean; message: string }> {
+  try {
+    await new Promise((resolve) => setTimeout(resolve, 500))
+
+    const existingEstado = estadosMesaData.find(
+      (estado) => estado.id !== id && estado.nombre.toLowerCase() === data.nombre.toLowerCase(),
+    )
+    if (existingEstado) {
+      return {
+        success: false,
+        message: "Ya existe un estado de mesa con ese nombre",
+      }
+    }
+
+    revalidatePath("/catalogos/estados-mesa")
+    return {
+      success: true,
+      message: "Estado de mesa actualizado exitosamente",
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: "Error al actualizar el estado de mesa",
+    }
+  }
+}
+
+export async function deleteEstadoMesa(id: string): Promise<{ success: boolean; message: string }> {
+  try {
+    await new Promise((resolve) => setTimeout(resolve, 500))
+
+    revalidatePath("/catalogos/estados-mesa")
+    return {
+      success: true,
+      message: "Estado de mesa eliminado exitosamente",
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: "Error al eliminar el estado de mesa",
     }
   }
 }

@@ -1,37 +1,37 @@
 [
   {
     "id": "GRP-001",
+    "clave": "BEV",
     "nombre": "Bebidas Calientes",
     "descripcion": "Cafés, tés e infusiones.",
-    "area_produccion_id": "AREA-002",
     "activo": true
   },
   {
     "id": "GRP-002",
+    "clave": "BEF",
     "nombre": "Bebidas Frias",
     "descripcion": "Refrescos, jugos y aguas frescas.",
-    "area_produccion_id": "AREA-002",
     "activo": true
   },
   {
     "id": "GRP-003",
+    "clave": "ENT",
     "nombre": "Entradas",
     "descripcion": "Aperitivos y platos para empezar.",
-    "area_produccion_id": "AREA-001",
     "activo": true
   },
   {
     "id": "GRP-004",
+    "clave": "PLA",
     "nombre": "Platos Fuertes",
     "descripcion": "Platos principales de la casa.",
-    "area_produccion_id": "AREA-001",
     "activo": false
   },
   {
     "id": "GRP-005",
+    "clave": "POS",
     "nombre": "Postres",
     "descripcion": "Dulces y postres para finalizar.",
-    "area_produccion_id": "AREA-003",
     "activo": true
   }
 ]

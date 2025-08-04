@@ -23,54 +23,65 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { deleteAreaProduccion } from "@/actions/catalogos.actions"
+import { deleteEstadoMesa } from "@/actions/catalogos.actions"
 import { toast } from "@/hooks/use-toast"
-import type { IAreaProduccion } from "@/interfaces/areaProduccion.interface"
+import type { IEstadoMesa } from "@/interfaces/estados-mesa.interface"
 
-export const areasProduccionColumns = (onEdit: (area: IAreaProduccion) => void): ColumnDef<IAreaProduccion>[] => [
+export const estadosMesaColumns = (onEdit: (estado: IEstadoMesa) => void): ColumnDef<IEstadoMesa>[] => [
   {
-    accessorKey: "clave",
-    header: "Clave",
-    cell: ({ row }) => <div className="font-mono font-medium">{row.getValue("clave")}</div>,
+    accessorKey: "nombre",
+    header: "Nombre",
+    cell: ({ row }) => <div className="font-medium">{row.getValue("nombre")}</div>,
   },
   {
     accessorKey: "descripcion",
     header: "Descripción",
-    cell: ({ row }) => <div className="font-medium">{row.getValue("descripcion")}</div>,
-  },
-  {
-    accessorKey: "impresora",
-    header: "Impresora",
     cell: ({ row }) => {
-      const impresora = row.getValue("impresora") as string
+      const descripcion = row.getValue("descripcion") as string
       return (
         <div className="text-sm">
-          {impresora && impresora.trim() !== "" ? (
-            <span className="font-mono text-blue-600">{impresora}</span>
+          {descripcion && descripcion.trim() !== "" ? (
+            <span>{descripcion}</span>
           ) : (
-            <span className="text-muted-foreground italic">Sin impresora</span>
+            <span className="text-muted-foreground italic">Sin descripción</span>
           )}
         </div>
       )
     },
   },
   {
-    accessorKey: "activa",
+    accessorKey: "color",
+    header: "Color",
+    cell: ({ row }) => {
+      const color = row.getValue("color") as string
+      return (
+        <div className="flex items-center gap-2">
+          <div 
+            className="w-4 h-4 rounded-full border" 
+            style={{ backgroundColor: color }}
+          />
+          <span className="font-mono text-sm">{color}</span>
+        </div>
+      )
+    },
+  },
+  {
+    accessorKey: "activo",
     header: "Estado",
     cell: ({ row }) => {
-      const activa = row.getValue("activa") as boolean
-      return <Badge variant={activa ? "default" : "secondary"}>{activa ? "Activa" : "Inactiva"}</Badge>
+      const activo = row.getValue("activo") as boolean
+      return <Badge variant={activo ? "default" : "secondary"}>{activo ? "Activo" : "Inactivo"}</Badge>
     },
   },
   {
     id: "actions",
     header: "Acciones",
     cell: ({ row }) => {
-      const area = row.original
+      const estado = row.original
 
       const handleDelete = async () => {
         try {
-          const result = await deleteAreaProduccion(area.id)
+          const result = await deleteEstadoMesa(estado.id)
           if (result.success) {
             toast({
               title: "Éxito",
@@ -86,7 +97,7 @@ export const areasProduccionColumns = (onEdit: (area: IAreaProduccion) => void):
         } catch (error) {
           toast({
             title: "Error",
-            description: "Ocurrió un error al eliminar el área de producción.",
+            description: "Ocurrió un error al eliminar el estado de mesa.",
             variant: "destructive",
           })
         }
@@ -103,7 +114,7 @@ export const areasProduccionColumns = (onEdit: (area: IAreaProduccion) => void):
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Acciones</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => onEdit(area)}>
+            <DropdownMenuItem onClick={() => onEdit(estado)}>
               <Edit className="mr-2 h-4 w-4" />
               Editar
             </DropdownMenuItem>
@@ -118,8 +129,8 @@ export const areasProduccionColumns = (onEdit: (area: IAreaProduccion) => void):
                 <AlertDialogHeader>
                   <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
                   <AlertDialogDescription>
-                    Esta acción no se puede deshacer. Se eliminará permanentemente el área de producción{" "}
-                    <strong>{area.descripcion}</strong>.
+                    Esta acción no se puede deshacer. Se eliminará permanentemente el estado de mesa{" "}
+                    <strong>{estado.nombre}</strong>.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>

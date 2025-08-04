@@ -1,55 +1,80 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
+import { ArrowLeft, Plus, Warehouse } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { PlusCircle, ArrowLeft } from "lucide-react"
-import { useRouter } from "next/navigation"
-import type { IGetAlmacen } from "@/interfaces/almacen.interface"
-import { createColumns } from "./almacenes-columns"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { DataTable } from "@/components/ui/data-table"
 import AlmacenFormModal from "./almacen-form-modal"
+import { createColumns } from "./almacenes-columns"
+import type { IGetAlmacen } from "@/interfaces/almacen.interface"
 
 interface AlmacenesViewProps {
   almacenes: IGetAlmacen[]
 }
 
 export default function AlmacenesView({ almacenes = [] }: AlmacenesViewProps) {
-  const router = useRouter()
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [selectedAlmacen, setSelectedAlmacen] = useState<IGetAlmacen | null>(null)
+  const [editingAlmacen, setEditingAlmacen] = useState<IGetAlmacen | null>(null)
 
-  const handleOpenModal = (almacen?: IGetAlmacen) => {
-    setSelectedAlmacen(almacen || null)
+  const handleEdit = (almacen: IGetAlmacen) => {
+    setEditingAlmacen(almacen)
     setIsModalOpen(true)
   }
 
   const handleCloseModal = () => {
-    setSelectedAlmacen(null)
     setIsModalOpen(false)
+    setEditingAlmacen(null)
   }
 
-  const columns = createColumns({ onEdit: handleOpenModal })
+  const columns = createColumns({ onEdit: handleEdit })
 
   return (
-    <div className="container mx-auto p-4 sm:p-6 md:p-8">
-      <Button variant="ghost" onClick={() => router.push("/catalogos")} className="mb-4">
-        <ArrowLeft className="mr-2 h-4 w-4" />
-        Volver a Catálogos
-      </Button>
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Gestión de Almacenes</h1>
-          <p className="text-muted-foreground">Crea, edita y administra los almacenes de tu restaurante.</p>
+    <div className="space-y-6">
+      {/* Header con botón de regreso */}
+      <div className="flex items-center gap-4">
+        <Button variant="outline" size="sm" asChild>
+          <Link href="/catalogos">
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Volver a Catálogos
+          </Link>
+        </Button>
+      </div>
+
+      {/* Título y descripción */}
+      <div className="flex items-center justify-between">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <Warehouse className="h-6 w-6 text-primary" />
+            <h1 className="text-3xl font-bold tracking-tight">Almacenes</h1>
+          </div>
+          <p className="text-muted-foreground">Gestiona las ubicaciones de almacenamiento de inventario</p>
         </div>
-        <Button onClick={() => handleOpenModal()}>
-          <PlusCircle className="mr-2 h-4 w-4" />
+        <Button onClick={() => setIsModalOpen(true)}>
+          <Plus className="h-4 w-4 mr-2" />
           Nuevo Almacén
         </Button>
       </div>
 
-      <DataTable columns={columns} data={almacenes} filterColumn="Nombre" />
+      {/* Tabla de datos */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Lista de Almacenes</CardTitle>
+          <CardDescription>Administra las ubicaciones de almacenamiento de tu restaurante</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <DataTable
+            columns={columns}
+            data={almacenes}
+            searchKey="Nombre"
+            searchPlaceholder="Buscar por nombre..."
+          />
+        </CardContent>
+      </Card>
 
-      {isModalOpen && <AlmacenFormModal isOpen={isModalOpen} onClose={handleCloseModal} almacen={selectedAlmacen} />}
+      {/* Modal de formulario */}
+      <AlmacenFormModal isOpen={isModalOpen} onClose={handleCloseModal} almacen={editingAlmacen} />
     </div>
   )
 }
