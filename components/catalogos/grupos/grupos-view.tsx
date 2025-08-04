@@ -1,68 +1,63 @@
 "use client"
 
 import { useState } from "react"
-import Link from "next/link"
-import { ArrowLeft, PlusCircle } from "lucide-react"
-import type { Grupo } from "@/interfaces/grupos.interface"
 import { Button } from "@/components/ui/button"
 import { DataTable } from "@/components/ui/data-table"
+import { ArrowLeft, Plus } from "lucide-react"
+import Link from "next/link"
 import { columns } from "./grupos-columns"
 import { GrupoFormModal } from "./grupo-form-modal"
+import type { Grupo } from "@/interfaces/grupos.interface"
 
 interface GruposViewProps {
-  initialData: Grupo[]
-  areasProduccion: { id: string; nombre: string }[]
+  grupos: Grupo[]
 }
 
-export function GruposView({ initialData, areasProduccion }: GruposViewProps) {
+export function GruposView({ grupos }: GruposViewProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [selectedGrupo, setSelectedGrupo] = useState<Grupo | null>(null)
+  const [editingGrupo, setEditingGrupo] = useState<Grupo | null>(null)
 
   const handleOpenModal = (grupo?: Grupo) => {
-    setSelectedGrupo(grupo || null)
+    setEditingGrupo(grupo || null)
     setIsModalOpen(true)
   }
 
   const handleCloseModal = () => {
-    setSelectedGrupo(null)
     setIsModalOpen(false)
+    setEditingGrupo(null)
   }
 
-  // Pasar `handleOpenModal` a las columnas a través del `meta` de la tabla
-  const tableColumns = columns.map((col) => {
-    if (col.id === "actions") {
-      return { ...col, meta: { ...col.meta, handleOpenModal } }
-    }
-    return col
-  })
+  // Crear columnas con la función de edición
+  const tableColumns = columns(handleOpenModal)
 
   return (
     <div className="p-4 sm:p-6 md:p-8">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <Link href="/catalogos" className="flex items-center text-sm text-gray-500 hover:text-gray-700 mb-2">
-            <ArrowLeft className="h-4 w-4 mr-1" />
+      {/* Header */}
+      <div className="mb-6">
+        <Link href="/catalogos">
+          <Button variant="ghost" className="mb-4">
+            <ArrowLeft className="mr-2 h-4 w-4" />
             Volver a Catálogos
-          </Link>
-          <h1 className="text-2xl font-bold">Gestión de Grupos</h1>
-          <p className="text-muted-foreground">Crea, edita y elimina los grupos de productos.</p>
+          </Button>
+        </Link>
+
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Grupos de Productos</h1>
+            <p className="text-gray-600 mt-1">Gestiona las categorías principales de productos del menú</p>
+          </div>
+          <Button onClick={() => handleOpenModal()}>
+            <Plus className="mr-2 h-4 w-4" />
+            Nuevo Grupo
+          </Button>
         </div>
-        <Button onClick={() => handleOpenModal()}>
-          <PlusCircle className="h-4 w-4 mr-2" />
-          Nuevo Grupo
-        </Button>
       </div>
 
-      <DataTable columns={tableColumns} data={initialData} filterColumnId="nombre" />
+      {/* Tabla */}
+      <DataTable columns={tableColumns} data={grupos} searchKey="descripcion" searchPlaceholder="Buscar grupos..." />
 
-      {isModalOpen && (
-        <GrupoFormModal
-          isOpen={isModalOpen}
-          onClose={handleCloseModal}
-          grupo={selectedGrupo}
-          areasProduccion={areasProduccion}
-        />
-      )}
+      {/* Modal */}
+      <GrupoFormModal isOpen={isModalOpen} onClose={handleCloseModal} grupo={editingGrupo} />
     </div>
   )
 }

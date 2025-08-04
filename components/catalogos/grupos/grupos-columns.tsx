@@ -1,98 +1,69 @@
 "use client"
 
-import { useState } from "react"
 import type { ColumnDef } from "@tanstack/react-table"
-import { MoreHorizontal, ArrowUpDown } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { MoreHorizontal, Edit, Trash2 } from "lucide-react"
+import { eliminarGrupo } from "@/actions/catalogos.actions"
 import { toast } from "sonner"
 import type { Grupo } from "@/interfaces/grupos.interface"
-import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Badge } from "@/components/ui/badge"
-import { deleteGrupo } from "@/actions/catalogos.actions"
-import { GrupoFormModal } from "./grupo-form-modal"
 
-function RowActions({ grupo }: { grupo: Grupo }) {
-  const [isModalOpen, setIsModalOpen] = useState(false)
-
-  const handleDelete = async () => {
-    const confirmation = confirm("¿Estás seguro de que deseas eliminar este grupo?")
-    if (confirmation) {
-      const result = await deleteGrupo(grupo.id)
-      if (result.success) {
-        toast.success(result.message)
-      } else {
-        toast.error(result.message)
-      }
-    }
-  }
-
-  // Simulación de áreas de producción
-  const areasProduccion = [
-    { id: "AREA-001", nombre: "Cocina" },
-    { id: "AREA-002", nombre: "Bar" },
-    { id: "AREA-003", nombre: "Postres" },
-  ]
-
-  return (
-    <>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Abrir menú</span>
-            <MoreHorizontal className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-          <DropdownMenuItem onClick={() => navigator.clipboard.writeText(grupo.id)}>Copiar ID</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => setIsModalOpen(true)}>Editar</DropdownMenuItem>
-          <DropdownMenuItem onClick={handleDelete} className="text-red-500">
-            Eliminar
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-      <GrupoFormModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        grupo={grupo}
-        areasProduccion={areasProduccion}
-      />
-    </>
-  )
-}
-
-export const columns: ColumnDef<Grupo>[] = [
+export const columns = (onEdit: (grupo: Grupo) => void): ColumnDef<Grupo>[] => [
   {
-    accessorKey: "nombre",
-    header: ({ column }) => (
-      <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-        Nombre
-        <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
+    accessorKey: "clave",
+    header: "Clave",
+    cell: ({ row }) => <div className="font-medium">{row.getValue("clave")}</div>,
   },
   {
     accessorKey: "descripcion",
     header: "Descripción",
+    cell: ({ row }) => <div className="max-w-[200px] truncate">{row.getValue("descripcion")}</div>,
   },
   {
     accessorKey: "activo",
     header: "Estado",
     cell: ({ row }) => {
-      const activo = row.getValue("activo")
-      return <Badge variant={activo ? "default" : "destructive"}>{activo ? "Activo" : "Inactivo"}</Badge>
+      const activo = row.getValue("activo") as boolean
+      return <Badge variant={activo ? "default" : "secondary"}>{activo ? "Activo" : "Inactivo"}</Badge>
     },
   },
   {
     id: "actions",
-    cell: ({ row }) => <RowActions grupo={row.original} />,
+    cell: ({ row }) => {
+      const grupo = row.original
+
+      const handleDelete = async () => {
+        if (confirm("¿Estás seguro de que deseas eliminar este grupo?")) {
+          try {
+            await eliminarGrupo(grupo.id)
+            toast.success("Grupo eliminado correctamente")
+          } catch (error) {
+            toast.error("Error al eliminar el grupo")
+          }
+        }
+      }
+
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Abrir menú</span>
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => onEdit(grupo)}>
+              <Edit className="mr-2 h-4 w-4" />
+              Editar
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handleDelete} className="text-red-600">
+              <Trash2 className="mr-2 h-4 w-4" />
+              Eliminar
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )
+    },
   },
 ]

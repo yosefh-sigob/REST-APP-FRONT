@@ -1,149 +1,119 @@
 "use client"
 
-import {
-  Database,
-  LayoutGrid,
-  Shapes,
-  Ruler,
-  Warehouse,
-  Users,
-  CreditCard,
-  Armchair,
-  ClipboardList,
-  CalendarClock,
-} from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Database, ArrowRight } from "lucide-react"
 import Link from "next/link"
 
-interface CatalogoData {
+interface CatalogoItem {
   title: string
   count: number
-  status: "active" | "pending" | "inactive"
+  status: "active" | "inactive" | "pending"
 }
 
 interface CatalogosViewProps {
-  catalogos: CatalogoData[]
+  catalogos: CatalogoItem[]
 }
 
-const catalogoDetails = {
-  "Grupos de Productos": {
-    description: "Categorías principales de productos.",
-    icon: Shapes,
-    href: "/catalogos/grupos",
-  },
-  Subgrupos: {
-    description: "Subcategorías dentro de cada grupo.",
-    icon: LayoutGrid,
-    href: "/catalogos/subgrupos",
-  },
-  "Unidades de Medida": {
-    description: "Unidades para inventario y recetas (kg, lt, pz).",
-    icon: Ruler,
-    href: "/catalogos/unidades",
-  },
-  "Áreas de Producción": {
-    description: "Define las áreas como Cocina, Bar, etc.",
-    icon: Warehouse,
-    href: "/catalogos/areas-produccion",
-  },
-  Almacenes: {
-    description: "Gestiona las diferentes bodegas o almacenes.",
-    icon: Database,
-    href: "/catalogos/almacenes",
-  },
-  "Tipos de Cliente": {
-    description: "Clasifica a tus clientes (Regular, VIP, etc.).",
-    icon: Users,
-    href: "/catalogos/tipos-cliente",
-  },
-  "Métodos de Pago": {
-    description: "Configura los métodos de pago aceptados.",
-    icon: CreditCard,
-    href: "/catalogos/metodos-pago",
-  },
-  "Estados de Mesa": {
-    description: "Define los estados de las mesas (Disponible, Ocupada).",
-    icon: Armchair,
-    href: "/catalogos/estados-mesa",
-  },
-  "Estados de Orden": {
-    description: "Gestiona los estados de las órdenes (Pendiente, Lista).",
-    icon: ClipboardList,
-    href: "/catalogos/estados-orden",
-  },
-  "Tipos de Reservación": {
-    description: "Configura los tipos de reservaciones.",
-    icon: CalendarClock,
-    href: "/catalogos/tipos-reservacion",
-  },
-} as const
+const catalogoRoutes: Record<string, string> = {
+  "Grupos de Productos": "/catalogos/grupos",
+  Subgrupos: "/catalogos/subgrupos",
+  "Unidades de Medida": "/catalogos/unidades",
+  "Áreas de Producción": "/catalogos/areas-produccion",
+  Almacenes: "/catalogos/almacenes",
+  "Tipos de Cliente": "/catalogos/tipos-cliente",
+  "Métodos de Pago": "/catalogos/metodos-pago",
+  "Estados de Mesa": "/catalogos/estados-mesa",
+  "Estados de Orden": "/catalogos/estados-orden",
+  "Tipos de Reservación": "/catalogos/tipos-reservacion",
+}
+
+const getStatusColor = (status: CatalogoItem["status"]) => {
+  switch (status) {
+    case "active":
+      return "bg-green-100 text-green-800"
+    case "inactive":
+      return "bg-red-100 text-red-800"
+    case "pending":
+      return "bg-yellow-100 text-yellow-800"
+    default:
+      return "bg-gray-100 text-gray-800"
+  }
+}
+
+const getStatusText = (status: CatalogoItem["status"]) => {
+  switch (status) {
+    case "active":
+      return "Activo"
+    case "inactive":
+      return "Inactivo"
+    case "pending":
+      return "Pendiente"
+    default:
+      return "Desconocido"
+  }
+}
 
 export function CatalogosView({ catalogos }: CatalogosViewProps) {
-  const enrichedCatalogos = catalogos.map((c) => ({
-    ...c,
-    ...(catalogoDetails[c.title as keyof typeof catalogoDetails] || {}),
-  }))
-
-  const getBadgeVariant = (status: string) => {
-    switch (status) {
-      case "active":
-        return "default"
-      case "pending":
-        return "secondary"
-      case "inactive":
-        return "destructive"
-      default:
-        return "outline"
-    }
-  }
-
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case "active":
-        return "Activo"
-      case "pending":
-        return "Pendiente"
-      case "inactive":
-        return "Inactivo"
-      default:
-        return "Desconocido"
-    }
-  }
-
   return (
     <div className="p-4 sm:p-6 md:p-8">
-      <header className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-          <Database className="h-8 w-8" />
-          Catálogos del Sistema
-        </h1>
-        <p className="text-muted-foreground mt-1">Gestiona los catálogos maestros que alimentan el sistema.</p>
-      </header>
+      {/* Header */}
+      <div className="mb-8">
+        <div className="flex items-center gap-3 mb-2">
+          <Database className="h-8 w-8 text-blue-600" />
+          <h1 className="text-3xl font-bold text-gray-900">Catálogos Maestros</h1>
+        </div>
+        <p className="text-gray-600">Gestiona todos los catálogos maestros del sistema de restaurante</p>
+      </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {enrichedCatalogos.map((catalogo) => (
-          <Link
-            href={catalogo.href || "#"}
-            key={catalogo.title}
-            className="transform transition-transform duration-300 hover:scale-105"
-          >
-            <Card className="h-full hover:shadow-lg">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">{catalogo.title}</CardTitle>
-                {catalogo.icon && <catalogo.icon className="h-4 w-4 text-muted-foreground" />}
-              </CardHeader>
-              <CardContent>
-                <p className="text-xs text-muted-foreground h-8">{catalogo.description}</p>
-                <div className="flex justify-between items-center mt-4">
-                  <Badge variant={getBadgeVariant(catalogo.status)}>{getStatusText(catalogo.status)}</Badge>
-                  <div className="text-sm font-semibold">{catalogo.count} registros</div>
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
-        ))}
+      {/* Grid de Catálogos */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {catalogos.map((catalogo) => {
+          const route = catalogoRoutes[catalogo.title]
+
+          return (
+            <Link key={catalogo.title} href={route || "#"}>
+              <Card className="h-full hover:shadow-lg transition-all duration-200 cursor-pointer group border-gray-200 hover:border-blue-300">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
+                      {catalogo.title}
+                    </CardTitle>
+                    <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-blue-600 transition-colors" />
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="text-2xl font-bold text-gray-900">{catalogo.count}</span>
+                      <span className="text-sm text-gray-500">registros</span>
+                    </div>
+                    <Badge className={getStatusColor(catalogo.status)}>{getStatusText(catalogo.status)}</Badge>
+                  </div>
+                  <CardDescription className="mt-2 text-sm">{getDescription(catalogo.title)}</CardDescription>
+                </CardContent>
+              </Card>
+            </Link>
+          )
+        })}
       </div>
     </div>
   )
+}
+
+function getDescription(title: string): string {
+  const descriptions: Record<string, string> = {
+    "Grupos de Productos": "Categorías principales de productos del menú",
+    Subgrupos: "Subcategorías dentro de cada grupo de productos",
+    "Unidades de Medida": "Unidades para inventario y recetas",
+    "Áreas de Producción": "Áreas donde se preparan los productos",
+    Almacenes: "Ubicaciones de almacenamiento de inventario",
+    "Tipos de Cliente": "Clasificación de clientes del restaurante",
+    "Métodos de Pago": "Formas de pago aceptadas",
+    "Estados de Mesa": "Estados posibles de las mesas",
+    "Estados de Orden": "Estados del flujo de órdenes",
+    "Tipos de Reservación": "Clasificación de reservaciones",
+  }
+
+  return descriptions[title] || "Gestión de catálogo maestro"
 }

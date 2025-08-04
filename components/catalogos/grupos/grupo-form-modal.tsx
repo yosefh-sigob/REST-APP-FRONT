@@ -1,52 +1,77 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { toast } from "sonner"
-import type { Grupo } from "@/interfaces/grupos.interface"
-import { type GrupoFormValues, grupoSchema } from "@/schemas/catalogos.schemas"
-import { createGrupo, updateGrupo } from "@/actions/catalogos.actions"
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Switch } from "@/components/ui/switch"
+import { Button } from "@/components/ui/button"
+import { crearGrupo, actualizarGrupo } from "@/actions/catalogos.actions"
+import { grupoSchema, type GrupoFormData } from "@/schemas/catalogos.schemas"
+import { toast } from "sonner"
+import type { Grupo } from "@/interfaces/grupos.interface"
 
 interface GrupoFormModalProps {
   isOpen: boolean
   onClose: () => void
-  grupo?: Grupo
-  areasProduccion: { id: string; nombre: string }[]
+  grupo?: Grupo | null
 }
 
-export function GrupoFormModal({ isOpen, onClose, grupo, areasProduccion }: GrupoFormModalProps) {
-  const form = useForm<GrupoFormValues>({
+export function GrupoFormModal({ isOpen, onClose, grupo }: GrupoFormModalProps) {
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const isEditing = !!grupo
+
+  const form = useForm<GrupoFormData>({
     resolver: zodResolver(grupoSchema),
     defaultValues: {
-      nombre: grupo?.nombre || "",
-      descripcion: grupo?.descripcion || "",
-      area_produccion_id: grupo?.area_produccion_id || "",
-      activo: grupo?.activo ?? true,
+      clave: "",
+      descripcion: "",
+      activo: true,
     },
   })
 
-  const onSubmit = async (data: GrupoFormValues) => {
-    const result = grupo ? await updateGrupo(grupo.id, data) : await createGrupo(data)
-
-    if (result.success) {
-      toast.success(result.message)
-      onClose()
+  useEffect(() => {
+    if (grupo) {
+      form.reset({
+        clave: grupo.clave,
+        descripcion: grupo.descripcion,
+        activo: grupo.activo,
+      })
     } else {
-      toast.error(result.message)
+      form.reset({
+        clave: "",
+        descripcion: "",
+        activo: true,
+      })
+    }
+  }, [grupo, form])
+
+  const onSubmit = async (data: GrupoFormData) => {
+    setIsSubmitting(true)
+    try {
+      // Convertir clave a mayúsculas
+      const formData = {
+        ...data,
+        clave: data.clave.toUpperCase(),
+      }
+
+      if (isEditing && grupo) {
+        await actualizarGrupo(grupo.id, formData)
+        toast.success("Grupo actualizado correctamente")
+      } else {
+        await crearGrupo(formData)
+        toast.success("Grupo creado correctamente")
+      }
+
+      onClose()
+      form.reset()
+    } catch (error) {
+      toast.error(isEditing ? "Error al actualizar el grupo" : "Error al crear el grupo")
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -54,26 +79,30 @@ export function GrupoFormModal({ isOpen, onClose, grupo, areasProduccion }: Grup
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{grupo ? "Editar Grupo" : "Crear Grupo"}</DialogTitle>
-          <DialogDescription>
-            {grupo ? "Actualiza los detalles del grupo." : "Completa el formulario para crear un nuevo grupo."}
-          </DialogDescription>
+          <DialogTitle>{isEditing ? "Editar Grupo" : "Nuevo Grupo"}</DialogTitle>
         </DialogHeader>
+
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
-              name="nombre"
+              name="clave"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Nombre</FormLabel>
+                  <FormLabel>Clave</FormLabel>
                   <FormControl>
-                    <Input placeholder="Ej: Bebidas" {...field} />
+                    <Input
+                      placeholder="Ej: BEB"
+                      {...field}
+                      onChange={(e) => field.onChange(e.target.value.toUpperCase())}
+                      className="uppercase"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
               name="descripcion"
@@ -81,58 +110,37 @@ export function GrupoFormModal({ isOpen, onClose, grupo, areasProduccion }: Grup
                 <FormItem>
                   <FormLabel>Descripción</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Describe el grupo..." {...field} />
+                    <Textarea placeholder="Descripción del grupo" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="area_produccion_id"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Área de Producción</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecciona un área" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {areasProduccion.map((area) => (
-                        <SelectItem key={area.id} value={area.id}>
-                          {area.nombre}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+
             <FormField
               control={form.control}
               name="activo"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                  <FormControl>
-                    <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel>Activo</FormLabel>
+                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                  <div className="space-y-0.5">
+                    <FormLabel>Estado</FormLabel>
+                    <div className="text-sm text-muted-foreground">{field.value ? "Activo" : "Inactivo"}</div>
                   </div>
+                  <FormControl>
+                    <Switch checked={field.value} onCheckedChange={field.onChange} />
+                  </FormControl>
                 </FormItem>
               )}
             />
-            <DialogFooter>
-              <Button type="button" variant="outline" onClick={onClose}>
+
+            <div className="flex justify-end space-x-2 pt-4">
+              <Button type="button" variant="outline" onClick={onClose} disabled={isSubmitting}>
                 Cancelar
               </Button>
-              <Button type="submit" disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting ? "Guardando..." : "Guardar"}
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? (isEditing ? "Actualizando..." : "Creando...") : isEditing ? "Actualizar" : "Crear"}
               </Button>
-            </DialogFooter>
+            </div>
           </form>
         </Form>
       </DialogContent>

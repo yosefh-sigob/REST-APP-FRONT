@@ -21,8 +21,9 @@ export const APP_ROUTES = {
   // Rutas de gestión
   MANAGEMENT: {
     PRODUCTOS: "/productos",
+    CATALOGOS: "/catalogos",
     INVENTARIO: "/inventario",
-    CLIENTES: "/clientes", 
+    CLIENTES: "/clientes",
     MESAS: "/mesas",
     RESERVACIONES: "/reservaciones",
     RECETAS: "/recetas",
@@ -44,15 +45,27 @@ export const APP_ROUTES = {
 export const VALID_ROUTES: string[] = [
   // Rutas públicas
   ...Object.values(APP_ROUTES.PUBLIC),
-  
+
   // Rutas del dashboard
   ...Object.values(APP_ROUTES.DASHBOARD),
-  
+
   // Rutas de gestión
   ...Object.values(APP_ROUTES.MANAGEMENT),
-  
+
   // Rutas de administración
   ...Object.values(APP_ROUTES.ADMIN),
+
+  // Rutas específicas de catálogos
+  "/catalogos/grupos",
+  "/catalogos/subgrupos",
+  "/catalogos/unidades",
+  "/catalogos/areas-produccion",
+  "/catalogos/almacenes",
+  "/catalogos/tipos-cliente",
+  "/catalogos/metodos-pago",
+  "/catalogos/estados-mesa",
+  "/catalogos/estados-orden",
+  "/catalogos/tipos-reservacion",
 ]
 
 /**
@@ -67,9 +80,7 @@ export const PROTECTED_ROUTES: string[] = [
 /**
  * Rutas públicas que no requieren autenticación
  */
-export const PUBLIC_ROUTES: string[] = [
-  ...Object.values(APP_ROUTES.PUBLIC),
-]
+export const PUBLIC_ROUTES: string[] = [...Object.values(APP_ROUTES.PUBLIC)]
 
 /**
  * Verifica si una ruta es válida
@@ -81,7 +92,7 @@ export function isValidRoute(path: string): boolean {
   }
 
   // Verificar rutas que comienzan con las rutas válidas (subrutas)
-  return VALID_ROUTES.some(route => {
+  return VALID_ROUTES.some((route) => {
     if (route === "/") return false // Evitar falsos positivos con la ruta raíz
     return path.startsWith(route + "/")
   })
@@ -91,14 +102,14 @@ export function isValidRoute(path: string): boolean {
  * Verifica si una ruta requiere autenticación
  */
 export function isProtectedRoute(path: string): boolean {
-  return PROTECTED_ROUTES.some(route => path.startsWith(route))
+  return PROTECTED_ROUTES.some((route) => path.startsWith(route))
 }
 
 /**
  * Verifica si una ruta es pública
  */
 export function isPublicRoute(path: string): boolean {
-  return PUBLIC_ROUTES.some(route => path === route || path.startsWith(route))
+  return PUBLIC_ROUTES.some((route) => path === route || path.startsWith(route))
 }
 
 /**
