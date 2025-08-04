@@ -3,274 +3,325 @@
 import { revalidatePath } from "next/cache"
 import type { Grupo } from "@/interfaces/grupos.interface"
 import type { Subgrupo } from "@/interfaces/subgrupos.interface"
-import type { IGetUnidad } from "@/interfaces/unidad.interface"
-import type { IGetAreaProduccion } from "@/interfaces/areaProduccion.interface"
-import {
-  type GrupoFormValues,
-  grupoSchema,
-  type SubgrupoFormValues,
-  subgrupoSchema,
-  type UnidadFormValues,
-  unidadSchema,
-  type AreaProduccionFormValues,
-  areaProduccionSchema,
+import type { Unidad } from "@/interfaces/unidad.interface"
+import type { AreaProduccion } from "@/interfaces/areaProduccion.interface"
+import type {
+  GrupoFormValues,
+  SubgrupoFormValues,
+  UnidadFormValues,
+  AreaProduccionFormValues,
 } from "@/schemas/catalogos.schemas"
-import { generateULID } from "@/lib/utils/ulid"
-import initialGrupos from "@/data/grupos.json"
-import initialSubgrupos from "@/data/subgrupos.json"
-import initialUnidades from "@/data/unidades.json"
-import initialAreasProduccion from "@/data/areas-produccion.json"
+import gruposData from "@/data/grupos.json"
+import subgruposData from "@/data/subgrupos.json"
+import unidadesData from "@/data/unidades.json"
+import areasProduccionData from "@/data/areas-produccion.json"
 
-// --- Simulación de Base de Datos en Memoria ---
-let grupos: Grupo[] = [...initialGrupos]
-let subgrupos: Subgrupo[] = [...initialSubgrupos]
-let unidades: IGetUnidad[] = [...initialUnidades]
-let areasProduccion: IGetAreaProduccion[] = [...initialAreasProduccion]
+// Simulación de base de datos en memoria
+const grupos: Grupo[] = gruposData as Grupo[]
+const subgrupos: Subgrupo[] = subgruposData as Subgrupo[]
+const unidades: Unidad[] = unidadesData as Unidad[]
+const areasProduccion: AreaProduccion[] = areasProduccionData as AreaProduccion[]
 
-// --- Acciones para Grupos ---
+// Función para generar IDs únicos
+function generateId(): string {
+  return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+}
+
+// ============= GRUPOS =============
 
 export async function getGrupos(): Promise<Grupo[]> {
-  await new Promise((resolve) => setTimeout(resolve, 50))
-  return JSON.parse(JSON.stringify(grupos))
+  return grupos
 }
 
-export async function createGrupo(data: GrupoFormValues): Promise<{ success: boolean; message: string }> {
-  const validation = grupoSchema.safeParse(data)
-  if (!validation.success) {
-    const errorMessages = validation.error.issues.map((issue) => issue.message).join(", ")
-    return { success: false, message: `Error de validación: ${errorMessages}` }
+export async function createGrupo(data: GrupoFormValues) {
+  try {
+    // Verificar si ya existe un grupo con el mismo nombre
+    const existingGrupo = grupos.find((g) => g.nombre.toLowerCase() === data.nombre.toLowerCase())
+    if (existingGrupo) {
+      return { success: false, message: "Ya existe un grupo con ese nombre" }
+    }
+
+    const newGrupo: Grupo = {
+      id: generateId(),
+      nombre: data.nombre,
+      descripcion: data.descripcion,
+      area_produccion_id: "AREA-001", // Default area
+      activo: data.activo,
+      fecha_creacion: new Date().toISOString(),
+      fecha_actualizacion: new Date().toISOString(),
+    }
+
+    grupos.push(newGrupo)
+    revalidatePath("/catalogos/grupos")
+    return { success: true, message: "Grupo creado exitosamente" }
+  } catch (error) {
+    return { success: false, message: "Error al crear el grupo" }
   }
+}
 
-  const newGrupo: Grupo = {
-    id: `GRP-${generateULID()}`,
-    ...validation.data,
-    descripcion: validation.data.descripcion || "",
+export async function updateGrupo(id: string, data: GrupoFormValues) {
+  try {
+    const index = grupos.findIndex((g) => g.id === id)
+    if (index === -1) {
+      return { success: false, message: "Grupo no encontrado" }
+    }
+
+    // Verificar si ya existe otro grupo con el mismo nombre
+    const existingGrupo = grupos.find((g) => g.id !== id && g.nombre.toLowerCase() === data.nombre.toLowerCase())
+    if (existingGrupo) {
+      return { success: false, message: "Ya existe un grupo con ese nombre" }
+    }
+
+    grupos[index] = {
+      ...grupos[index],
+      nombre: data.nombre,
+      descripcion: data.descripcion,
+      activo: data.activo,
+      fecha_actualizacion: new Date().toISOString(),
+    }
+
+    revalidatePath("/catalogos/grupos")
+    return { success: true, message: "Grupo actualizado exitosamente" }
+  } catch (error) {
+    return { success: false, message: "Error al actualizar el grupo" }
   }
-
-  grupos.push(newGrupo)
-  revalidatePath("/catalogos/grupos")
-  return { success: true, message: "Grupo creado exitosamente." }
 }
 
-export async function updateGrupo(id: string, data: GrupoFormValues): Promise<{ success: boolean; message: string }> {
-  const validation = grupoSchema.safeParse(data)
-  if (!validation.success) {
-    const errorMessages = validation.error.issues.map((issue) => issue.message).join(", ")
-    return { success: false, message: `Error de validación: ${errorMessages}` }
+export async function deleteGrupo(id: string) {
+  try {
+    const index = grupos.findIndex((g) => g.id === id)
+    if (index === -1) {
+      return { success: false, message: "Grupo no encontrado" }
+    }
+
+    grupos.splice(index, 1)
+    revalidatePath("/catalogos/grupos")
+    return { success: true, message: "Grupo eliminado exitosamente" }
+  } catch (error) {
+    return { success: false, message: "Error al eliminar el grupo" }
   }
-
-  const index = grupos.findIndex((g) => g.id === id)
-  if (index === -1) return { success: false, message: "Grupo no encontrado." }
-
-  grupos[index] = { ...grupos[index], ...validation.data }
-  revalidatePath("/catalogos/grupos")
-  return { success: true, message: "Grupo actualizado exitosamente." }
 }
 
-export async function deleteGrupo(id: string): Promise<{ success: boolean; message: string }> {
-  const initialLength = grupos.length
-  grupos = grupos.filter((g) => g.id !== id)
-  if (grupos.length === initialLength) return { success: false, message: "Grupo no encontrado." }
-
-  revalidatePath("/catalogos/grupos")
-  return { success: true, message: "Grupo eliminado exitosamente." }
-}
-
-// --- Acciones para Subgrupos ---
+// ============= SUBGRUPOS =============
 
 export async function getSubgrupos(): Promise<Subgrupo[]> {
-  await new Promise((resolve) => setTimeout(resolve, 50))
-  return JSON.parse(JSON.stringify(subgrupos))
+  return subgrupos
 }
 
-export async function createSubgrupo(data: SubgrupoFormValues): Promise<{ success: boolean; message: string }> {
-  const validation = subgrupoSchema.safeParse(data)
-  if (!validation.success) {
-    const errorMessages = validation.error.issues.map((issue) => issue.message).join(", ")
-    return { success: false, message: `Error de validación: ${errorMessages}` }
-  }
+export async function createSubgrupo(data: SubgrupoFormValues) {
+  try {
+    const existingSubgrupo = subgrupos.find((s) => s.nombre.toLowerCase() === data.nombre.toLowerCase())
+    if (existingSubgrupo) {
+      return { success: false, message: "Ya existe un subgrupo con ese nombre" }
+    }
 
-  const newSubgrupo: Subgrupo = {
-    id: `SUB-${generateULID()}`,
-    ...validation.data,
-    descripcion: validation.data.descripcion || "",
-  }
+    const newSubgrupo: Subgrupo = {
+      id: generateId(),
+      nombre: data.nombre,
+      descripcion: data.descripcion,
+      grupo_id: data.grupo_id,
+      activo: data.activo,
+      fecha_creacion: new Date().toISOString(),
+      fecha_actualizacion: new Date().toISOString(),
+    }
 
-  subgrupos.push(newSubgrupo)
-  revalidatePath("/catalogos/subgrupos")
-  return { success: true, message: "Subgrupo creado exitosamente." }
+    subgrupos.push(newSubgrupo)
+    revalidatePath("/catalogos/subgrupos")
+    return { success: true, message: "Subgrupo creado exitosamente" }
+  } catch (error) {
+    return { success: false, message: "Error al crear el subgrupo" }
+  }
 }
 
-export async function updateSubgrupo(
-  id: string,
-  data: SubgrupoFormValues,
-): Promise<{ success: boolean; message: string }> {
-  const validation = subgrupoSchema.safeParse(data)
-  if (!validation.success) {
-    const errorMessages = validation.error.issues.map((issue) => issue.message).join(", ")
-    return { success: false, message: `Error de validación: ${errorMessages}` }
+export async function updateSubgrupo(id: string, data: SubgrupoFormValues) {
+  try {
+    const index = subgrupos.findIndex((s) => s.id === id)
+    if (index === -1) {
+      return { success: false, message: "Subgrupo no encontrado" }
+    }
+
+    const existingSubgrupo = subgrupos.find((s) => s.id !== id && s.nombre.toLowerCase() === data.nombre.toLowerCase())
+    if (existingSubgrupo) {
+      return { success: false, message: "Ya existe un subgrupo con ese nombre" }
+    }
+
+    subgrupos[index] = {
+      ...subgrupos[index],
+      nombre: data.nombre,
+      descripcion: data.descripcion,
+      grupo_id: data.grupo_id,
+      activo: data.activo,
+      fecha_actualizacion: new Date().toISOString(),
+    }
+
+    revalidatePath("/catalogos/subgrupos")
+    return { success: true, message: "Subgrupo actualizado exitosamente" }
+  } catch (error) {
+    return { success: false, message: "Error al actualizar el subgrupo" }
   }
-
-  const index = subgrupos.findIndex((s) => s.id === id)
-  if (index === -1) return { success: false, message: "Subgrupo no encontrado." }
-
-  subgrupos[index] = { ...subgrupos[index], ...validation.data }
-  revalidatePath("/catalogos/subgrupos")
-  return { success: true, message: "Subgrupo actualizado exitosamente." }
 }
 
-export async function deleteSubgrupo(id: string): Promise<{ success: boolean; message: string }> {
-  const initialLength = subgrupos.length
-  subgrupos = subgrupos.filter((s) => s.id !== id)
-  if (subgrupos.length === initialLength) return { success: false, message: "Subgrupo no encontrado." }
+export async function deleteSubgrupo(id: string) {
+  try {
+    const index = subgrupos.findIndex((s) => s.id === id)
+    if (index === -1) {
+      return { success: false, message: "Subgrupo no encontrado" }
+    }
 
-  revalidatePath("/catalogos/subgrupos")
-  return { success: true, message: "Subgrupo eliminado exitosamente." }
+    subgrupos.splice(index, 1)
+    revalidatePath("/catalogos/subgrupos")
+    return { success: true, message: "Subgrupo eliminado exitosamente" }
+  } catch (error) {
+    return { success: false, message: "Error al eliminar el subgrupo" }
+  }
 }
 
-// --- Acciones para Unidades de Medida ---
+// ============= UNIDADES =============
 
-export async function getUnidades(): Promise<IGetUnidad[]> {
-  await new Promise((resolve) => setTimeout(resolve, 50))
-  return JSON.parse(JSON.stringify(unidades))
+export async function getUnidades(): Promise<Unidad[]> {
+  return unidades
 }
 
-export async function createUnidad(data: UnidadFormValues): Promise<{ success: boolean; message: string }> {
-  const validation = unidadSchema.safeParse(data)
-  if (!validation.success) {
-    const errorMessages = validation.error.issues.map((issue) => issue.message).join(", ")
-    return { success: false, message: `Error de validación: ${errorMessages}` }
-  }
+export async function createUnidad(data: UnidadFormValues) {
+  try {
+    const existingUnidad = unidades.find((u) => u.clave.toLowerCase() === data.clave.toLowerCase())
+    if (existingUnidad) {
+      return { success: false, message: "Ya existe una unidad con esa clave" }
+    }
 
-  // Verificar que la clave no exista
-  const existingUnidad = unidades.find((u) => u.clave === validation.data.clave)
-  if (existingUnidad) {
-    return { success: false, message: "Ya existe una unidad con esa clave." }
-  }
+    const newUnidad: Unidad = {
+      id: generateId(),
+      clave: data.clave.toUpperCase(),
+      nombre: data.nombre,
+      abreviacion: data.abreviacion,
+      descripcion: data.descripcion,
+      activo: data.activo,
+      fecha_creacion: new Date().toISOString(),
+      fecha_actualizacion: new Date().toISOString(),
+    }
 
-  const newUnidad: IGetUnidad = {
-    id: `UNI-${generateULID()}`,
-    clave: validation.data.clave,
-    nombre: validation.data.nombre,
-    abreviacion: validation.data.abreviacion,
-    descripcion: validation.data.descripcion || "",
-    activo: validation.data.activo,
+    unidades.push(newUnidad)
+    revalidatePath("/catalogos/unidades")
+    return { success: true, message: "Unidad creada exitosamente" }
+  } catch (error) {
+    return { success: false, message: "Error al crear la unidad" }
   }
-
-  unidades.push(newUnidad)
-  revalidatePath("/catalogos/unidades")
-  return { success: true, message: "Unidad creada exitosamente." }
 }
 
-export async function updateUnidad(id: string, data: UnidadFormValues): Promise<{ success: boolean; message: string }> {
-  const validation = unidadSchema.safeParse(data)
-  if (!validation.success) {
-    const errorMessages = validation.error.issues.map((issue) => issue.message).join(", ")
-    return { success: false, message: `Error de validación: ${errorMessages}` }
+export async function updateUnidad(id: string, data: UnidadFormValues) {
+  try {
+    const index = unidades.findIndex((u) => u.id === id)
+    if (index === -1) {
+      return { success: false, message: "Unidad no encontrada" }
+    }
+
+    const existingUnidad = unidades.find((u) => u.id !== id && u.clave.toLowerCase() === data.clave.toLowerCase())
+    if (existingUnidad) {
+      return { success: false, message: "Ya existe una unidad con esa clave" }
+    }
+
+    unidades[index] = {
+      ...unidades[index],
+      clave: data.clave.toUpperCase(),
+      nombre: data.nombre,
+      abreviacion: data.abreviacion,
+      descripcion: data.descripcion,
+      activo: data.activo,
+      fecha_actualizacion: new Date().toISOString(),
+    }
+
+    revalidatePath("/catalogos/unidades")
+    return { success: true, message: "Unidad actualizada exitosamente" }
+  } catch (error) {
+    return { success: false, message: "Error al actualizar la unidad" }
   }
-
-  const index = unidades.findIndex((u) => u.id === id)
-  if (index === -1) return { success: false, message: "Unidad no encontrada." }
-
-  // Verificar que la clave no exista en otra unidad
-  const existingUnidad = unidades.find((u) => u.clave === validation.data.clave && u.id !== id)
-  if (existingUnidad) {
-    return { success: false, message: "Ya existe otra unidad con esa clave." }
-  }
-
-  unidades[index] = {
-    ...unidades[index],
-    clave: validation.data.clave,
-    nombre: validation.data.nombre,
-    abreviacion: validation.data.abreviacion,
-    descripcion: validation.data.descripcion || "",
-    activo: validation.data.activo,
-  }
-
-  revalidatePath("/catalogos/unidades")
-  return { success: true, message: "Unidad actualizada exitosamente." }
 }
 
-export async function deleteUnidad(id: string): Promise<{ success: boolean; message: string }> {
-  const initialLength = unidades.length
-  unidades = unidades.filter((u) => u.id !== id)
-  if (unidades.length === initialLength) return { success: false, message: "Unidad no encontrada." }
+export async function deleteUnidad(id: string) {
+  try {
+    const index = unidades.findIndex((u) => u.id === id)
+    if (index === -1) {
+      return { success: false, message: "Unidad no encontrada" }
+    }
 
-  revalidatePath("/catalogos/unidades")
-  return { success: true, message: "Unidad eliminada exitosamente." }
+    unidades.splice(index, 1)
+    revalidatePath("/catalogos/unidades")
+    return { success: true, message: "Unidad eliminada exitosamente" }
+  } catch (error) {
+    return { success: false, message: "Error al eliminar la unidad" }
+  }
 }
 
-// --- Acciones para Áreas de Producción ---
+// ============= ÁREAS DE PRODUCCIÓN =============
 
-export async function getAreasProduccion(): Promise<IGetAreaProduccion[]> {
-  await new Promise((resolve) => setTimeout(resolve, 50))
-  return JSON.parse(JSON.stringify(areasProduccion))
+export async function getAreasProduccion(): Promise<AreaProduccion[]> {
+  return areasProduccion
 }
 
-export async function createAreaProduccion(
-  data: AreaProduccionFormValues,
-): Promise<{ success: boolean; message: string }> {
-  const validation = areaProduccionSchema.safeParse(data)
-  if (!validation.success) {
-    const errorMessages = validation.error.issues.map((issue) => issue.message).join(", ")
-    return { success: false, message: `Error de validación: ${errorMessages}` }
-  }
+export async function createAreaProduccion(data: AreaProduccionFormValues) {
+  try {
+    const existingArea = areasProduccion.find((a) => a.clave.toLowerCase() === data.clave.toLowerCase())
+    if (existingArea) {
+      return { success: false, message: "Ya existe un área con esa clave" }
+    }
 
-  // Verificar que la clave no exista
-  const existingArea = areasProduccion.find((a) => a.clave === validation.data.clave)
-  if (existingArea) {
-    return { success: false, message: "Ya existe un área de producción con esa clave." }
-  }
+    const newArea: AreaProduccion = {
+      id: generateId(),
+      clave: data.clave.toUpperCase(),
+      descripcion: data.descripcion,
+      impresora: data.impresora || null,
+      activo: data.activo,
+      fecha_creacion: new Date().toISOString(),
+      fecha_actualizacion: new Date().toISOString(),
+    }
 
-  const newArea: IGetAreaProduccion = {
-    id: `AREA-${generateULID()}`,
-    clave: validation.data.clave,
-    descripcion: validation.data.descripcion,
-    impresora: validation.data.impresora || "",
-    activa: validation.data.activa,
+    areasProduccion.push(newArea)
+    revalidatePath("/catalogos/areas-produccion")
+    return { success: true, message: "Área de producción creada exitosamente" }
+  } catch (error) {
+    return { success: false, message: "Error al crear el área de producción" }
   }
-
-  areasProduccion.push(newArea)
-  revalidatePath("/catalogos/areas-produccion")
-  return { success: true, message: "Área de producción creada exitosamente." }
 }
 
-export async function updateAreaProduccion(
-  id: string,
-  data: AreaProduccionFormValues,
-): Promise<{ success: boolean; message: string }> {
-  const validation = areaProduccionSchema.safeParse(data)
-  if (!validation.success) {
-    const errorMessages = validation.error.issues.map((issue) => issue.message).join(", ")
-    return { success: false, message: `Error de validación: ${errorMessages}` }
+export async function updateAreaProduccion(id: string, data: AreaProduccionFormValues) {
+  try {
+    const index = areasProduccion.findIndex((a) => a.id === id)
+    if (index === -1) {
+      return { success: false, message: "Área de producción no encontrada" }
+    }
+
+    const existingArea = areasProduccion.find((a) => a.id !== id && a.clave.toLowerCase() === data.clave.toLowerCase())
+    if (existingArea) {
+      return { success: false, message: "Ya existe un área con esa clave" }
+    }
+
+    areasProduccion[index] = {
+      ...areasProduccion[index],
+      clave: data.clave.toUpperCase(),
+      descripcion: data.descripcion,
+      impresora: data.impresora || null,
+      activo: data.activo,
+      fecha_actualizacion: new Date().toISOString(),
+    }
+
+    revalidatePath("/catalogos/areas-produccion")
+    return { success: true, message: "Área de producción actualizada exitosamente" }
+  } catch (error) {
+    return { success: false, message: "Error al actualizar el área de producción" }
   }
-
-  const index = areasProduccion.findIndex((a) => a.id === id)
-  if (index === -1) return { success: false, message: "Área de producción no encontrada." }
-
-  // Verificar que la clave no exista en otra área
-  const existingArea = areasProduccion.find((a) => a.clave === validation.data.clave && a.id !== id)
-  if (existingArea) {
-    return { success: false, message: "Ya existe otra área de producción con esa clave." }
-  }
-
-  areasProduccion[index] = {
-    ...areasProduccion[index],
-    clave: validation.data.clave,
-    descripcion: validation.data.descripcion,
-    impresora: validation.data.impresora || "",
-    activa: validation.data.activa,
-  }
-
-  revalidatePath("/catalogos/areas-produccion")
-  return { success: true, message: "Área de producción actualizada exitosamente." }
 }
 
-export async function deleteAreaProduccion(id: string): Promise<{ success: boolean; message: string }> {
-  const initialLength = areasProduccion.length
-  areasProduccion = areasProduccion.filter((a) => a.id !== id)
-  if (areasProduccion.length === initialLength) return { success: false, message: "Área de producción no encontrada." }
+export async function deleteAreaProduccion(id: string) {
+  try {
+    const index = areasProduccion.findIndex((a) => a.id === id)
+    if (index === -1) {
+      return { success: false, message: "Área de producción no encontrada" }
+    }
 
-  revalidatePath("/catalogos/areas-produccion")
-  return { success: true, message: "Área de producción eliminada exitosamente." }
+    areasProduccion.splice(index, 1)
+    revalidatePath("/catalogos/areas-produccion")
+    return { success: true, message: "Área de producción eliminada exitosamente" }
+  } catch (error) {
+    return { success: false, message: "Error al eliminar el área de producción" }
+  }
 }

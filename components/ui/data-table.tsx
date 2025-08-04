@@ -28,7 +28,7 @@ interface DataTableProps<TData, TValue> {
 
 export function DataTable<TData, TValue>({
   columns,
-  data,
+  data = [],
   searchKey,
   searchPlaceholder = "Buscar...",
 }: DataTableProps<TData, TValue>) {

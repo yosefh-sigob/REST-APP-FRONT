@@ -13,7 +13,7 @@ interface GruposViewProps {
   grupos: Grupo[]
 }
 
-export function GruposView({ grupos }: GruposViewProps) {
+export function GruposView({ grupos = [] }: GruposViewProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedGrupo, setSelectedGrupo] = useState<Grupo | undefined>(undefined)
 

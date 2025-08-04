@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "sonner"
@@ -34,11 +34,27 @@ export function GrupoFormModal({ isOpen, onClose, grupo }: GrupoFormModalProps) 
   const form = useForm<GrupoFormValues>({
     resolver: zodResolver(grupoSchema),
     defaultValues: {
-      nombre: grupo?.nombre || "",
-      descripcion: grupo?.descripcion || "",
-      activo: grupo?.activo ?? true,
+      nombre: "",
+      descripcion: "",
+      activo: true,
     },
   })
+
+  useEffect(() => {
+    if (grupo) {
+      form.reset({
+        nombre: grupo.nombre,
+        descripcion: grupo.descripcion,
+        activo: grupo.activo,
+      })
+    } else {
+      form.reset({
+        nombre: "",
+        descripcion: "",
+        activo: true,
+      })
+    }
+  }, [grupo, form])
 
   const onSubmit = async (data: GrupoFormValues) => {
     setIsLoading(true)
