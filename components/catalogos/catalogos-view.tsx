@@ -1,181 +1,148 @@
 "use client"
 
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Link } from "next/link"
 import {
   Database,
-  Package,
-  Tags,
-  Scale,
-  Building2,
+  LayoutGrid,
+  Shapes,
+  Ruler,
   Warehouse,
   Users,
   CreditCard,
-  Table,
+  Armchair,
   ClipboardList,
-  Calendar,
+  CalendarClock,
 } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import Link from "next/link"
 
-const CATALOGOS = [
-  {
-    id: "grupos",
-    title: "Grupos de Productos",
-    description: "Categorías principales de productos",
-    icon: Package,
-    count: 8,
-    status: "active",
-    color: "bg-blue-500",
-  },
-  {
-    id: "subgrupos",
-    title: "Subgrupos",
-    description: "Subcategorías dentro de cada grupo",
-    icon: Tags,
-    count: 24,
-    status: "active",
-    color: "bg-green-500",
-  },
-  {
-    id: "unidades",
-    title: "Unidades de Medida",
-    description: "Unidades para productos e inventario",
-    icon: Scale,
-    count: 12,
-    status: "active",
-    color: "bg-purple-500",
-  },
-  {
-    id: "areas-produccion",
-    title: "Áreas de Producción",
-    description: "Zonas de preparación de alimentos",
-    icon: Building2,
-    count: 5,
-    status: "active",
-    color: "bg-orange-500",
-  },
-  {
-    id: "almacenes",
-    title: "Almacenes",
-    description: "Ubicaciones de almacenamiento",
-    icon: Warehouse,
-    count: 3,
-    status: "active",
-    color: "bg-cyan-500",
-  },
-  {
-    id: "tipos-cliente",
-    title: "Tipos de Cliente",
-    description: "Clasificación de clientes",
-    icon: Users,
-    count: 4,
-    status: "active",
-    color: "bg-pink-500",
-  },
-  {
-    id: "metodos-pago",
-    title: "Métodos de Pago",
-    description: "Formas de pago disponibles",
-    icon: CreditCard,
-    count: 6,
-    status: "active",
-    color: "bg-emerald-500",
-  },
-  {
-    id: "estados-mesa",
-    title: "Estados de Mesa",
-    description: "Estados posibles de las mesas",
-    icon: Table,
-    count: 4,
-    status: "active",
-    color: "bg-indigo-500",
-  },
-  {
-    id: "estados-orden",
-    title: "Estados de Orden",
-    description: "Estados del flujo de órdenes",
-    icon: ClipboardList,
-    count: 6,
-    status: "pending",
-    color: "bg-yellow-500",
-  },
-  {
-    id: "tipos-reservacion",
-    title: "Tipos de Reservación",
-    description: "Clasificación de reservaciones",
-    icon: Calendar,
-    count: 3,
-    status: "active",
-    color: "bg-red-500",
-  },
-]
-
-function getStatusBadge(status: string) {
-  switch (status) {
-    case "active":
-      return (
-        <Badge variant="secondary" className="bg-green-100 text-green-800">
-          Activo
-        </Badge>
-      )
-    case "pending":
-      return (
-        <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
-          Pendiente
-        </Badge>
-      )
-    case "inactive":
-      return (
-        <Badge variant="secondary" className="bg-gray-100 text-gray-800">
-          Inactivo
-        </Badge>
-      )
-    default:
-      return <Badge variant="secondary">Desconocido</Badge>
-  }
+interface CatalogoData {
+  title: string
+  count: number
+  status: "active" | "pending" | "inactive"
 }
 
-export function CatalogosView() {
-  return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900 flex items-center">
-          <Database className="h-8 w-8 mr-3" />
-          Catálogos Maestros
-        </h1>
-        <p className="text-gray-600 mt-2">
-          Gestiona todos los catálogos maestros que intervienen en la operación del restaurante
-        </p>
-      </div>
+interface CatalogosViewProps {
+  catalogos: CatalogoData[]
+}
 
-      {/* Grid de Catálogos */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {CATALOGOS.map((catalogo) => {
-          const Icon = catalogo.icon
-          return (
-            <Link href={`/catalogos/${catalogo.id}`} passHref key={catalogo.id}>
-              <Card className="hover:shadow-lg transition-shadow">
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between">
-                    <div className={`p-2 rounded-lg ${catalogo.color} text-white`}>
-                      <Icon className="h-5 w-5" />
-                    </div>
-                    {getStatusBadge(catalogo.status)}
-                  </div>
-                  <CardTitle className="text-lg">{catalogo.title}</CardTitle>
-                  <CardDescription className="text-sm">{catalogo.description}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-between">
-                    <span className="text-2xl font-bold text-gray-900">{catalogo.count}</span>
-                    <span className="text-sm text-gray-500">registros</span>
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
-          )
-        })}
+const catalogoDetails = {
+  "Grupos de Productos": {
+    description: "Categorías principales de productos.",
+    icon: Shapes,
+    href: "/catalogos/grupos",
+  },
+  Subgrupos: {
+    description: "Subcategorías dentro de cada grupo.",
+    icon: LayoutGrid,
+    href: "/catalogos/subgrupos",
+  },
+  "Unidades de Medida": {
+    description: "Unidades para inventario y recetas (kg, lt, pz).",
+    icon: Ruler,
+    href: "/catalogos/unidades",
+  },
+  "Áreas de Producción": {
+    description: "Define las áreas como Cocina, Bar, etc.",
+    icon: Warehouse,
+    href: "/catalogos/areas-produccion",
+  },
+  Almacenes: {
+    description: "Gestiona las diferentes bodegas o almacenes.",
+    icon: Database,
+    href: "/catalogos/almacenes",
+  },
+  "Tipos de Cliente": {
+    description: "Clasifica a tus clientes (Regular, VIP, etc.).",
+    icon: Users,
+    href: "/catalogos/tipos-cliente",
+  },
+  "Métodos de Pago": {
+    description: "Configura los métodos de pago aceptados.",
+    icon: CreditCard,
+    href: "/catalogos/metodos-pago",
+  },
+  "Estados de Mesa": {
+    description: "Define los estados de las mesas (Disponible, Ocupada).",
+    icon: Armchair,
+    href: "/catalogos/estados-mesa",
+  },
+  "Estados de Orden": {
+    description: "Gestiona los estados de las órdenes (Pendiente, Lista).",
+    icon: ClipboardList,
+    href: "/catalogos/estados-orden",
+  },
+  "Tipos de Reservación": {
+    description: "Configura los tipos de reservaciones.",
+    icon: CalendarClock,
+    href: "/catalogos/tipos-reservacion",
+  },
+} as const
+
+export function CatalogosView({ catalogos }: CatalogosViewProps) {
+  const enrichedCatalogos = catalogos.map((c) => ({
+    ...c,
+    ...(catalogoDetails[c.title as keyof typeof catalogoDetails] || {}),
+  }))
+
+  const getBadgeVariant = (status: string) => {
+    switch (status) {
+      case "active":
+        return "default"
+      case "pending":
+        return "secondary"
+      case "inactive":
+        return "destructive"
+      default:
+        return "outline"
+    }
+  }
+
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case "active":
+        return "Activo"
+      case "pending":
+        return "Pendiente"
+      case "inactive":
+        return "Inactivo"
+      default:
+        return "Desconocido"
+    }
+  }
+
+  return (
+    <div className="p-4 sm:p-6 md:p-8">
+      <header className="mb-8">
+        <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
+          <Database className="h-8 w-8" />
+          Catálogos del Sistema
+        </h1>
+        <p className="text-muted-foreground mt-1">Gestiona los catálogos maestros que alimentan el sistema.</p>
+      </header>
+
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {enrichedCatalogos.map((catalogo) => (
+          <Link
+            href={catalogo.href || "#"}
+            key={catalogo.title}
+            className="transform transition-transform duration-300 hover:scale-105"
+          >
+            <Card className="h-full hover:shadow-lg">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">{catalogo.title}</CardTitle>
+                {catalogo.icon && <catalogo.icon className="h-4 w-4 text-muted-foreground" />}
+              </CardHeader>
+              <CardContent>
+                <p className="text-xs text-muted-foreground h-8">{catalogo.description}</p>
+                <div className="flex justify-between items-center mt-4">
+                  <Badge variant={getBadgeVariant(catalogo.status)}>{getStatusText(catalogo.status)}</Badge>
+                  <div className="text-sm font-semibold">{catalogo.count} registros</div>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+        ))}
       </div>
     </div>
   )
