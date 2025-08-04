@@ -57,41 +57,6 @@ export function AreasProduccionView({ areasProduccion }: AreasProduccionViewProp
         </Button>
       </div>
 
-      {/* Estadísticas */}
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total de Áreas</CardTitle>
-            <Printer className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{areasProduccion.length}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Áreas Activas</CardTitle>
-            <Printer className="h-4 w-4 text-green-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-600">
-              {areasProduccion.filter((area) => area.activa).length}
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Con Impresora</CardTitle>
-            <Printer className="h-4 w-4 text-blue-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-blue-600">
-              {areasProduccion.filter((area) => area.impresora && area.impresora.trim() !== "").length}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
       {/* Tabla de datos */}
       <Card>
         <CardHeader>
