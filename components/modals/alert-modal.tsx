@@ -1,29 +1,18 @@
 "use client"
 
-import type React from "react"
-
 import { useEffect, useState } from "react"
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
+
+import { Modal } from "@/components/ui/modal"
+import { Button } from "@/components/ui/button"
 
 interface AlertModalProps {
   isOpen: boolean
   onClose: () => void
   onConfirm: () => void
   loading: boolean
-  title: string
-  description: string
 }
 
-export const AlertModal: React.FC<AlertModalProps> = ({ isOpen, onClose, onConfirm, loading, title, description }) => {
+export function AlertModal({ isOpen, onClose, onConfirm, loading }: AlertModalProps) {
   const [isMounted, setIsMounted] = useState(false)
 
   useEffect(() => {
@@ -34,28 +23,16 @@ export const AlertModal: React.FC<AlertModalProps> = ({ isOpen, onClose, onConfi
     return null
   }
 
-  const onChange = (open: boolean) => {
-    if (!open) {
-      onClose()
-    }
-  }
-
   return (
-    <AlertDialog open={isOpen} onOpenChange={onChange}>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
-          <AlertDialogDescription>{description}</AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel onClick={onClose} disabled={loading}>
-            Cancelar
-          </AlertDialogCancel>
-          <AlertDialogAction onClick={onConfirm} disabled={loading}>
-            {loading ? "Cargando..." : "Confirmar"}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+    <Modal title="¿Estás seguro?" description="Esta acción no se puede deshacer." isOpen={isOpen} onClose={onClose}>
+      <div className="pt-6 space-x-2 flex items-center justify-end w-full">
+        <Button disabled={loading} variant="outline" onClick={onClose}>
+          Cancelar
+        </Button>
+        <Button disabled={loading} variant="destructive" onClick={onConfirm}>
+          Continuar
+        </Button>
+      </div>
+    </Modal>
   )
 }

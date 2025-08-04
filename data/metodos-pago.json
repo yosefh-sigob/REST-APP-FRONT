@@ -1,44 +1,56 @@
 [
   {
-    "id": "MP-001",
+    "id": "01JGQM8K2P3Q4R5S6T7U8V9W0X",
     "nombre": "Efectivo",
     "descripcion": "Pago en efectivo",
     "requiere_referencia": false,
-    "activo": true
+    "activo": true,
+    "fecha_creacion": "2024-01-15T10:00:00Z",
+    "fecha_actualizacion": "2024-01-15T10:00:00Z"
   },
   {
-    "id": "MP-002",
+    "id": "01JGQM8K2P3Q4R5S6T7U8V9W1Y",
+    "nombre": "Tarjeta de Crédito",
+    "descripcion": "Pago con tarjeta de crédito Visa, MasterCard, etc.",
+    "requiere_referencia": true,
+    "activo": true,
+    "fecha_creacion": "2024-01-15T10:05:00Z",
+    "fecha_actualizacion": "2024-01-15T10:05:00Z"
+  },
+  {
+    "id": "01JGQM8K2P3Q4R5S6T7U8V9W2Z",
     "nombre": "Tarjeta de Débito",
     "descripcion": "Pago con tarjeta de débito",
-    "requiere_referencia": false,
-    "activo": true
-  },
-  {
-    "id": "MP-003",
-    "nombre": "Tarjeta de Crédito",
-    "descripcion": "Pago con tarjeta de crédito",
-    "requiere_referencia": false,
-    "activo": true
-  },
-  {
-    "id": "MP-004",
-    "nombre": "Transferencia Bancaria",
-    "descripcion": "Pago por transferencia bancaria",
     "requiere_referencia": true,
-    "activo": true
+    "activo": true,
+    "fecha_creacion": "2024-01-15T10:10:00Z",
+    "fecha_actualizacion": "2024-01-15T10:10:00Z"
   },
   {
-    "id": "MP-005",
+    "id": "01JGQM8K2P3Q4R5S6T7U8V9W3A",
+    "nombre": "Transferencia Bancaria",
+    "descripcion": "Transferencia electrónica desde cuenta bancaria",
+    "requiere_referencia": true,
+    "activo": true,
+    "fecha_creacion": "2024-01-15T10:15:00Z",
+    "fecha_actualizacion": "2024-01-15T10:15:00Z"
+  },
+  {
+    "id": "01JGQM8K2P3Q4R5S6T7U8V9W4B",
     "nombre": "PayPal",
     "descripcion": "Pago a través de PayPal",
     "requiere_referencia": true,
-    "activo": true
+    "activo": true,
+    "fecha_creacion": "2024-01-15T10:20:00Z",
+    "fecha_actualizacion": "2024-01-15T10:20:00Z"
   },
   {
-    "id": "MP-006",
-    "nombre": "Mercado Pago",
-    "descripcion": "Pago a través de Mercado Pago",
+    "id": "01JGQM8K2P3Q4R5S6T7U8V9W5C",
+    "nombre": "Cheque",
+    "descripcion": "Pago con cheque bancario",
     "requiere_referencia": true,
-    "activo": false
+    "activo": false,
+    "fecha_creacion": "2024-01-15T10:25:00Z",
+    "fecha_actualizacion": "2024-01-15T10:25:00Z"
   }
 ]

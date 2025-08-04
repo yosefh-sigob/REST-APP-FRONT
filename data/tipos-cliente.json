@@ -1,32 +1,47 @@
 [
   {
-    "id": "TC-001",
+    "id": "01JGQM8K2P3Q4R5S6T7U8V9W0X",
     "nombre": "Cliente Regular",
-    "descripcion": "Cliente que visita el restaurante con frecuencia",
-    "activo": true
+    "descripcion": "Cliente que visita el restaurante ocasionalmente",
+    "descuento_porcentaje": 0,
+    "activo": true,
+    "fecha_creacion": "2024-01-15T10:00:00Z",
+    "fecha_actualizacion": "2024-01-15T10:00:00Z"
   },
   {
-    "id": "TC-002",
+    "id": "01JGQM8K2P3Q4R5S6T7U8V9W1Y",
     "nombre": "Cliente VIP",
-    "descripcion": "Cliente preferencial con beneficios especiales",
-    "activo": true
+    "descripcion": "Cliente frecuente con beneficios especiales",
+    "descuento_porcentaje": 15,
+    "activo": true,
+    "fecha_creacion": "2024-01-15T10:05:00Z",
+    "fecha_actualizacion": "2024-01-15T10:05:00Z"
   },
   {
-    "id": "TC-003",
+    "id": "01JGQM8K2P3Q4R5S6T7U8V9W2Z",
     "nombre": "Cliente Corporativo",
-    "descripcion": "Empresas que realizan pedidos para eventos corporativos",
-    "activo": true
+    "descripcion": "Empresas que realizan eventos o pedidos grandes",
+    "descuento_porcentaje": 10,
+    "activo": true,
+    "fecha_creacion": "2024-01-15T10:10:00Z",
+    "fecha_actualizacion": "2024-01-15T10:10:00Z"
   },
   {
-    "id": "TC-004",
-    "nombre": "Cliente Ocasional",
-    "descripcion": "Cliente que visita el restaurante esporádicamente",
-    "activo": true
+    "id": "01JGQM8K2P3Q4R5S6T7U8V9W3A",
+    "nombre": "Empleado",
+    "descripcion": "Personal del restaurante",
+    "descuento_porcentaje": 25,
+    "activo": true,
+    "fecha_creacion": "2024-01-15T10:15:00Z",
+    "fecha_actualizacion": "2024-01-15T10:15:00Z"
   },
   {
-    "id": "TC-005",
-    "nombre": "Cliente Delivery",
-    "descripcion": "Cliente que principalmente ordena a domicilio",
-    "activo": false
+    "id": "01JGQM8K2P3Q4R5S6T7U8V9W4B",
+    "nombre": "Estudiante",
+    "descripcion": "Estudiantes con identificación válida",
+    "descuento_porcentaje": 5,
+    "activo": false,
+    "fecha_creacion": "2024-01-15T10:20:00Z",
+    "fecha_actualizacion": "2024-01-15T10:20:00Z"
   }
 ]

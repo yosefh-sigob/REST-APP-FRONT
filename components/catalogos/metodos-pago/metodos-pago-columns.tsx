@@ -14,7 +14,6 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-
 import { AlertModal } from "@/components/modals/alert-modal"
 import { MetodoPagoFormModal } from "./metodo-pago-form-modal"
 import { deleteMetodoPago } from "@/actions/catalogos.actions"
@@ -22,22 +21,22 @@ import type { IMetodoPago } from "@/interfaces/metodos-pago.interface"
 
 const CellAction = ({ data }: { data: IMetodoPago }) => {
   const [loading, setLoading] = useState(false)
+  const [open, setOpen] = useState(false)
   const [openEdit, setOpenEdit] = useState(false)
-  const [openDelete, setOpenDelete] = useState(false)
 
-  const onConfirmDelete = async () => {
+  const onConfirm = async () => {
     try {
       setLoading(true)
       const result = await deleteMetodoPago(data.id)
 
       if (result.success) {
         toast.success(result.message)
-        setOpenDelete(false)
+        setOpen(false)
       } else {
         toast.error(result.message)
       }
     } catch (error) {
-      toast.error("Ocurrió un error inesperado")
+      toast.error("Algo salió mal")
     } finally {
       setLoading(false)
     }
@@ -45,15 +44,8 @@ const CellAction = ({ data }: { data: IMetodoPago }) => {
 
   return (
     <>
-      <AlertModal
-        isOpen={openDelete}
-        onClose={() => setOpenDelete(false)}
-        onConfirm={onConfirmDelete}
-        loading={loading}
-        title="¿Eliminar método de pago?"
-        description="Esta acción no se puede deshacer. El método de pago será eliminado permanentemente."
-      />
-      <MetodoPagoFormModal initialData={data} isOpen={openEdit} onClose={() => setOpenEdit(false)} />
+      <AlertModal isOpen={open} onClose={() => setOpen(false)} onConfirm={onConfirm} loading={loading} />
+      <MetodoPagoFormModal isOpen={openEdit} onClose={() => setOpenEdit(false)} initialData={data} />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
@@ -64,12 +56,10 @@ const CellAction = ({ data }: { data: IMetodoPago }) => {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Acciones</DropdownMenuLabel>
           <DropdownMenuItem onClick={() => setOpenEdit(true)}>
-            <Edit className="mr-2 h-4 w-4" />
-            Editar
+            <Edit className="mr-2 h-4 w-4" /> Editar
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setOpenDelete(true)}>
-            <Trash className="mr-2 h-4 w-4" />
-            Eliminar
+          <DropdownMenuItem onClick={() => setOpen(true)}>
+            <Trash className="mr-2 h-4 w-4" /> Eliminar
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -87,7 +77,7 @@ export const columns: ColumnDef<IMetodoPago>[] = [
     header: "Descripción",
     cell: ({ row }) => {
       const descripcion = row.getValue("descripcion") as string
-      return descripcion || <span className="text-muted-foreground italic">Sin descripción</span>
+      return descripcion || "Sin descripción"
     },
   },
   {
@@ -95,7 +85,7 @@ export const columns: ColumnDef<IMetodoPago>[] = [
     header: "Requiere Referencia",
     cell: ({ row }) => {
       const requiere = row.getValue("requiere_referencia") as boolean
-      return requiere ? <Badge variant="secondary">Sí</Badge> : <Badge variant="outline">No</Badge>
+      return <Badge variant={requiere ? "default" : "secondary"}>{requiere ? "Sí" : "No"}</Badge>
     },
   },
   {
@@ -103,12 +93,11 @@ export const columns: ColumnDef<IMetodoPago>[] = [
     header: "Estado",
     cell: ({ row }) => {
       const activo = row.getValue("activo") as boolean
-      return activo ? <Badge variant="default">Activo</Badge> : <Badge variant="secondary">Inactivo</Badge>
+      return <Badge variant={activo ? "default" : "secondary"}>{activo ? "Activo" : "Inactivo"}</Badge>
     },
   },
   {
-    id: "acciones",
-    header: "Acciones",
+    id: "actions",
     cell: ({ row }) => <CellAction data={row.original} />,
   },
 ]

@@ -1,145 +1,98 @@
 import { z } from "zod"
 
-// Esquema para Grupos
-export const grupoSchema = z.object({
-  id: z.string().optional(),
-  nombre: z
-    .string({ required_error: "El nombre es requerido." })
-    .min(3, { message: "El nombre debe tener al menos 3 caracteres." })
-    .max(50, { message: "El nombre no puede tener más de 50 caracteres." }),
-  descripcion: z
-    .string()
-    .max(200, { message: "La descripción no puede tener más de 200 caracteres." })
-    .optional()
-    .or(z.literal("")),
-  area_produccion_id: z.string({ required_error: "El área de producción es requerida." }),
-  activo: z.boolean().default(true),
-})
-
-export type GrupoFormValues = z.infer<typeof grupoSchema>
-
-// Esquema para Subgrupos
-export const subgrupoSchema = z.object({
-  id: z.string().optional(),
-  nombre: z
-    .string({ required_error: "El nombre es requerido." })
-    .min(3, { message: "El nombre debe tener al menos 3 caracteres." })
-    .max(50, { message: "El nombre no puede tener más de 50 caracteres." }),
-  descripcion: z
-    .string()
-    .max(200, { message: "La descripción no puede tener más de 200 caracteres." })
-    .optional()
-    .or(z.literal("")),
-  grupo_id: z.string({ required_error: "El grupo es requerido." }),
-  activo: z.boolean().default(true),
-})
-
-export type SubgrupoFormValues = z.infer<typeof subgrupoSchema>
-
-// Esquema para Unidades de Medida
-export const unidadSchema = z.object({
-  id: z.string().optional(),
-  clave: z
-    .string({ required_error: "La clave es requerida." })
-    .min(1, { message: "La clave debe tener al menos 1 carácter." })
-    .max(10, { message: "La clave no puede tener más de 10 caracteres." })
-    .regex(/^[A-Z0-9]+$/, { message: "La clave solo puede contener letras mayúsculas y números." }),
-  nombre: z
-    .string({ required_error: "El nombre es requerido." })
-    .min(3, { message: "El nombre debe tener al menos 3 caracteres." })
-    .max(50, { message: "El nombre no puede tener más de 50 caracteres." }),
-  abreviacion: z
-    .string({ required_error: "La abreviación es requerida." })
-    .min(1, { message: "La abreviación debe tener al menos 1 carácter." })
-    .max(5, { message: "La abreviación no puede tener más de 5 caracteres." }),
-  descripcion: z
-    .string()
-    .max(200, { message: "La descripción no puede tener más de 200 caracteres." })
-    .optional()
-    .or(z.literal("")),
-  activo: z.boolean().default(true),
-})
-
-export type UnidadFormValues = z.infer<typeof unidadSchema>
-
-// Esquema para Áreas de Producción
+// Esquema para Área de Producción
 export const areaProduccionSchema = z.object({
-  id: z.string().optional(),
   clave: z
-    .string({ required_error: "La clave es requerida." })
-    .min(2, { message: "La clave debe tener al menos 2 caracteres." })
-    .max(10, { message: "La clave no puede tener más de 10 caracteres." })
-    .regex(/^[A-Z0-9]+$/, { message: "La clave solo puede contener letras mayúsculas y números." }),
-  descripcion: z
-    .string({ required_error: "La descripción es requerida." })
-    .min(3, { message: "La descripción debe tener al menos 3 caracteres." })
-    .max(100, { message: "La descripción no puede tener más de 100 caracteres." }),
-  impresora: z
     .string()
-    .max(50, { message: "El nombre de la impresora no puede tener más de 50 caracteres." })
-    .optional()
-    .or(z.literal("")),
+    .min(1, "La clave es requerida")
+    .max(10, "La clave no puede tener más de 10 caracteres")
+    .regex(/^[A-Z0-9]+$/, "La clave solo puede contener letras mayúsculas y números"),
+  descripcion: z
+    .string()
+    .min(1, "La descripción es requerida")
+    .max(100, "La descripción no puede tener más de 100 caracteres"),
+  impresora: z.string().optional(),
   activa: z.boolean().default(true),
 })
 
 export type AreaProduccionFormValues = z.infer<typeof areaProduccionSchema>
 
-// Esquema para Almacenes
+// Esquema para Grupo
+export const grupoSchema = z.object({
+  clave: z
+    .string()
+    .min(1, "La clave es requerida")
+    .max(10, "La clave no puede tener más de 10 caracteres")
+    .regex(/^[A-Z0-9]+$/, "La clave solo puede contener letras mayúsculas y números"),
+  nombre: z.string().min(1, "El nombre es requerido").max(50, "El nombre no puede tener más de 50 caracteres"),
+  descripcion: z.string().optional(),
+  activo: z.boolean().default(true),
+})
+
+export type GrupoFormValues = z.infer<typeof grupoSchema>
+
+// Esquema para Subgrupo
+export const subgrupoSchema = z.object({
+  clave: z
+    .string()
+    .min(1, "La clave es requerida")
+    .max(10, "La clave no puede tener más de 10 caracteres")
+    .regex(/^[A-Z0-9]+$/, "La clave solo puede contener letras mayúsculas y números"),
+  nombre: z.string().min(1, "El nombre es requerido").max(50, "El nombre no puede tener más de 50 caracteres"),
+  descripcion: z.string().optional(),
+  grupo_id: z.string().min(1, "El grupo es requerido"),
+  activo: z.boolean().default(true),
+})
+
+export type SubgrupoFormValues = z.infer<typeof subgrupoSchema>
+
+// Esquema para Unidad
+export const unidadSchema = z.object({
+  clave: z
+    .string()
+    .min(1, "La clave es requerida")
+    .max(10, "La clave no puede tener más de 10 caracteres")
+    .regex(/^[A-Z0-9]+$/, "La clave solo puede contener letras mayúsculas y números"),
+  nombre: z.string().min(1, "El nombre es requerido").max(50, "El nombre no puede tener más de 50 caracteres"),
+  descripcion: z.string().optional(),
+  activa: z.boolean().default(true),
+})
+
+export type UnidadFormValues = z.infer<typeof unidadSchema>
+
+// Esquema para Almacén
 export const almacenSchema = z.object({
-  AlmacenULID: z.string().optional(),
-  ClaveAlmacen: z
-    .string({ required_error: "La clave es requerida." })
-    .min(3, { message: "La clave debe tener al menos 3 caracteres." })
-    .max(20, { message: "La clave no puede tener más de 20 caracteres." })
-    .regex(/^[A-Z0-9_]+$/, { message: "La clave solo puede contener letras mayúsculas, números y guiones bajos." }),
-  Nombre: z
-    .string({ required_error: "El nombre es requerido." })
-    .min(3, { message: "El nombre debe tener al menos 3 caracteres." })
-    .max(100, { message: "El nombre no puede tener más de 100 caracteres." }),
-  Descripcion: z
+  clave_almacen: z
     .string()
-    .max(250, { message: "La descripción no puede tener más de 250 caracteres." })
-    .optional()
-    .or(z.literal("")),
-  Direccion: z
-    .string()
-    .max(250, { message: "La dirección no puede tener más de 250 caracteres." })
-    .optional()
-    .or(z.literal("")),
-  Activo: z.boolean().default(true),
+    .min(1, "La clave es requerida")
+    .max(10, "La clave no puede tener más de 10 caracteres")
+    .regex(/^[A-Z0-9]+$/, "La clave solo puede contener letras mayúsculas y números"),
+  nombre: z.string().min(1, "El nombre es requerido").max(100, "El nombre no puede tener más de 100 caracteres"),
+  descripcion: z.string().optional(),
+  direccion: z.string().optional(),
+  activo: z.boolean().default(true),
 })
 
 export type AlmacenFormValues = z.infer<typeof almacenSchema>
 
-// Esquema para Tipos de Cliente
+// Esquema para Tipo de Cliente
 export const tipoClienteSchema = z.object({
-  id: z.string().optional(),
-  nombre: z
-    .string({ required_error: "El nombre es requerido." })
-    .min(3, { message: "El nombre debe tener al menos 3 caracteres." })
-    .max(50, { message: "El nombre no puede tener más de 50 caracteres." }),
-  descripcion: z
-    .string()
-    .max(200, { message: "La descripción no puede tener más de 200 caracteres." })
-    .optional()
-    .or(z.literal("")),
+  nombre: z.string().min(1, "El nombre es requerido").max(50, "El nombre no puede tener más de 50 caracteres"),
+  descripcion: z.string().optional(),
+  descuento_porcentaje: z
+    .number()
+    .min(0, "El descuento no puede ser negativo")
+    .max(100, "El descuento no puede ser mayor a 100%")
+    .default(0),
   activo: z.boolean().default(true),
 })
 
 export type TipoClienteFormValues = z.infer<typeof tipoClienteSchema>
 
-// Esquema para Métodos de Pago
+// Esquema para Método de Pago
 export const metodoPagoSchema = z.object({
-  id: z.string().optional(),
-  nombre: z
-    .string({ required_error: "El nombre es requerido." })
-    .min(3, { message: "El nombre debe tener al menos 3 caracteres." })
-    .max(50, { message: "El nombre no puede tener más de 50 caracteres." }),
-  descripcion: z
-    .string()
-    .max(200, { message: "La descripción no puede tener más de 200 caracteres." })
-    .optional()
-    .or(z.literal("")),
+  nombre: z.string().min(1, "El nombre es requerido").max(50, "El nombre no puede tener más de 50 caracteres"),
+  descripcion: z.string().optional(),
   requiere_referencia: z.boolean().default(false),
   activo: z.boolean().default(true),
 })
