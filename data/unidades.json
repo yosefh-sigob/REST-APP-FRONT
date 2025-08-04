@@ -1,0 +1,58 @@
+[
+  {
+    "id": "UNI-01H8XVKQM0A1B2C3D4E5F6G7H8",
+    "clave": "KG",
+    "nombre": "Kilogramo",
+    "abreviacion": "kg",
+    "descripcion": "Unidad de masa del Sistema Internacional",
+    "activo": true
+  },
+  {
+    "id": "UNI-01H8XVKQM0B2C3D4E5F6G7H8I9",
+    "clave": "LT",
+    "nombre": "Litro",
+    "abreviacion": "lt",
+    "descripcion": "Unidad de volumen para líquidos",
+    "activo": true
+  },
+  {
+    "id": "UNI-01H8XVKQM0C3D4E5F6G7H8I9J0",
+    "clave": "PZ",
+    "nombre": "Pieza",
+    "abreviacion": "pz",
+    "descripcion": "Unidad de conteo individual",
+    "activo": true
+  },
+  {
+    "id": "UNI-01H8XVKQM0D4E5F6G7H8I9J0K1",
+    "clave": "GR",
+    "nombre": "Gramo",
+    "abreviacion": "gr",
+    "descripcion": "Unidad de masa menor",
+    "activo": true
+  },
+  {
+    "id": "UNI-01H8XVKQM0E5F6G7H8I9J0K1L2",
+    "clave": "ML",
+    "nombre": "Mililitro",
+    "abreviacion": "ml",
+    "descripcion": "Unidad de volumen menor",
+    "activo": true
+  },
+  {
+    "id": "UNI-01H8XVKQM0F6G7H8I9J0K1L2M3",
+    "clave": "DOC",
+    "nombre": "Docena",
+    "abreviacion": "doc",
+    "descripcion": "Conjunto de 12 unidades",
+    "activo": true
+  },
+  {
+    "id": "UNI-01H8XVKQM0G7H8I9J0K1L2M3N4",
+    "clave": "CJ",
+    "nombre": "Caja",
+    "abreviacion": "cj",
+    "descripcion": "Unidad de empaque",
+    "activo": false
+  }
+]

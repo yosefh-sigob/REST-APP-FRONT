@@ -1,5 +1,8 @@
-import { PlaceholderView } from "@/components/catalogos/placeholder-view"
+import { getUnidades } from "@/actions/catalogos.actions"
+import { UnidadesView } from "@/components/catalogos/unidades/unidades-view"
 
 export default async function UnidadesPage() {
-  return <PlaceholderView title="Gestión de Unidades de Medida" />
+  const unidades = await getUnidades()
+
+  return <UnidadesView unidades={unidades} />
 }
