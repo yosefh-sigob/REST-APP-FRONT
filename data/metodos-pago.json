@@ -1,0 +1,30 @@
+[
+  {
+    "id": "MP-001",
+    "nombre": "Efectivo",
+    "descripcion": "Pago en efectivo en caja.",
+    "requiere_referencia": false,
+    "activo": true
+  },
+  {
+    "id": "MP-002",
+    "nombre": "Tarjeta de Crédito/Débito",
+    "descripcion": "Pago con tarjeta a través de terminal punto de venta (TPV).",
+    "requiere_referencia": false,
+    "activo": true
+  },
+  {
+    "id": "MP-003",
+    "nombre": "Transferencia Bancaria",
+    "descripcion": "Pago mediante transferencia electrónica de fondos (SPEI).",
+    "requiere_referencia": true,
+    "activo": true
+  },
+  {
+    "id": "MP-004",
+    "nombre": "Vales de Despensa",
+    "descripcion": "Pago utilizando vales de despensa autorizados.",
+    "requiere_referencia": false,
+    "activo": false
+  }
+]

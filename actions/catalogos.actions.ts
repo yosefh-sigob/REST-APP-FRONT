@@ -7,6 +7,7 @@ import type { IGetUnidad } from "@/interfaces/unidad.interface"
 import type { IGetAreaProduccion } from "@/interfaces/areaProduccion.interface"
 import type { IGetAlmacen } from "@/interfaces/almacen.interface"
 import type { ITipoCliente } from "@/interfaces/tipos-cliente.interface"
+import type { IMetodoPago } from "@/interfaces/metodos-pago.interface"
 import {
   type GrupoFormValues,
   grupoSchema,
@@ -20,6 +21,8 @@ import {
   almacenSchema,
   type TipoClienteFormValues,
   tipoClienteSchema,
+  type MetodoPagoFormValues,
+  metodoPagoSchema,
 } from "@/schemas/catalogos.schemas"
 import { generateULID } from "@/lib/utils/ulid"
 import initialGrupos from "@/data/grupos.json"
@@ -28,6 +31,7 @@ import initialUnidades from "@/data/unidades.json"
 import initialAreasProduccion from "@/data/areas-produccion.json"
 import initialAlmacenes from "@/data/almacenes.json"
 import initialTiposCliente from "@/data/tipos-cliente.json"
+import initialMetodosPago from "@/data/metodos-pago.json"
 
 // --- Simulación de Base de Datos en Memoria ---
 let grupos: Grupo[] = [...initialGrupos]
@@ -36,6 +40,7 @@ let unidades: IGetUnidad[] = [...initialUnidades]
 let areasProduccion: IGetAreaProduccion[] = [...initialAreasProduccion]
 let almacenes: IGetAlmacen[] = [...initialAlmacenes]
 let tiposCliente: ITipoCliente[] = [...initialTiposCliente]
+let metodosPago: IMetodoPago[] = [...initialMetodosPago]
 
 // --- Acciones para Grupos ---
 
@@ -430,4 +435,75 @@ export async function deleteTipoCliente(id: string): Promise<{ success: boolean;
 
   revalidatePath("/catalogos/tipos-cliente")
   return { success: true, message: "Tipo de cliente eliminado exitosamente." }
+}
+
+// --- Acciones para Métodos de Pago ---
+
+export async function getMetodosPago(): Promise<IMetodoPago[]> {
+  await new Promise((resolve) => setTimeout(resolve, 50))
+  return JSON.parse(JSON.stringify(metodosPago))
+}
+
+export async function createMetodoPago(data: MetodoPagoFormValues): Promise<{ success: boolean; message: string }> {
+  const validation = metodoPagoSchema.safeParse(data)
+  if (!validation.success) {
+    const errorMessages = validation.error.issues.map((issue) => issue.message).join(", ")
+    return { success: false, message: `Error de validación: ${errorMessages}` }
+  }
+
+  const existingMetodo = metodosPago.find((m) => m.nombre.toUpperCase() === validation.data.nombre.toUpperCase())
+  if (existingMetodo) {
+    return { success: false, message: "Ya existe un método de pago con ese nombre." }
+  }
+
+  const newMetodoPago: IMetodoPago = {
+    id: `MP-${generateULID()}`,
+    nombre: validation.data.nombre,
+    descripcion: validation.data.descripcion || "",
+    requiere_referencia: validation.data.requiere_referencia,
+    activo: validation.data.activo,
+  }
+
+  metodosPago.push(newMetodoPago)
+  revalidatePath("/catalogos/metodos-pago")
+  return { success: true, message: "Método de pago creado exitosamente." }
+}
+
+export async function updateMetodoPago(
+  id: string,
+  data: MetodoPagoFormValues,
+): Promise<{ success: boolean; message: string }> {
+  const validation = metodoPagoSchema.safeParse(data)
+  if (!validation.success) {
+    const errorMessages = validation.error.issues.map((issue) => issue.message).join(", ")
+    return { success: false, message: `Error de validación: ${errorMessages}` }
+  }
+
+  const index = metodosPago.findIndex((m) => m.id === id)
+  if (index === -1) return { success: false, message: "Método de pago no encontrado." }
+
+  const existingMetodo = metodosPago.find((m) => m.nombre.toUpperCase() === data.nombre.toUpperCase() && m.id !== id)
+  if (existingMetodo) {
+    return { success: false, message: "Ya existe otro método de pago con ese nombre." }
+  }
+
+  metodosPago[index] = {
+    ...metodosPago[index],
+    nombre: data.nombre,
+    descripcion: data.descripcion || "",
+    requiere_referencia: data.requiere_referencia,
+    activo: data.activo,
+  }
+
+  revalidatePath("/catalogos/metodos-pago")
+  return { success: true, message: "Método de pago actualizado exitosamente." }
+}
+
+export async function deleteMetodoPago(id: string): Promise<{ success: boolean; message: string }> {
+  const initialLength = metodosPago.length
+  metodosPago = metodosPago.filter((m) => m.id !== id)
+  if (metodosPago.length === initialLength) return { success: false, message: "Método de pago no encontrado." }
+
+  revalidatePath("/catalogos/metodos-pago")
+  return { success: true, message: "Método de pago eliminado exitosamente." }
 }
