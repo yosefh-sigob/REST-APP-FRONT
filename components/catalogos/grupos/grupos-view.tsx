@@ -16,27 +16,53 @@ interface GruposViewProps {
 
 export function GruposView({ initialData, areasProduccion }: GruposViewProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedGrupo, setSelectedGrupo] = useState<Grupo | null>(null)
+
+  const handleOpenModal = (grupo?: Grupo) => {
+    setSelectedGrupo(grupo || null)
+    setIsModalOpen(true)
+  }
+
+  const handleCloseModal = () => {
+    setSelectedGrupo(null)
+    setIsModalOpen(false)
+  }
+
+  // Pasar `handleOpenModal` a las columnas a través del `meta` de la tabla
+  const tableColumns = columns.map((col) => {
+    if (col.id === "actions") {
+      return { ...col, meta: { ...col.meta, handleOpenModal } }
+    }
+    return col
+  })
 
   return (
-    <div className="container mx-auto py-10">
-      <div className="flex justify-between items-start mb-6">
+    <div className="p-4 sm:p-6 md:p-8">
+      <div className="flex items-center justify-between mb-6">
         <div>
-          <Link href="/catalogos" passHref>
-            <Button variant="outline" className="mb-4 bg-transparent">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Volver a Catálogos
-            </Button>
+          <Link href="/catalogos" className="flex items-center text-sm text-gray-500 hover:text-gray-700 mb-2">
+            <ArrowLeft className="h-4 w-4 mr-1" />
+            Volver a Catálogos
           </Link>
-          <h1 className="text-3xl font-bold">Gestión de Grupos</h1>
+          <h1 className="text-2xl font-bold">Gestión de Grupos</h1>
           <p className="text-muted-foreground">Crea, edita y elimina los grupos de productos.</p>
         </div>
-        <Button onClick={() => setIsModalOpen(true)}>
-          <PlusCircle className="mr-2 h-4 w-4" />
-          Crear Grupo
+        <Button onClick={() => handleOpenModal()}>
+          <PlusCircle className="h-4 w-4 mr-2" />
+          Nuevo Grupo
         </Button>
       </div>
-      <DataTable columns={columns} data={initialData} filterColumnId="nombre" />
-      <GrupoFormModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} areasProduccion={areasProduccion} />
+
+      <DataTable columns={tableColumns} data={initialData} filterColumnId="nombre" />
+
+      {isModalOpen && (
+        <GrupoFormModal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          grupo={selectedGrupo}
+          areasProduccion={areasProduccion}
+        />
+      )}
     </div>
   )
 }

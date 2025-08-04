@@ -50,7 +50,7 @@ export function SubgruposView({ subgrupos, grupos }: SubgruposViewProps) {
         </div>
         <Button onClick={() => handleOpenModal()}>
           <PlusCircle className="h-4 w-4 mr-2" />
-          Añadir Subgrupo
+          Nuevo Subgrupo
         </Button>
       </div>
 
