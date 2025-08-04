@@ -1,24 +1,75 @@
 "use client"
-
 import type { ColumnDef } from "@tanstack/react-table"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { MoreHorizontal, Edit, Trash2 } from "lucide-react"
-import { eliminarGrupo } from "@/actions/catalogos.actions"
+import { MoreHorizontal, ArrowUpDown, Edit, Trash2 } from "lucide-react"
 import { toast } from "sonner"
 import type { Grupo } from "@/interfaces/grupos.interface"
+import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Badge } from "@/components/ui/badge"
+import { deleteGrupo } from "@/actions/catalogos.actions"
 
-export const columns = (onEdit: (grupo: Grupo) => void): ColumnDef<Grupo>[] => [
+function RowActions({ grupo, onEdit }: { grupo: Grupo; onEdit: (grupo: Grupo) => void }) {
+  const handleDelete = async () => {
+    const confirmation = confirm("¿Estás seguro de que deseas eliminar este grupo?")
+    if (confirmation) {
+      const result = await deleteGrupo(grupo.id)
+      if (result.success) {
+        toast.success(result.message)
+      } else {
+        toast.error(result.message)
+      }
+    }
+  }
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="h-8 w-8 p-0">
+          <span className="sr-only">Abrir menú</span>
+          <MoreHorizontal className="h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+        <DropdownMenuItem onClick={() => navigator.clipboard.writeText(grupo.id)}>Copiar ID</DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={() => onEdit(grupo)}>
+          <Edit className="mr-2 h-4 w-4" />
+          Editar
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={handleDelete} className="text-red-600">
+          <Trash2 className="mr-2 h-4 w-4" />
+          Eliminar
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+
+export const createColumns = (onEdit: (grupo: Grupo) => void): ColumnDef<Grupo>[] => [
   {
-    accessorKey: "clave",
-    header: "Clave",
-    cell: ({ row }) => <div className="font-medium">{row.getValue("clave")}</div>,
+    accessorKey: "nombre",
+    header: ({ column }) => (
+      <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+        Nombre
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
   },
   {
     accessorKey: "descripcion",
     header: "Descripción",
-    cell: ({ row }) => <div className="max-w-[200px] truncate">{row.getValue("descripcion")}</div>,
+    cell: ({ row }) => {
+      const descripcion = row.getValue("descripcion") as string
+      return <div className="max-w-[300px] truncate">{descripcion}</div>
+    },
   },
   {
     accessorKey: "activo",
@@ -30,40 +81,6 @@ export const columns = (onEdit: (grupo: Grupo) => void): ColumnDef<Grupo>[] => [
   },
   {
     id: "actions",
-    cell: ({ row }) => {
-      const grupo = row.original
-
-      const handleDelete = async () => {
-        if (confirm("¿Estás seguro de que deseas eliminar este grupo?")) {
-          try {
-            await eliminarGrupo(grupo.id)
-            toast.success("Grupo eliminado correctamente")
-          } catch (error) {
-            toast.error("Error al eliminar el grupo")
-          }
-        }
-      }
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Abrir menú</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => onEdit(grupo)}>
-              <Edit className="mr-2 h-4 w-4" />
-              Editar
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={handleDelete} className="text-red-600">
-              <Trash2 className="mr-2 h-4 w-4" />
-              Eliminar
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )
-    },
+    cell: ({ row }) => <RowActions grupo={row.original} onEdit={onEdit} />,
   },
 ]

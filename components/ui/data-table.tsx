@@ -1,6 +1,6 @@
 "use client"
 
-import * as React from "react"
+import { useState } from "react"
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -13,11 +13,11 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
+import { Search } from "lucide-react"
 
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -32,9 +32,10 @@ export function DataTable<TData, TValue>({
   searchKey,
   searchPlaceholder = "Buscar...",
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
+  const [sorting, setSorting] = useState<SortingState>([])
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+  const [rowSelection, setRowSelection] = useState({})
 
   const table = useReactTable({
     data,
@@ -46,24 +47,29 @@ export function DataTable<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
+    onRowSelectionChange: setRowSelection,
     state: {
       sorting,
       columnFilters,
       columnVisibility,
+      rowSelection,
     },
   })
 
   return (
-    <div className="space-y-4">
-      {/* Filtro de búsqueda */}
+    <div className="w-full">
+      {/* Filtros */}
       {searchKey && (
-        <div className="flex items-center">
-          <Input
-            placeholder={searchPlaceholder}
-            value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ""}
-            onChange={(event) => table.getColumn(searchKey)?.setFilterValue(event.target.value)}
-            className="max-w-sm"
-          />
+        <div className="flex items-center py-4">
+          <div className="relative max-w-sm">
+            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder={searchPlaceholder}
+              value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ""}
+              onChange={(event) => table.getColumn(searchKey)?.setFilterValue(event.target.value)}
+              className="pl-8"
+            />
+          </div>
         </div>
       )}
 
@@ -104,23 +110,22 @@ export function DataTable<TData, TValue>({
       </div>
 
       {/* Paginación */}
-      <div className="flex items-center justify-between space-x-2">
-        <div className="text-sm text-muted-foreground">
-          Mostrando {table.getFilteredRowModel().rows.length} de {data.length} registros
+      <div className="flex items-center justify-end space-x-2 py-4">
+        <div className="flex-1 text-sm text-muted-foreground">
+          {table.getFilteredSelectedRowModel().rows.length} de {table.getFilteredRowModel().rows.length} fila(s)
+          seleccionadas.
         </div>
-        <div className="flex items-center space-x-2">
+        <div className="space-x-2">
           <Button
             variant="outline"
             size="sm"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            <ChevronLeft className="h-4 w-4" />
             Anterior
           </Button>
           <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
             Siguiente
-            <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
       </div>

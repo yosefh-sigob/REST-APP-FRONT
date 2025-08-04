@@ -1,13 +1,13 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
+import { ArrowLeft, Plus } from "lucide-react"
+import type { Grupo } from "@/interfaces/grupos.interface"
 import { Button } from "@/components/ui/button"
 import { DataTable } from "@/components/ui/data-table"
-import { ArrowLeft, Plus } from "lucide-react"
-import Link from "next/link"
-import { columns } from "./grupos-columns"
+import { createColumns } from "./grupos-columns"
 import { GrupoFormModal } from "./grupo-form-modal"
-import type { Grupo } from "@/interfaces/grupos.interface"
 
 interface GruposViewProps {
   grupos: Grupo[]
@@ -15,20 +15,19 @@ interface GruposViewProps {
 
 export function GruposView({ grupos }: GruposViewProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [editingGrupo, setEditingGrupo] = useState<Grupo | null>(null)
+  const [selectedGrupo, setSelectedGrupo] = useState<Grupo | undefined>(undefined)
 
   const handleOpenModal = (grupo?: Grupo) => {
-    setEditingGrupo(grupo || null)
+    setSelectedGrupo(grupo)
     setIsModalOpen(true)
   }
 
   const handleCloseModal = () => {
+    setSelectedGrupo(undefined)
     setIsModalOpen(false)
-    setEditingGrupo(null)
   }
 
-  // Crear columnas con la función de edición
-  const tableColumns = columns(handleOpenModal)
+  const columns = createColumns(handleOpenModal)
 
   return (
     <div className="p-4 sm:p-6 md:p-8">
@@ -43,8 +42,8 @@ export function GruposView({ grupos }: GruposViewProps) {
 
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Grupos de Productos</h1>
-            <p className="text-gray-600 mt-1">Gestiona las categorías principales de productos del menú</p>
+            <h1 className="text-2xl font-bold tracking-tight">Grupos de Productos</h1>
+            <p className="text-muted-foreground">Gestiona las categorías principales de productos del restaurante</p>
           </div>
           <Button onClick={() => handleOpenModal()}>
             <Plus className="mr-2 h-4 w-4" />
@@ -54,10 +53,10 @@ export function GruposView({ grupos }: GruposViewProps) {
       </div>
 
       {/* Tabla */}
-      <DataTable columns={tableColumns} data={grupos} searchKey="descripcion" searchPlaceholder="Buscar grupos..." />
+      <DataTable columns={columns} data={grupos} searchKey="nombre" searchPlaceholder="Buscar grupos..." />
 
       {/* Modal */}
-      <GrupoFormModal isOpen={isModalOpen} onClose={handleCloseModal} grupo={editingGrupo} />
+      <GrupoFormModal isOpen={isModalOpen} onClose={handleCloseModal} grupo={selectedGrupo} />
     </div>
   )
 }
