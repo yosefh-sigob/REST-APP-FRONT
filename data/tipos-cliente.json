@@ -1,26 +1,32 @@
 [
   {
     "id": "TC-001",
-    "nombre": "General",
-    "descripcion": "Cliente sin clasificación específica.",
+    "nombre": "Cliente Regular",
+    "descripcion": "Cliente que visita el restaurante con frecuencia",
     "activo": true
   },
   {
     "id": "TC-002",
-    "nombre": "VIP",
-    "descripcion": "Cliente frecuente con beneficios especiales.",
+    "nombre": "Cliente VIP",
+    "descripcion": "Cliente preferencial con beneficios especiales",
     "activo": true
   },
   {
     "id": "TC-003",
-    "nombre": "Corporativo",
-    "descripcion": "Cliente que representa a una empresa.",
+    "nombre": "Cliente Corporativo",
+    "descripcion": "Empresas que realizan pedidos para eventos corporativos",
     "activo": true
   },
   {
     "id": "TC-004",
-    "nombre": "Problemático",
-    "descripcion": "Cliente con historial de quejas o problemas.",
+    "nombre": "Cliente Ocasional",
+    "descripcion": "Cliente que visita el restaurante esporádicamente",
+    "activo": true
+  },
+  {
+    "id": "TC-005",
+    "nombre": "Cliente Delivery",
+    "descripcion": "Cliente que principalmente ordena a domicilio",
     "activo": false
   }
 ]
