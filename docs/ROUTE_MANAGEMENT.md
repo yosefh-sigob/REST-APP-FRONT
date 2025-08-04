@@ -63,7 +63,7 @@ El middleware intercepta todas las requests y:
 ### Para Desarrolladores
 
 #### 1. Agregar una Nueva Ruta
-```typescript
+\`\`\`typescript
 // En /lib/config/routes.ts
 export const APP_ROUTES = {
   // ...rutas existentes
@@ -77,10 +77,10 @@ export const VALID_ROUTES: string[] = [
   // ...rutas existentes
   ...Object.values(APP_ROUTES.NEW_SECTION),
 ]
-```
+\`\`\`
 
 #### 2. Usar Navegación Segura
-```typescript
+\`\`\`typescript
 import { useOptimizedNavigation } from "@/hooks/use-navigation"
 
 function MyComponent() {
@@ -94,10 +94,10 @@ function MyComponent() {
     // Tu componente
   )
 }
-```
+\`\`\`
 
 #### 3. Mostrar Página No Encontrada
-```typescript
+\`\`\`typescript
 import { RouteNotFound } from "@/components/ui/route-not-found"
 
 function CustomNotFound() {
@@ -110,7 +110,7 @@ function CustomNotFound() {
     />
   )
 }
-```
+\`\`\`
 
 ### Para Usuarios Finales
 
@@ -125,7 +125,7 @@ function CustomNotFound() {
 
 ## Flujo de Manejo de Rutas
 
-```
+\`\`\`
 Usuario accede a ruta inválida
          ↓
 ¿Ruta existe en VALID_ROUTES?
@@ -141,7 +141,7 @@ Muestra página not-found.tsx
 Usuario tiene opciones:
 - Volver atrás
 - Ir al inicio
-```
+\`\`\`
 
 ## Configuración del Middleware
 

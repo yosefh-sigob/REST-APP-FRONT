@@ -1,6 +1,6 @@
 "use client"
 
-import React from "react"
+import type React from "react"
 
 import type { User } from "@/interfaces/auth"
 import {
@@ -16,6 +16,7 @@ import {
   ChefHat,
   Receipt,
   ClipboardList,
+  Database,
 } from "lucide-react"
 import { useOrders } from "@/contexts/orders-context"
 
@@ -28,6 +29,8 @@ export interface NavigationItem {
 }
 
 export function getRoleNavigation(user: User | null): NavigationItem[] {
+  const { pendingAndPreparingCount } = useOrders()
+
   if (!user) return []
 
   const baseNavigation: NavigationItem[] = [
@@ -39,8 +42,6 @@ export function getRoleNavigation(user: User | null): NavigationItem[] {
     },
   ]
 
-  const { pendingAndPreparingCount } = useOrders()
-
   switch (user.rol) {
     case "Administrador":
       return [
@@ -50,6 +51,12 @@ export function getRoleNavigation(user: User | null): NavigationItem[] {
           href: "/productos",
           icon: Package,
           description: "Gestión del menú y productos",
+        },
+        {
+          title: "Catálogos",
+          href: "/catalogos",
+          icon: Database,
+          description: "Gestión de catálogos maestros",
         },
         {
           title: "Mesas",
