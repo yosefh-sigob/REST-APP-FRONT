@@ -1,0 +1,23 @@
+[
+  {
+    "id": "SUB-01H8X7J3Z5B6C7D8E9F0G1H2J3",
+    "nombre": "Cervezas Nacionales",
+    "descripcion": "Cervezas producidas en el país.",
+    "grupo_id": "GRP-01H8X7J3Z5B6C7D8E9F0G1H2J3",
+    "activo": true
+  },
+  {
+    "id": "SUB-01H8X7J3Z5B6C7D8E9F0G1H2J4",
+    "nombre": "Refrescos",
+    "descripcion": "Bebidas carbonatadas sin alcohol.",
+    "grupo_id": "GRP-01H8X7J3Z5B6C7D8E9F0G1H2J3",
+    "activo": true
+  },
+  {
+    "id": "SUB-01H8X7J3Z5B6C7D8E9F0G1H2J5",
+    "nombre": "Carnes Rojas",
+    "descripcion": "Cortes de res y cerdo.",
+    "grupo_id": "GRP-01H8X7J3Z5B6C7D8E9F0G1H2J4",
+    "activo": true
+  }
+]
