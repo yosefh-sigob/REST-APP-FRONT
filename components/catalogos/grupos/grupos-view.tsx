@@ -1,7 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { PlusCircle } from "lucide-react"
+import Link from "next/link"
+import { ArrowLeft, PlusCircle } from "lucide-react"
 import type { Grupo } from "@/interfaces/grupos.interface"
 import { Button } from "@/components/ui/button"
 import { DataTable } from "@/components/ui/data-table"
@@ -18,8 +19,14 @@ export function GruposView({ initialData, areasProduccion }: GruposViewProps) {
 
   return (
     <div className="container mx-auto py-10">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-start mb-6">
         <div>
+          <Link href="/catalogos" passHref>
+            <Button variant="outline" className="mb-4 bg-transparent">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Volver a Catálogos
+            </Button>
+          </Link>
           <h1 className="text-3xl font-bold">Gestión de Grupos</h1>
           <p className="text-muted-foreground">Crea, edita y elimina los grupos de productos.</p>
         </div>
