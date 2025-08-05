@@ -94,8 +94,6 @@ export function GruposView({ initialData }: GruposViewProps) {
         }}
         onConfirm={handleDeleteConfirm}
         loading={isLoading}
-        title="¿Eliminar grupo?"
-        description={`Esta acción eliminará permanentemente el grupo "${grupoToDelete?.nombre}". ¿Deseas continuar?`}
       />
     </>
   )

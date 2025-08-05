@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useForm, Controller } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "sonner"
 
@@ -11,7 +11,7 @@ import { createGrupoCatalogos, updateGrupoCatalogos } from "@/actions/catalogos.
 
 import { Modal } from "@/components/ui/modal"
 import { Button } from "@/components/ui/button"
-import { Form, FormItem, FormLabel, FormMessage, FormControl } from "@/components/ui/form"
+import { Form, FormItem, FormLabel, FormMessage, FormControl, FormField } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
@@ -44,10 +44,10 @@ export function GrupoFormModal({ isOpen, onClose, grupo }: GrupoFormModalProps) 
   useEffect(() => {
     if (grupo) {
       form.reset({
-        clave: grupo.clave || "",
-        nombre: grupo.nombre || "",
-        descripcion: grupo.descripcion || "",
-        activo: grupo.activo ?? true,
+        clave: grupo.clave,
+        nombre: grupo.nombre,
+        descripcion: grupo.descripcion ?? "",
+        activo: grupo.activo,
       })
     } else {
       form.reset({
@@ -57,14 +57,15 @@ export function GrupoFormModal({ isOpen, onClose, grupo }: GrupoFormModalProps) 
         activo: true,
       })
     }
-  }, [grupo, form, isOpen])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [grupo, isOpen])
 
   const onSubmit = async (data: GrupoFormValues) => {
     setIsLoading(true)
     try {
-      const promise = isEditing ? updateGrupoCatalogos(grupo.id, data) : createGrupoCatalogos(data)
-
-      const result = await promise
+      const result = isEditing
+        ? await updateGrupoCatalogos(grupo!.id, data)
+        : await createGrupoCatalogos(data)
 
       if (result.success) {
         toast.success(toastMessage)
@@ -83,73 +84,65 @@ export function GrupoFormModal({ isOpen, onClose, grupo }: GrupoFormModalProps) 
     <Modal title={title} description={description} isOpen={isOpen} onClose={onClose}>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <Controller
-            name="clave"
+          <FormField
             control={form.control}
-            render={({ field, fieldState }) => (
+            name="clave"
+            render={({ field }) => (
               <FormItem>
-                <FormLabel>Clave</FormLabel>
+                <FormLabel>Clave *</FormLabel>
                 <FormControl>
                   <Input
+                    placeholder="Ej: BEB, COM, POS..."
+                    {...field}
+                    onChange={e => field.onChange(e.target.value.toUpperCase())}
                     disabled={isLoading}
-                    placeholder="Ej: BEB, ENT, PST"
-                    value={field.value || ""}
-                    onChange={field.onChange}
-                    onBlur={field.onBlur}
-                    name={field.name}
                   />
                 </FormControl>
-                {fieldState.error && <FormMessage>{fieldState.error.message}</FormMessage>}
+                <FormMessage />
               </FormItem>
             )}
           />
 
-          <Controller
-            name="nombre"
+          <FormField
             control={form.control}
-            render={({ field, fieldState }) => (
+            name="nombre"
+            render={({ field }) => (
               <FormItem>
                 <FormLabel>Nombre</FormLabel>
                 <FormControl>
                   <Input
-                    disabled={isLoading}
                     placeholder="Ej: Bebidas, Entradas, Postres"
-                    value={field.value || ""}
-                    onChange={field.onChange}
-                    onBlur={field.onBlur}
-                    name={field.name}
+                    {...field}
+                    disabled={isLoading}
                   />
                 </FormControl>
-                {fieldState.error && <FormMessage>{fieldState.error.message}</FormMessage>}
+                <FormMessage />
               </FormItem>
             )}
           />
 
-          <Controller
-            name="descripcion"
+          <FormField
             control={form.control}
-            render={({ field, fieldState }) => (
+            name="descripcion"
+            render={({ field }) => (
               <FormItem>
                 <FormLabel>Descripción (Opcional)</FormLabel>
                 <FormControl>
                   <Textarea
-                    disabled={isLoading}
                     placeholder="Una breve descripción del grupo de productos."
                     className="resize-none"
-                    value={field.value || ""}
-                    onChange={field.onChange}
-                    onBlur={field.onBlur}
-                    name={field.name}
+                    {...field}
+                    disabled={isLoading}
                   />
                 </FormControl>
-                {fieldState.error && <FormMessage>{fieldState.error.message}</FormMessage>}
+                <FormMessage />
               </FormItem>
             )}
           />
 
-          <Controller
-            name="activo"
+          <FormField
             control={form.control}
+            name="activo"
             render={({ field }) => (
               <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
                 <div className="space-y-0.5">
@@ -159,7 +152,11 @@ export function GrupoFormModal({ isOpen, onClose, grupo }: GrupoFormModalProps) 
                   </p>
                 </div>
                 <FormControl>
-                  <Switch disabled={isLoading} checked={field.value} onCheckedChange={field.onChange} />
+                  <Switch
+                    disabled={isLoading}
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
                 </FormControl>
               </FormItem>
             )}

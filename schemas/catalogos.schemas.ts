@@ -20,21 +20,22 @@ export type AreaProduccionFormValues = z.infer<typeof areaProduccionSchema>
 // Esquema para Grupo
 export const grupoSchema = z.object({
   clave: z
-    .string({ required_error: "La clave es requerida." })
+    .string()
+    .min(1, { message: "La clave es requerida." })
     .min(2, { message: "La clave debe tener entre 2 y 10 caracteres." })
     .max(10, { message: "La clave no puede tener más de 10 caracteres." })
     .regex(/^[A-Z0-9]+$/, { message: "La clave solo puede contener letras mayúsculas y números." })
     .transform((val) => val.toUpperCase()),
   nombre: z
-    .string({ required_error: "El nombre es requerido." })
+    .string()
+    .min(1, { message: "El nombre es requerido." })
     .min(3, { message: "El nombre debe tener al menos 3 caracteres." })
     .max(50, { message: "El nombre no puede tener más de 50 caracteres." }),
   descripcion: z
     .string()
     .max(200, { message: "La descripción no puede tener más de 200 caracteres." })
-    .optional()
-    .or(z.literal("")), // Permite un string vacío
-  activo: z.boolean().default(true),
+    .optional(),
+  activo: z.boolean(),
 })
 
 export type GrupoFormValues = z.infer<typeof grupoSchema>
