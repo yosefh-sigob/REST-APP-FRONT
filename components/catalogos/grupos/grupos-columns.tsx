@@ -1,9 +1,8 @@
 "use client"
 
-import type React from "react"
-
 import type { ColumnDef } from "@tanstack/react-table"
 import { ArrowUpDown, Edit, MoreHorizontal, Trash } from "lucide-react"
+
 import type { IGrupo } from "@/interfaces/grupos.interface"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -16,42 +15,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-interface ActionsCellProps {
-  row: {
-    original: IGrupo
-  }
-}
-
 interface CreateColumnsProps {
   onEdit: (grupo: IGrupo) => void
-  onDelete: (grupo: IGrupo) => void
-}
-
-const ActionsCell: React.FC<ActionsCellProps & CreateColumnsProps> = ({ row, onEdit, onDelete }) => {
-  const grupo = row.original
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-8 w-8 p-0">
-          <span className="sr-only">Abrir menú</span>
-          <MoreHorizontal className="h-4 w-4" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-        <DropdownMenuItem onClick={() => navigator.clipboard.writeText(grupo.id)}>Copiar ID</DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => onEdit(grupo)}>
-          <Edit className="mr-2 h-4 w-4" />
-          Editar
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => onDelete(grupo)} className="text-red-500 focus:text-red-500">
-          <Trash className="mr-2 h-4 w-4" />
-          Eliminar
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  )
+  onDelete: (id: string) => void
 }
 
 export const createColumns = ({ onEdit, onDelete }: CreateColumnsProps): ColumnDef<IGrupo>[] => [
@@ -63,6 +29,7 @@ export const createColumns = ({ onEdit, onDelete }: CreateColumnsProps): ColumnD
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
+    cell: ({ row }) => <div className="font-mono">{row.original.clave}</div>,
   },
   {
     accessorKey: "nombre",
@@ -84,6 +51,31 @@ export const createColumns = ({ onEdit, onDelete }: CreateColumnsProps): ColumnD
   },
   {
     id: "actions",
-    cell: (props) => <ActionsCell {...props} onEdit={onEdit} onDelete={onDelete} />,
+    cell: ({ row }) => {
+      const grupo = row.original
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Abrir menú</span>
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+            <DropdownMenuItem onClick={() => navigator.clipboard.writeText(grupo.id)}>Copiar ID</DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => onEdit(grupo)}>
+              <Edit className="mr-2 h-4 w-4" />
+              Editar
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onDelete(grupo.id)} className="text-red-500 focus:text-red-500">
+              <Trash className="mr-2 h-4 w-4" />
+              Eliminar
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )
+    },
   },
 ]

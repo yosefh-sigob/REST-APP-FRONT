@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
-import { PlusCircle } from "lucide-react"
+import { PlusCircle, ArrowLeft } from "lucide-react"
 
 import type { IGrupo } from "@/interfaces/grupos.interface"
 import { deleteGrupoCatalogos } from "@/actions/catalogos.actions"
@@ -15,7 +15,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { DataTable } from "@/components/ui/data-table"
 import { AlertModal } from "@/components/modals/alert-modal"
 import { GrupoFormModal } from "./grupo-form-modal"
-import { columns } from "./grupos-columns"
+import { createColumns } from "./grupos-columns"
 
 interface GruposViewProps {
   initialData: IGrupo[]
@@ -40,7 +40,7 @@ export function GruposView({ initialData }: GruposViewProps) {
     setIsModalOpen(true)
   }
 
-  const handleDeleteConfirm = (id: string) => {
+  const handleDeleteRequest = (id: string) => {
     setDeletingGrupoId(id)
     setIsAlertOpen(true)
   }
@@ -51,7 +51,7 @@ export function GruposView({ initialData }: GruposViewProps) {
     setIsLoading(true)
     const promise = deleteGrupoCatalogos(deletingGrupoId).then((res) => {
       if (res.success) {
-        setData(data.filter((item) => item.id !== deletingGrupoId))
+        setData((currentData) => currentData.filter((item) => item.id !== deletingGrupoId))
         return res.message
       }
       throw new Error(res.message)
@@ -72,8 +72,10 @@ export function GruposView({ initialData }: GruposViewProps) {
   const handleCloseModal = () => {
     setIsModalOpen(false)
     setEditingGrupo(undefined)
-    router.refresh() // Recargar datos del servidor
+    router.refresh()
   }
+
+  const columns = createColumns({ onEdit: handleEdit, onDelete: handleDeleteRequest })
 
   return (
     <>
@@ -85,11 +87,12 @@ export function GruposView({ initialData }: GruposViewProps) {
       />
       <GrupoFormModal isOpen={isModalOpen} onClose={handleCloseModal} grupo={editingGrupo} />
 
-      <div className="flex-1 space-y-4 p-8 pt-6">
+      <div className="flex-1 space-y-4 p-4 sm:p-6 md:p-8">
         <div className="flex items-center justify-between">
           <Heading title="Grupos de Productos" description="Gestiona los grupos para tus productos." />
           <div className="flex items-center space-x-2">
             <Button variant="outline" onClick={() => router.push("/catalogos")}>
+              <ArrowLeft className="mr-2 h-4 w-4" />
               Volver a Catálogos
             </Button>
             <Button onClick={handleNew}>
@@ -103,7 +106,7 @@ export function GruposView({ initialData }: GruposViewProps) {
             <CardTitle>Lista de Grupos</CardTitle>
           </CardHeader>
           <CardContent>
-            <DataTable columns={columns({ onEdit: handleEdit, onDelete: handleDeleteConfirm })} data={data} />
+            <DataTable columns={columns} data={data} searchKey="nombre" searchPlaceholder="Buscar por nombre..." />
           </CardContent>
         </Card>
       </div>
