@@ -4,7 +4,7 @@ import { IGetAlmacen } from "@/interfaces/almacen.interface"
 import { IGetAreaProduccion } from "@/interfaces/areaProduccion.interface"
 import { IGetGrupoProducto } from "@/interfaces/grupos.interface"
 import { IGetProducto } from "@/interfaces/productos.interface"
-import { IGetSubgrupoProducto } from "@/interfaces/subgrupos.interface"
+import { ISubgrupo } from "@/interfaces/subgrupos.interface"
 import { IGetUnidad } from "@/interfaces/unidad.interface"
 import { generateULID } from "@/lib/utils/ulid"
 
@@ -793,7 +793,7 @@ const mockGruposProductos: IGetGrupoProducto[] = [
   },
 ]
 
-const mockSubgruposProductos: IGetSubgrupoProducto[] = [
+const mockSubgruposProductos: ISubgrupo[] = [
   {
     SubgrupoProductoULID: "01HKQM5X8P9R2T4V6W8Y0Z1A3D",
     ClaveGrupo: "01HKQM5X8P9R2T4V6W8Y0Z1A3C",
@@ -1071,7 +1071,7 @@ export const getGruposProductos = async (): Promise<IGetGrupoProducto[]> => {
   return [...mockGruposProductos]
 }
 
-export const getSubgruposProductos = async (): Promise<IGetSubgrupoProducto[]> => {
+export const getSubgruposProductos = async (): Promise<ISubgrupo[]> => {
   await new Promise((resolve) => setTimeout(resolve, 50))
   return [...mockSubgruposProductos]
 }
@@ -1096,7 +1096,7 @@ export const getGrupoById = (id: string): IGetGrupoProducto | null => {
   return mockGruposProductos.find((g) => g.GrupoProductoULID === id) || null
 }
 
-export const getSubgrupoById = (id: string): IGetSubgrupoProducto | null => {
+export const getSubgrupoById = (id: string): ISubgrupo | null => {
   return mockSubgruposProductos.find((s) => s.SubgrupoProductoULID === id) || null
 }
 

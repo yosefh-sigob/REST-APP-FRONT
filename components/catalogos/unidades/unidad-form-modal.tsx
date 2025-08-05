@@ -35,35 +35,41 @@ export function UnidadFormModal({ isOpen, onClose, unidad }: UnidadFormModalProp
     defaultValues: {
       clave: "",
       nombre: "",
-      abreviacion: "",
       descripcion: "",
-      activo: true,
+      activa: true,
     },
   })
 
   useEffect(() => {
     if (unidad) {
       form.reset({
-        clave: unidad.clave,
-        nombre: unidad.nombre,
-        abreviacion: unidad.abreviacion,
-        descripcion: unidad.descripcion || "",
-        activo: unidad.activo,
+        clave: unidad.ClaveUnidad,
+        nombre: unidad.Descripcion || "",
+        descripcion: unidad.Descripcion || "",
+        activa: true as boolean,
       })
     } else {
       form.reset({
         clave: "",
         nombre: "",
-        abreviacion: "",
         descripcion: "",
-        activo: true,
+        activa: true as boolean,
       })
     }
   }, [unidad, form])
 
   const onSubmit = async (data: UnidadFormValues) => {
+    const payload = {
+      clave: data.clave,
+      nombre: data.nombre,
+      abreviacion: unidad?.Abreviacion || "",
+      descripcion: data.descripcion,
+      activo: Boolean(data.activa),
+    }
     try {
-      const result = isEditing ? await updateUnidad(unidad.id, data) : await createUnidad(data)
+      const result = isEditing
+        ? await updateUnidad(unidad?.UnidadULID || "", payload)
+        : await createUnidad(payload)
 
       if (result.success) {
         toast({
@@ -102,10 +108,11 @@ export function UnidadFormModal({ isOpen, onClose, unidad }: UnidadFormModalProp
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+
             <FormField
               control={form.control}
               name="clave"
-              render={({ field }) => (
+              render={({ field }: any) => (
                 <FormItem>
                   <FormLabel>Clave *</FormLabel>
                   <FormControl>
@@ -124,27 +131,13 @@ export function UnidadFormModal({ isOpen, onClose, unidad }: UnidadFormModalProp
             <FormField
               control={form.control}
               name="nombre"
-              render={({ field }) => (
+              render={({ field }: any) => (
                 <FormItem>
                   <FormLabel>Nombre *</FormLabel>
                   <FormControl>
                     <Input placeholder="Kilogramo, Litro, Pieza..." {...field} />
                   </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="abreviacion"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Abreviación *</FormLabel>
-                  <FormControl>
-                    <Input placeholder="kg, lt, pz..." {...field} />
-                  </FormControl>
-                  <FormDescription>Forma corta de la unidad para mostrar en reportes</FormDescription>
+                  <FormDescription>Nombre completo de la unidad</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -153,7 +146,7 @@ export function UnidadFormModal({ isOpen, onClose, unidad }: UnidadFormModalProp
             <FormField
               control={form.control}
               name="descripcion"
-              render={({ field }) => (
+              render={({ field }: any) => (
                 <FormItem>
                   <FormLabel>Descripción</FormLabel>
                   <FormControl>
@@ -166,11 +159,11 @@ export function UnidadFormModal({ isOpen, onClose, unidad }: UnidadFormModalProp
 
             <FormField
               control={form.control}
-              name="activo"
-              render={({ field }) => (
+              name="activa"
+              render={({ field }: any) => (
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                   <div className="space-y-0.5">
-                    <FormLabel className="text-base">Estado Activo</FormLabel>
+                    <FormLabel className="text-base">Estado Activa</FormLabel>
                     <FormDescription>Las unidades inactivas no aparecerán en los formularios</FormDescription>
                   </div>
                   <FormControl>

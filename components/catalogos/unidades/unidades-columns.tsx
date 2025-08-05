@@ -58,7 +58,7 @@ export const columns = (onEdit: (unidad: IGetUnidad) => void): ColumnDef<IGetUni
 
       const handleDelete = async () => {
         if (confirm("¿Estás seguro de que deseas eliminar esta unidad?")) {
-          const result = await deleteUnidad(unidad.id)
+          const result = await deleteUnidad(unidad.UnidadULID)
           if (result.success) {
             toast({
               title: "Éxito",

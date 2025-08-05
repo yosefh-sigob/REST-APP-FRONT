@@ -1,26 +1,33 @@
+
 export interface ISubgrupo {
-  id: string
-  clave: string
-  nombre: string
-  descripcion: string
-  grupo_id: string
-  activo: boolean
+  SubgrupoProductoULID: string
+  ClaveGrupo: string
+  ClaveSubGrupo: string
+  Descripcion: string
+  AplicarComentarios: boolean
+  Suspendido: boolean
+  Fecha_UltimoCambio: string
+  Fecha_Sync: string
+  UsuarioULID: string
+  EmpresaULID: string
 }
+
 
 export interface ICreateSubgrupo {
-  clave: string
-  nombre: string
-  descripcion: string
-  grupo_id: string
-  activo: boolean
+  ClaveGrupo: string
+  ClaveSubGrupo: string
+  Descripcion: string
+  AplicarComentarios: boolean
+  Suspendido: boolean
 }
 
+
 export interface IUpdateSubgrupo {
-  clave: string
-  nombre: string
-  descripcion: string
-  grupo_id: string
-  activo: boolean
+  ClaveGrupo?: string
+  ClaveSubGrupo?: string
+  Descripcion?: string
+  AplicarComentarios?: boolean
+  Suspendido?: boolean
 }
 
 // Alias para compatibilidad

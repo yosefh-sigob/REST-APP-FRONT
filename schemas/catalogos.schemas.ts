@@ -55,10 +55,15 @@ export const unidadSchema = z.object({
     .regex(/^[A-Z0-9]+$/, "La clave solo puede contener letras mayúsculas y números"),
   nombre: z.string().min(1, "El nombre es requerido").max(50, "El nombre no puede tener más de 50 caracteres"),
   descripcion: z.string().optional(),
-  activa: z.boolean().default(true),
+  activa: z.boolean(),
 })
 
-export type UnidadFormValues = z.infer<typeof unidadSchema>
+export type UnidadFormValues = {
+  clave: string;
+  nombre: string;
+  descripcion?: string;
+  activa: boolean;
+};
 
 // Esquema para Almacén
 export const almacenSchema = z.object({

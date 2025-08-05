@@ -3,7 +3,8 @@ import { TiposClienteView } from "@/components/catalogos/tipos-cliente/tipos-cli
 import type { ITipoCliente } from "@/interfaces/tipos-cliente.interface"
 
 export default async function TiposClientePage() {
-  const data: ITipoCliente[] = await getTiposCliente()
+  const response = await getTiposCliente()
+  const data: ITipoCliente[] = response.data
 
   return <TiposClienteView data={data} />
 }
