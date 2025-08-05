@@ -7,7 +7,7 @@ import { toast } from "sonner"
 
 import type { IGrupo } from "@/interfaces/grupos.interface"
 import { grupoSchema, type GrupoFormValues } from "@/schemas/catalogos.schemas"
-import { createGrupo, updateGrupo } from "@/actions/catalogos.actions"
+import { createGrupoCatalogos, updateGrupoCatalogos } from "@/actions/catalogos.actions"
 
 import { Modal } from "@/components/ui/modal"
 import { Button } from "@/components/ui/button"
@@ -51,7 +51,7 @@ export function GrupoFormModal({ isOpen, onClose, grupo }: GrupoFormModalProps) 
 
   const onSubmit = async (data: GrupoFormValues) => {
     setIsLoading(true)
-    const promise = isEditing ? updateGrupo(grupo.id, data) : createGrupo(data)
+    const promise = isEditing ? updateGrupoCatalogos(grupo.id, data) : createGrupoCatalogos(data)
 
     toast.promise(promise, {
       loading: "Guardando...",
