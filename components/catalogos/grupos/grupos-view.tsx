@@ -2,79 +2,114 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { ArrowLeft, Plus, Package } from "lucide-react"
+import { ArrowLeft, Package, Plus } from "lucide-react"
+import { toast } from "sonner"
+
+import type { IGrupo } from "@/interfaces/grupos.interface"
+import { deleteGrupo } from "@/actions/catalogos.actions"
+
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { DataTable } from "@/components/ui/data-table"
+import { Heading } from "@/components/ui/heading"
+import { AlertModal } from "@/components/modals/alert-modal"
 import { GrupoFormModal } from "./grupo-form-modal"
 import { createColumns } from "./grupos-columns"
-import type { Grupo } from "@/interfaces/grupos.interface"
 
 interface GruposViewProps {
-  grupos: Grupo[]
+  initialData: IGrupo[]
 }
 
-export function GruposView({ grupos = [] }: GruposViewProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [editingGrupo, setEditingGrupo] = useState<Grupo | null>(null)
+export function GruposView({ initialData }: GruposViewProps) {
+  const [isFormModalOpen, setIsFormModalOpen] = useState(false)
+  const [isAlertModalOpen, setIsAlertModalOpen] = useState(false)
+  const [activeGrupo, setActiveGrupo] = useState<IGrupo | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
 
-  const handleEdit = (grupo: Grupo) => {
-    setEditingGrupo(grupo)
-    setIsModalOpen(true)
+  const handleEdit = (grupo: IGrupo) => {
+    setActiveGrupo(grupo)
+    setIsFormModalOpen(true)
   }
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false)
-    setEditingGrupo(null)
+  const handleDeleteRequest = (grupo: IGrupo) => {
+    setActiveGrupo(grupo)
+    setIsAlertModalOpen(true)
   }
 
-  const columns = createColumns(handleEdit)
+  const handleConfirmDelete = async () => {
+    if (!activeGrupo) return
+
+    setIsLoading(true)
+    const result = await deleteGrupo(activeGrupo.id)
+
+    if (result.success) {
+      toast.success(result.message)
+    } else {
+      toast.error(result.message)
+    }
+
+    setIsLoading(false)
+    setIsAlertModalOpen(false)
+    setActiveGrupo(null)
+  }
+
+  const columns = createColumns({ onEdit: handleEdit, onDelete: handleDeleteRequest })
 
   return (
-    <div className="space-y-6">
-      {/* Header con botón de regreso */}
-      <div className="flex items-center gap-4">
-        <Button variant="outline" size="sm" asChild>
-          <Link href="/catalogos">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Volver a Catálogos
-          </Link>
-        </Button>
-      </div>
+    <>
+      <AlertModal
+        isOpen={isAlertModalOpen}
+        onClose={() => setIsAlertModalOpen(false)}
+        onConfirm={handleConfirmDelete}
+        loading={isLoading}
+        title="¿Estás absolutamente seguro?"
+        description="Esta acción no se puede deshacer. Esto eliminará permanentemente el grupo."
+      />
+      <GrupoFormModal
+        isOpen={isFormModalOpen}
+        onClose={() => {
+          setIsFormModalOpen(false)
+          setActiveGrupo(null)
+        }}
+        grupo={activeGrupo || undefined}
+      />
 
-      {/* Título y descripción */}
-      <div className="flex items-center justify-between">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <Package className="h-6 w-6 text-primary" />
-            <h1 className="text-3xl font-bold tracking-tight">Grupos de Productos</h1>
-          </div>
-          <p className="text-muted-foreground">Gestiona las categorías principales de productos del restaurante</p>
-        </div>
-        <Button onClick={() => setIsModalOpen(true)}>
-          <Plus className="h-4 w-4 mr-2" />
-          Nuevo Grupo
-        </Button>
-      </div>
-
-      {/* Tabla de datos */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Lista de Grupos de Productos</CardTitle>
-          <CardDescription>Administra las categorías principales de productos de tu restaurante</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <DataTable
-            columns={columns}
-            data={grupos}
-            searchKey="nombre"
-            searchPlaceholder="Buscar por nombre..."
+      <div className="space-y-4 p-4 sm:p-6 md:p-8">
+        <div className="flex items-center justify-between">
+          <Heading
+            title="Grupos de Productos"
+            description="Gestiona las categorías principales de productos del restaurante."
+            Icon={Package}
           />
-        </CardContent>
-      </Card>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" asChild>
+              <Link href="/catalogos">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Volver
+              </Link>
+            </Button>
+            <Button onClick={() => setIsFormModalOpen(true)}>
+              <Plus className="mr-2 h-4 w-4" />
+              Nuevo Grupo
+            </Button>
+          </div>
+        </div>
 
-      {/* Modal de formulario */}
-      <GrupoFormModal isOpen={isModalOpen} onClose={handleCloseModal} grupo={editingGrupo || undefined} />
-    </div>
+        <Card>
+          <CardHeader>
+            <CardTitle>Lista de Grupos</CardTitle>
+            <CardDescription>Aquí puedes ver, editar y eliminar los grupos de productos existentes.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <DataTable
+              columns={columns}
+              data={initialData}
+              searchKey="nombre"
+              searchPlaceholder="Buscar por nombre..."
+            />
+          </CardContent>
+        </Card>
+      </div>
+    </>
   )
 }

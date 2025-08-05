@@ -1,14 +1,13 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
-
-// Importar interfaces
+import { generateULID } from "@/lib/utils/ulid"
 import type {
   IAreaProduccion,
   ICreateAreaProduccion,
   IUpdateAreaProduccion,
 } from "@/interfaces/areaProduccion.interface"
-import type { IGrupo, ICreateGrupo, IUpdateGrupo } from "@/interfaces/grupos.interface"
+import type { IGrupo, GrupoFormValues } from "@/interfaces/grupos.interface"
 import type { ISubgrupo, ICreateSubgrupo, IUpdateSubgrupo } from "@/interfaces/subgrupos.interface"
 import type { IUnidad, ICreateUnidad, IUpdateUnidad } from "@/interfaces/unidad.interface"
 import type { IAlmacen, ICreateAlmacen, IUpdateAlmacen } from "@/interfaces/almacen.interface"
@@ -18,13 +17,16 @@ import type { IEstadoMesa, ICreateEstadoMesa, IUpdateEstadoMesa } from "@/interf
 
 // Importar datos mock
 import areasProduccionData from "@/data/areas-produccion.json"
-import gruposData from "@/data/grupos.json"
+import initialGrupos from "@/data/grupos.json"
 import subgruposData from "@/data/subgrupos.json"
 import unidadesData from "@/data/unidades.json"
 import almacenesData from "@/data/almacenes.json"
 import tiposClienteData from "@/data/tipos-cliente.json"
 import metodosPagoData from "@/data/metodos-pago.json"
 import estadosMesaData from "@/data/estados-mesa.json"
+
+// Simulación de Base de Datos en Memoria
+let grupos: IGrupo[] = [...initialGrupos]
 
 // ============================================================================
 // ÁREAS DE PRODUCCIÓN
@@ -124,94 +126,91 @@ export async function deleteAreaProduccion(id: string): Promise<{ success: boole
 }
 
 // ============================================================================
-// GRUPOS
+// GRUPOS DE PRODUCTOS
 // ============================================================================
 
-export async function getGrupos(): Promise<{ success: boolean; data: IGrupo[]; message: string }> {
+export async function getGruposCatalogos(): Promise<{ success: boolean; data: IGrupo[]; message: string }> {
   try {
-    await new Promise((resolve) => setTimeout(resolve, 100))
+    await new Promise((resolve) => setTimeout(resolve, 150)) // Simular delay
     return {
       success: true,
-      data: gruposData as IGrupo[],
-      message: "Grupos obtenidos exitosamente",
+      data: JSON.parse(JSON.stringify(grupos)),
+      message: "Grupos obtenidos exitosamente.",
     }
   } catch (error) {
-    return {
-      success: false,
-      data: [],
-      message: "Error al obtener los grupos",
-    }
+    return { success: false, data: [], message: "Error al obtener los grupos." }
   }
 }
 
-export async function createGrupo(data: ICreateGrupo): Promise<{ success: boolean; message: string }> {
+export async function createGrupoCatalogos(data: GrupoFormValues): Promise<{ success: boolean; message: string }> {
   try {
     await new Promise((resolve) => setTimeout(resolve, 500))
 
-    const existingGrupo = gruposData.find((grupo) => grupo.clave.toLowerCase() === data.clave.toLowerCase())
+    const existingGrupo = grupos.find((g) => g.clave.toLowerCase() === data.clave.toLowerCase())
     if (existingGrupo) {
-      return {
-        success: false,
-        message: "Ya existe un grupo con esa clave",
-      }
+      return { success: false, message: "Ya existe un grupo con esa clave." }
     }
 
+    const newGrupo: IGrupo = {
+      id: `GRP-${generateULID()}`,
+      clave: data.clave,
+      nombre: data.nombre,
+      descripcion: data.descripcion || "",
+      activo: data.activo,
+    }
+
+    grupos.push(newGrupo)
     revalidatePath("/catalogos/grupos")
-    return {
-      success: true,
-      message: "Grupo creado exitosamente",
-    }
+    return { success: true, message: "Grupo creado exitosamente." }
   } catch (error) {
-    return {
-      success: false,
-      message: "Error al crear el grupo",
-    }
+    return { success: false, message: "Error al crear el grupo." }
   }
 }
 
-export async function updateGrupo(id: string, data: IUpdateGrupo): Promise<{ success: boolean; message: string }> {
+export async function updateGrupoCatalogos(
+  id: string,
+  data: GrupoFormValues,
+): Promise<{ success: boolean; message: string }> {
   try {
     await new Promise((resolve) => setTimeout(resolve, 500))
 
-    if (data.clave) {
-      const existingGrupo = gruposData.find(
-        (grupo) => grupo.id !== id && grupo.clave.toLowerCase() === data.clave.toLowerCase(),
-      )
-      if (existingGrupo) {
-        return {
-          success: false,
-          message: "Ya existe un grupo con esa clave",
-        }
-      }
+    const index = grupos.findIndex((g) => g.id === id)
+    if (index === -1) {
+      return { success: false, message: "Grupo no encontrado." }
+    }
+
+    const existingGrupo = grupos.find((g) => g.id !== id && g.clave.toLowerCase() === data.clave.toLowerCase())
+    if (existingGrupo) {
+      return { success: false, message: "Ya existe otro grupo con esa clave." }
+    }
+
+    grupos[index] = {
+      ...grupos[index],
+      ...data,
+      descripcion: data.descripcion || "",
     }
 
     revalidatePath("/catalogos/grupos")
-    return {
-      success: true,
-      message: "Grupo actualizado exitosamente",
-    }
+    return { success: true, message: "Grupo actualizado exitosamente." }
   } catch (error) {
-    return {
-      success: false,
-      message: "Error al actualizar el grupo",
-    }
+    return { success: false, message: "Error al actualizar el grupo." }
   }
 }
 
-export async function deleteGrupo(id: string): Promise<{ success: boolean; message: string }> {
+export async function deleteGrupoCatalogos(id: string): Promise<{ success: boolean; message: string }> {
   try {
     await new Promise((resolve) => setTimeout(resolve, 500))
+    const initialLength = grupos.length
+    grupos = grupos.filter((g) => g.id !== id)
+
+    if (grupos.length === initialLength) {
+      return { success: false, message: "Grupo no encontrado." }
+    }
 
     revalidatePath("/catalogos/grupos")
-    return {
-      success: true,
-      message: "Grupo eliminado exitosamente",
-    }
+    return { success: true, message: "Grupo eliminado exitosamente." }
   } catch (error) {
-    return {
-      success: false,
-      message: "Error al eliminar el grupo",
-    }
+    return { success: false, message: "Error al eliminar el grupo." }
   }
 }
 
@@ -219,7 +218,7 @@ export async function deleteGrupo(id: string): Promise<{ success: boolean; messa
 // SUBGRUPOS
 // ============================================================================
 
-export async function getSubgrupos(): Promise<{ success: boolean; data: ISubgrupo[]; message: string }> {
+export async function getSubgruposCatalogos(): Promise<{ success: boolean; data: ISubgrupo[]; message: string }> {
   try {
     await new Promise((resolve) => setTimeout(resolve, 100))
     return {
@@ -236,7 +235,7 @@ export async function getSubgrupos(): Promise<{ success: boolean; data: ISubgrup
   }
 }
 
-export async function createSubgrupo(data: ICreateSubgrupo): Promise<{ success: boolean; message: string }> {
+export async function createSubgrupoCatalogos(data: ICreateSubgrupo): Promise<{ success: boolean; message: string }> {
   try {
     await new Promise((resolve) => setTimeout(resolve, 500))
 
@@ -261,7 +260,7 @@ export async function createSubgrupo(data: ICreateSubgrupo): Promise<{ success: 
   }
 }
 
-export async function updateSubgrupo(
+export async function updateSubgrupoCatalogos(
   id: string,
   data: IUpdateSubgrupo,
 ): Promise<{ success: boolean; message: string }> {
@@ -293,7 +292,7 @@ export async function updateSubgrupo(
   }
 }
 
-export async function deleteSubgrupo(id: string): Promise<{ success: boolean; message: string }> {
+export async function deleteSubgrupoCatalogos(id: string): Promise<{ success: boolean; message: string }> {
   try {
     await new Promise((resolve) => setTimeout(resolve, 500))
 
@@ -314,7 +313,7 @@ export async function deleteSubgrupo(id: string): Promise<{ success: boolean; me
 // UNIDADES
 // ============================================================================
 
-export async function getUnidades(): Promise<{ success: boolean; data: IUnidad[]; message: string }> {
+export async function getUnidadesCatalogos(): Promise<{ success: boolean; data: IUnidad[]; message: string }> {
   try {
     await new Promise((resolve) => setTimeout(resolve, 100))
     return {
@@ -331,7 +330,7 @@ export async function getUnidades(): Promise<{ success: boolean; data: IUnidad[]
   }
 }
 
-export async function createUnidad(data: ICreateUnidad): Promise<{ success: boolean; message: string }> {
+export async function createUnidadCatalogos(data: ICreateUnidad): Promise<{ success: boolean; message: string }> {
   try {
     await new Promise((resolve) => setTimeout(resolve, 500))
 
@@ -356,7 +355,10 @@ export async function createUnidad(data: ICreateUnidad): Promise<{ success: bool
   }
 }
 
-export async function updateUnidad(id: string, data: IUpdateUnidad): Promise<{ success: boolean; message: string }> {
+export async function updateUnidadCatalogos(
+  id: string,
+  data: IUpdateUnidad,
+): Promise<{ success: boolean; message: string }> {
   try {
     await new Promise((resolve) => setTimeout(resolve, 500))
 
@@ -385,7 +387,7 @@ export async function updateUnidad(id: string, data: IUpdateUnidad): Promise<{ s
   }
 }
 
-export async function deleteUnidad(id: string): Promise<{ success: boolean; message: string }> {
+export async function deleteUnidadCatalogos(id: string): Promise<{ success: boolean; message: string }> {
   try {
     await new Promise((resolve) => setTimeout(resolve, 500))
 
@@ -406,7 +408,7 @@ export async function deleteUnidad(id: string): Promise<{ success: boolean; mess
 // ALMACENES
 // ============================================================================
 
-export async function getAlmacenes(): Promise<{ success: boolean; data: IAlmacen[]; message: string }> {
+export async function getAlmacenesCatalogos(): Promise<{ success: boolean; data: IAlmacen[]; message: string }> {
   try {
     await new Promise((resolve) => setTimeout(resolve, 100))
     return {
@@ -423,13 +425,11 @@ export async function getAlmacenes(): Promise<{ success: boolean; data: IAlmacen
   }
 }
 
-export async function createAlmacen(data: ICreateAlmacen): Promise<{ success: boolean; message: string }> {
+export async function createAlmacenCatalogos(data: ICreateAlmacen): Promise<{ success: boolean; message: string }> {
   try {
     await new Promise((resolve) => setTimeout(resolve, 500))
 
-    const existingAlmacen = almacenesData.find(
-      (almacen) => almacen.clave.toLowerCase() === data.clave.toLowerCase(),
-    )
+    const existingAlmacen = almacenesData.find((almacen) => almacen.clave.toLowerCase() === data.clave.toLowerCase())
     if (existingAlmacen) {
       return {
         success: false,
@@ -450,7 +450,10 @@ export async function createAlmacen(data: ICreateAlmacen): Promise<{ success: bo
   }
 }
 
-export async function updateAlmacen(id: string, data: IUpdateAlmacen): Promise<{ success: boolean; message: string }> {
+export async function updateAlmacenCatalogos(
+  id: string,
+  data: IUpdateAlmacen,
+): Promise<{ success: boolean; message: string }> {
   try {
     await new Promise((resolve) => setTimeout(resolve, 500))
 
@@ -479,7 +482,7 @@ export async function updateAlmacen(id: string, data: IUpdateAlmacen): Promise<{
   }
 }
 
-export async function deleteAlmacen(id: string): Promise<{ success: boolean; message: string }> {
+export async function deleteAlmacenCatalogos(id: string): Promise<{ success: boolean; message: string }> {
   try {
     await new Promise((resolve) => setTimeout(resolve, 500))
 
@@ -500,7 +503,7 @@ export async function deleteAlmacen(id: string): Promise<{ success: boolean; mes
 // TIPOS DE CLIENTE
 // ============================================================================
 
-export async function getTiposCliente(): Promise<{ success: boolean; data: ITipoCliente[]; message: string }> {
+export async function getTiposClienteCatalogos(): Promise<{ success: boolean; data: ITipoCliente[]; message: string }> {
   try {
     await new Promise((resolve) => setTimeout(resolve, 100))
     return {
@@ -517,7 +520,9 @@ export async function getTiposCliente(): Promise<{ success: boolean; data: ITipo
   }
 }
 
-export async function createTipoCliente(data: ICreateTipoCliente): Promise<{ success: boolean; message: string }> {
+export async function createTipoClienteCatalogos(
+  data: ICreateTipoCliente,
+): Promise<{ success: boolean; message: string }> {
   try {
     await new Promise((resolve) => setTimeout(resolve, 500))
 
@@ -542,7 +547,7 @@ export async function createTipoCliente(data: ICreateTipoCliente): Promise<{ suc
   }
 }
 
-export async function updateTipoCliente(
+export async function updateTipoClienteCatalogos(
   id: string,
   data: IUpdateTipoCliente,
 ): Promise<{ success: boolean; message: string }> {
@@ -574,7 +579,7 @@ export async function updateTipoCliente(
   }
 }
 
-export async function deleteTipoCliente(id: string): Promise<{ success: boolean; message: string }> {
+export async function deleteTipoClienteCatalogos(id: string): Promise<{ success: boolean; message: string }> {
   try {
     await new Promise((resolve) => setTimeout(resolve, 500))
 
@@ -595,7 +600,7 @@ export async function deleteTipoCliente(id: string): Promise<{ success: boolean;
 // MÉTODOS DE PAGO
 // ============================================================================
 
-export async function getMetodosPago(): Promise<{ success: boolean; data: IMetodoPago[]; message: string }> {
+export async function getMetodosPagoCatalogos(): Promise<{ success: boolean; data: IMetodoPago[]; message: string }> {
   try {
     await new Promise((resolve) => setTimeout(resolve, 100))
     return {
@@ -612,7 +617,9 @@ export async function getMetodosPago(): Promise<{ success: boolean; data: IMetod
   }
 }
 
-export async function createMetodoPago(data: ICreateMetodoPago): Promise<{ success: boolean; message: string }> {
+export async function createMetodoPagoCatalogos(
+  data: ICreateMetodoPago,
+): Promise<{ success: boolean; message: string }> {
   try {
     await new Promise((resolve) => setTimeout(resolve, 500))
 
@@ -637,7 +644,7 @@ export async function createMetodoPago(data: ICreateMetodoPago): Promise<{ succe
   }
 }
 
-export async function updateMetodoPago(
+export async function updateMetodoPagoCatalogos(
   id: string,
   data: IUpdateMetodoPago,
 ): Promise<{ success: boolean; message: string }> {
@@ -669,7 +676,7 @@ export async function updateMetodoPago(
   }
 }
 
-export async function deleteMetodoPago(id: string): Promise<{ success: boolean; message: string }> {
+export async function deleteMetodoPagoCatalogos(id: string): Promise<{ success: boolean; message: string }> {
   try {
     await new Promise((resolve) => setTimeout(resolve, 500))
 
@@ -690,7 +697,7 @@ export async function deleteMetodoPago(id: string): Promise<{ success: boolean; 
 // ESTADOS DE MESA
 // ============================================================================
 
-export async function getEstadosMesa(): Promise<{ success: boolean; data: IEstadoMesa[]; message: string }> {
+export async function getEstadosMesaCatalogos(): Promise<{ success: boolean; data: IEstadoMesa[]; message: string }> {
   try {
     await new Promise((resolve) => setTimeout(resolve, 100))
     return {
@@ -707,7 +714,9 @@ export async function getEstadosMesa(): Promise<{ success: boolean; data: IEstad
   }
 }
 
-export async function createEstadoMesa(data: ICreateEstadoMesa): Promise<{ success: boolean; message: string }> {
+export async function createEstadoMesaCatalogos(
+  data: ICreateEstadoMesa,
+): Promise<{ success: boolean; message: string }> {
   try {
     await new Promise((resolve) => setTimeout(resolve, 500))
 
@@ -732,7 +741,7 @@ export async function createEstadoMesa(data: ICreateEstadoMesa): Promise<{ succe
   }
 }
 
-export async function updateEstadoMesa(
+export async function updateEstadoMesaCatalogos(
   id: string,
   data: IUpdateEstadoMesa,
 ): Promise<{ success: boolean; message: string }> {
@@ -762,7 +771,7 @@ export async function updateEstadoMesa(
   }
 }
 
-export async function deleteEstadoMesa(id: string): Promise<{ success: boolean; message: string }> {
+export async function deleteEstadoMesaCatalogos(id: string): Promise<{ success: boolean; message: string }> {
   try {
     await new Promise((resolve) => setTimeout(resolve, 500))
 

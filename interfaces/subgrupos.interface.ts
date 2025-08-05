@@ -1,4 +1,3 @@
-
 export interface ISubgrupo {
   SubgrupoProductoULID: string
   ClaveGrupo: string

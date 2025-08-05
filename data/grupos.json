@@ -1,37 +1,37 @@
 [
   {
     "id": "GRP-001",
-    "clave": "BEV",
-    "nombre": "Bebidas Calientes",
-    "descripcion": "Cafés, tés e infusiones.",
+    "clave": "BEB",
+    "nombre": "Bebidas",
+    "descripcion": "Cafés, tés, refrescos, jugos y aguas frescas.",
     "activo": true
   },
   {
     "id": "GRP-002",
-    "clave": "BEF",
-    "nombre": "Bebidas Frias",
-    "descripcion": "Refrescos, jugos y aguas frescas.",
+    "clave": "ENT",
+    "nombre": "Entradas",
+    "descripcion": "Aperitivos y platos para empezar la comida.",
     "activo": true
   },
   {
     "id": "GRP-003",
-    "clave": "ENT",
-    "nombre": "Entradas",
-    "descripcion": "Aperitivos y platos para empezar.",
+    "clave": "PLF",
+    "nombre": "Platos Fuertes",
+    "descripcion": "Platos principales de la casa, carnes, aves y pescados.",
     "activo": true
   },
   {
     "id": "GRP-004",
-    "clave": "PLA",
-    "nombre": "Platos Fuertes",
-    "descripcion": "Platos principales de la casa.",
-    "activo": false
+    "clave": "PST",
+    "nombre": "Postres",
+    "descripcion": "Dulces y postres para finalizar la experiencia.",
+    "activo": true
   },
   {
     "id": "GRP-005",
-    "clave": "POS",
-    "nombre": "Postres",
-    "descripcion": "Dulces y postres para finalizar.",
-    "activo": true
+    "clave": "VIN",
+    "nombre": "Vinos y Licores",
+    "descripcion": "Selección de vinos y licores nacionales e importados.",
+    "activo": false
   }
 ]

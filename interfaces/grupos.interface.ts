@@ -2,7 +2,7 @@ export interface IGrupo {
   id: string
   clave: string
   nombre: string
-  descripcion?: string
+  descripcion: string
   activo: boolean
 }
 
@@ -42,5 +42,5 @@ export interface IGetGrupoProducto {
   EmpresaULID: string
 }
 
-// Alias para compatibilidad
+// Alias para mantener compatibilidad si se usa en otros lugares.
 export type Grupo = IGrupo
