@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useForm } from "react-hook-form"
+import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "sonner"
 
@@ -11,7 +11,7 @@ import { createGrupoCatalogos, updateGrupoCatalogos } from "@/actions/catalogos.
 
 import { Modal } from "@/components/ui/modal"
 import { Button } from "@/components/ui/button"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Form, FormItem, FormLabel, FormMessage, FormControl } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
@@ -43,64 +43,92 @@ export function GrupoFormModal({ isOpen, onClose, grupo }: GrupoFormModalProps) 
 
   useEffect(() => {
     if (grupo) {
-      form.reset(grupo)
+      form.reset({
+        clave: grupo.clave || "",
+        nombre: grupo.nombre || "",
+        descripcion: grupo.descripcion || "",
+        activo: grupo.activo ?? true,
+      })
     } else {
-      form.reset({ clave: "", nombre: "", descripcion: "", activo: true })
+      form.reset({
+        clave: "",
+        nombre: "",
+        descripcion: "",
+        activo: true,
+      })
     }
   }, [grupo, form, isOpen])
 
   const onSubmit = async (data: GrupoFormValues) => {
     setIsLoading(true)
-    const promise = isEditing ? updateGrupoCatalogos(grupo.id, data) : createGrupoCatalogos(data)
+    try {
+      const promise = isEditing ? updateGrupoCatalogos(grupo.id, data) : createGrupoCatalogos(data)
 
-    toast.promise(promise, {
-      loading: "Guardando...",
-      success: (res) => {
-        if (res.success) {
-          onClose()
-          return toastMessage
-        }
-        throw new Error(res.message)
-      },
-      error: (err) => err.message,
-      finally: () => setIsLoading(false),
-    })
+      const result = await promise
+
+      if (result.success) {
+        toast.success(toastMessage)
+        onClose()
+      } else {
+        toast.error(result.message || "Error al guardar")
+      }
+    } catch (error) {
+      toast.error("Error inesperado al guardar")
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
     <Modal title={title} description={description} isOpen={isOpen} onClose={onClose}>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <FormField
-            control={form.control}
+          <Controller
             name="clave"
-            render={({ field }) => (
+            control={form.control}
+            render={({ field, fieldState }) => (
               <FormItem>
                 <FormLabel>Clave</FormLabel>
                 <FormControl>
-                  <Input disabled={isLoading} placeholder="Ej: BEB, ENT, PST" {...field} />
+                  <Input
+                    disabled={isLoading}
+                    placeholder="Ej: BEB, ENT, PST"
+                    value={field.value || ""}
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
+                    name={field.name}
+                  />
                 </FormControl>
-                <FormMessage />
+                {fieldState.error && <FormMessage>{fieldState.error.message}</FormMessage>}
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
+
+          <Controller
             name="nombre"
-            render={({ field }) => (
+            control={form.control}
+            render={({ field, fieldState }) => (
               <FormItem>
                 <FormLabel>Nombre</FormLabel>
                 <FormControl>
-                  <Input disabled={isLoading} placeholder="Ej: Bebidas, Entradas, Postres" {...field} />
+                  <Input
+                    disabled={isLoading}
+                    placeholder="Ej: Bebidas, Entradas, Postres"
+                    value={field.value || ""}
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
+                    name={field.name}
+                  />
                 </FormControl>
-                <FormMessage />
+                {fieldState.error && <FormMessage>{fieldState.error.message}</FormMessage>}
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
+
+          <Controller
             name="descripcion"
-            render={({ field }) => (
+            control={form.control}
+            render={({ field, fieldState }) => (
               <FormItem>
                 <FormLabel>Descripción (Opcional)</FormLabel>
                 <FormControl>
@@ -108,16 +136,20 @@ export function GrupoFormModal({ isOpen, onClose, grupo }: GrupoFormModalProps) 
                     disabled={isLoading}
                     placeholder="Una breve descripción del grupo de productos."
                     className="resize-none"
-                    {...field}
+                    value={field.value || ""}
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
+                    name={field.name}
                   />
                 </FormControl>
-                <FormMessage />
+                {fieldState.error && <FormMessage>{fieldState.error.message}</FormMessage>}
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
+
+          <Controller
             name="activo"
+            control={form.control}
             render={({ field }) => (
               <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
                 <div className="space-y-0.5">
@@ -132,6 +164,7 @@ export function GrupoFormModal({ isOpen, onClose, grupo }: GrupoFormModalProps) 
               </FormItem>
             )}
           />
+
           <div className="pt-6 space-x-2 flex items-center justify-end w-full">
             <Button disabled={isLoading} variant="outline" type="button" onClick={onClose}>
               Cancelar

@@ -1,9 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { Plus } from "lucide-react"
 import { toast } from "sonner"
-import { PlusCircle, ArrowLeft } from "lucide-react"
 
 import type { IGrupo } from "@/interfaces/grupos.interface"
 import { deleteGrupoCatalogos } from "@/actions/catalogos.actions"
@@ -11,105 +10,93 @@ import { deleteGrupoCatalogos } from "@/actions/catalogos.actions"
 import { Button } from "@/components/ui/button"
 import { Heading } from "@/components/ui/heading"
 import { Separator } from "@/components/ui/separator"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { DataTable } from "@/components/ui/data-table"
-import { AlertModal } from "@/components/modals/alert-modal"
-import { GrupoFormModal } from "./grupo-form-modal"
+
 import { createColumns } from "./grupos-columns"
+import { GrupoFormModal } from "./grupo-form-modal"
+import { AlertModal } from "@/components/modals/alert-modal"
 
 interface GruposViewProps {
   initialData: IGrupo[]
 }
 
 export function GruposView({ initialData }: GruposViewProps) {
-  const router = useRouter()
   const [data, setData] = useState<IGrupo[]>(initialData)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [isAlertOpen, setIsAlertOpen] = useState(false)
-  const [editingGrupo, setEditingGrupo] = useState<IGrupo | undefined>(undefined)
-  const [deletingGrupoId, setDeletingGrupoId] = useState<string | null>(null)
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const [selectedGrupo, setSelectedGrupo] = useState<IGrupo | undefined>(undefined)
+  const [grupoToDelete, setGrupoToDelete] = useState<IGrupo | undefined>(undefined)
   const [isLoading, setIsLoading] = useState(false)
 
-  const handleNew = () => {
-    setEditingGrupo(undefined)
-    setIsModalOpen(true)
-  }
-
   const handleEdit = (grupo: IGrupo) => {
-    setEditingGrupo(grupo)
+    setSelectedGrupo(grupo)
     setIsModalOpen(true)
   }
 
-  const handleDeleteRequest = (id: string) => {
-    setDeletingGrupoId(id)
-    setIsAlertOpen(true)
+  const handleDeleteRequest = (grupo: IGrupo) => {
+    setGrupoToDelete(grupo)
+    setIsDeleteModalOpen(true)
   }
 
-  const handleDelete = async () => {
-    if (!deletingGrupoId) return
+  const handleDeleteConfirm = async () => {
+    if (!grupoToDelete) return
 
     setIsLoading(true)
-    const promise = deleteGrupoCatalogos(deletingGrupoId).then((res) => {
-      if (res.success) {
-        setData((currentData) => currentData.filter((item) => item.id !== deletingGrupoId))
-        return res.message
+    try {
+      const result = await deleteGrupoCatalogos(grupoToDelete.id)
+
+      if (result.success) {
+        setData((prev) => prev.filter((item) => item.id !== grupoToDelete.id))
+        toast.success("Grupo eliminado correctamente")
+      } else {
+        toast.error(result.message || "Error al eliminar el grupo")
       }
-      throw new Error(res.message)
-    })
-
-    toast.promise(promise, {
-      loading: "Eliminando grupo...",
-      success: (message) => message,
-      error: (err) => err.message,
-      finally: () => {
-        setDeletingGrupoId(null)
-        setIsAlertOpen(false)
-        setIsLoading(false)
-      },
-    })
+    } catch (error) {
+      toast.error("Error inesperado al eliminar")
+    } finally {
+      setIsLoading(false)
+      setIsDeleteModalOpen(false)
+      setGrupoToDelete(undefined)
+    }
   }
 
-  const handleCloseModal = () => {
+  const handleModalClose = () => {
     setIsModalOpen(false)
-    setEditingGrupo(undefined)
-    router.refresh()
+    setSelectedGrupo(undefined)
+    // Recargar datos después de cerrar el modal
+    window.location.reload()
   }
 
-  const columns = createColumns({ onEdit: handleEdit, onDelete: handleDeleteRequest })
+  const columns = createColumns({
+    onEdit: handleEdit,
+    onDelete: handleDeleteRequest,
+  })
 
   return (
     <>
-      <AlertModal
-        isOpen={isAlertOpen}
-        onClose={() => setIsAlertOpen(false)}
-        onConfirm={handleDelete}
-        loading={isLoading}
-      />
-      <GrupoFormModal isOpen={isModalOpen} onClose={handleCloseModal} grupo={editingGrupo} />
-
-      <div className="flex-1 space-y-4 p-4 sm:p-6 md:p-8">
-        <div className="flex items-center justify-between">
-          <Heading title="Grupos de Productos" description="Gestiona los grupos para tus productos." />
-          <div className="flex items-center space-x-2">
-            <Button variant="outline" onClick={() => router.push("/catalogos")}>
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Volver a Catálogos
-            </Button>
-            <Button onClick={handleNew}>
-              <PlusCircle className="mr-2 h-4 w-4" /> Nuevo Grupo
-            </Button>
-          </div>
-        </div>
-        <Separator />
-        <Card>
-          <CardHeader>
-            <CardTitle>Lista de Grupos</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <DataTable columns={columns} data={data} searchKey="nombre" searchPlaceholder="Buscar por nombre..." />
-          </CardContent>
-        </Card>
+      <div className="flex items-center justify-between">
+        <Heading title={`Grupos (${data.length})`} description="Gestiona los grupos de productos" />
+        <Button onClick={() => setIsModalOpen(true)}>
+          <Plus className="mr-2 h-4 w-4" />
+          Agregar Nuevo
+        </Button>
       </div>
+      <Separator />
+      <DataTable columns={columns} data={data} searchKey="nombre" />
+
+      <GrupoFormModal isOpen={isModalOpen} onClose={handleModalClose} grupo={selectedGrupo} />
+
+      <AlertModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => {
+          setIsDeleteModalOpen(false)
+          setGrupoToDelete(undefined)
+        }}
+        onConfirm={handleDeleteConfirm}
+        loading={isLoading}
+        title="¿Eliminar grupo?"
+        description={`Esta acción eliminará permanentemente el grupo "${grupoToDelete?.nombre}". ¿Deseas continuar?`}
+      />
     </>
   )
 }

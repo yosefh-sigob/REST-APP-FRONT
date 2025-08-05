@@ -1,13 +1,12 @@
 import { getGruposCatalogos } from "@/actions/catalogos.actions"
 import { GruposView } from "@/components/catalogos/grupos/grupos-view"
-import { RouteNotFound } from "@/components/ui/route-not-found"
 
 export default async function GruposPage() {
-  const response = await getGruposCatalogos()
+  const result = await getGruposCatalogos()
 
-  if (!response.success) {
-    return <RouteNotFound />
+  if (!result.success) {
+    throw new Error(result.message || "Error al cargar los grupos")
   }
 
-  return <GruposView initialData={response.data} />
+  return <GruposView initialData={result.data || []} />
 }
