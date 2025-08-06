@@ -1,4 +1,30 @@
 export interface ISubgrupo {
+  id: string
+  clave: string
+  nombre: string
+  descripcion: string
+  grupo_id: string
+  activo: boolean
+}
+
+export interface ICreateSubgrupo {
+  clave: string
+  nombre: string
+  descripcion: string
+  grupo_id: string
+  activo: boolean
+}
+
+export interface IUpdateSubgrupo {
+  clave?: string
+  nombre?: string
+  descripcion?: string
+  grupo_id?: string
+  activo?: boolean
+}
+
+// Mantener interfaces existentes para compatibilidad con otros módulos
+export interface ISubgrupoOriginal {
   SubgrupoProductoULID: string
   ClaveGrupo: string
   ClaveSubGrupo: string
@@ -9,24 +35,6 @@ export interface ISubgrupo {
   Fecha_Sync: string
   UsuarioULID: string
   EmpresaULID: string
-}
-
-
-export interface ICreateSubgrupo {
-  ClaveGrupo: string
-  ClaveSubGrupo: string
-  Descripcion: string
-  AplicarComentarios: boolean
-  Suspendido: boolean
-}
-
-
-export interface IUpdateSubgrupo {
-  ClaveGrupo?: string
-  ClaveSubGrupo?: string
-  Descripcion?: string
-  AplicarComentarios?: boolean
-  Suspendido?: boolean
 }
 
 // Alias para compatibilidad

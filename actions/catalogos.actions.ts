@@ -7,7 +7,7 @@ import type {
   ICreateAreaProduccion,
   IUpdateAreaProduccion,
 } from "@/interfaces/areaProduccion.interface"
-import type { IGrupo, GrupoFormValues } from "@/interfaces/grupos.interface"
+import type { IGrupo, ICreateGrupo } from "@/interfaces/grupos.interface"
 import type { ISubgrupo, ICreateSubgrupo, IUpdateSubgrupo } from "@/interfaces/subgrupos.interface"
 import type { IUnidad, ICreateUnidad, IUpdateUnidad } from "@/interfaces/unidad.interface"
 import type { IAlmacen, ICreateAlmacen, IUpdateAlmacen } from "@/interfaces/almacen.interface"
@@ -142,7 +142,7 @@ export async function getGruposCatalogos(): Promise<{ success: boolean; data: IG
   }
 }
 
-export async function createGrupoCatalogos(data: GrupoFormValues): Promise<{ success: boolean; message: string }> {
+export async function createGrupoCatalogos(data: ICreateGrupo): Promise<{ success: boolean; message: string }> {
   try {
     await new Promise((resolve) => setTimeout(resolve, 500))
 
@@ -169,7 +169,7 @@ export async function createGrupoCatalogos(data: GrupoFormValues): Promise<{ suc
 
 export async function updateGrupoCatalogos(
   id: string,
-  data: GrupoFormValues,
+  data: ICreateGrupo,
 ): Promise<{ success: boolean; message: string }> {
   try {
     await new Promise((resolve) => setTimeout(resolve, 500))
@@ -269,7 +269,7 @@ export async function updateSubgrupoCatalogos(
 
     if (data.clave) {
       const existingSubgrupo = subgruposData.find(
-        (subgrupo) => subgrupo.id !== id && subgrupo.clave.toLowerCase() === data.clave.toLowerCase(),
+        (subgrupo) => subgrupo.id !== id && subgrupo.clave.toLowerCase() === data.clave!.toLowerCase(),
       )
       if (existingSubgrupo) {
         return {
@@ -787,3 +787,40 @@ export async function deleteEstadoMesaCatalogos(id: string): Promise<{ success: 
     }
   }
 }
+
+// ============================================================================
+// ALIAS PARA COMPATIBILIDAD CON NOMBRES ESPERADOS POR LOS COMPONENTES
+// ============================================================================
+
+// Almacenes
+export const getAlmacenes = getAlmacenesCatalogos
+export const createAlmacen = createAlmacenCatalogos
+export const updateAlmacen = updateAlmacenCatalogos
+export const deleteAlmacen = deleteAlmacenCatalogos
+
+// Métodos de Pago
+export const getMetodosPago = getMetodosPagoCatalogos
+export const createMetodoPago = createMetodoPagoCatalogos
+export const updateMetodoPago = updateMetodoPagoCatalogos
+export const deleteMetodoPago = deleteMetodoPagoCatalogos
+
+// Subgrupos
+export const getSubgrupos = getSubgruposCatalogos
+export const createSubgrupo = createSubgrupoCatalogos
+export const updateSubgrupo = updateSubgrupoCatalogos
+export const deleteSubgrupo = deleteSubgrupoCatalogos
+
+// Tipos de Cliente
+export const getTiposCliente = getTiposClienteCatalogos
+export const createTipoCliente = createTipoClienteCatalogos
+export const updateTipoCliente = updateTipoClienteCatalogos
+export const deleteTipoCliente = deleteTipoClienteCatalogos
+
+// Unidades
+export const getUnidades = getUnidadesCatalogos
+export const createUnidad = createUnidadCatalogos
+export const updateUnidad = updateUnidadCatalogos
+export const deleteUnidad = deleteUnidadCatalogos
+
+// Grupos (alias adicional)
+export const getGrupos = getGruposCatalogos
