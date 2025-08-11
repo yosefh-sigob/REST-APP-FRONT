@@ -29,7 +29,8 @@ import {
   MapPin,
   DollarSign,
   Edit,
-  Plus,
+  Grid3X3,
+  List,
 } from "lucide-react"
 import type {
   ItemInventario,
@@ -54,6 +55,7 @@ export default function InventarioView({ inventario: inventarioInicial, estadist
   const [nuevaCantidad, setNuevaCantidad] = useState<string>("")
   const [observaciones, setObservaciones] = useState("")
   const [isPending, startTransition] = useTransition()
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
 
   const categorias: CategoriaInventario[] = [
     "Carnes",
@@ -171,6 +173,120 @@ export default function InventarioView({ inventario: inventarioInicial, estadist
     })
   }
 
+  const renderGridView = (items: ItemInventario[]) => (
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      {items.map((item) => (
+        <Card key={item.id} className="hover:shadow-md transition-shadow">
+          <CardHeader className="pb-3">
+            <div className="flex items-start justify-between">
+              <div className="space-y-1">
+                <CardTitle className="text-lg">{item.nombre}</CardTitle>
+                <CardDescription>{item.categoria}</CardDescription>
+              </div>
+              <Badge className={obtenerColorEstado(item.estado)}>
+                {obtenerIconoEstado(item.estado)}
+                <span className="ml-1">{item.estado.replace("_", " ")}</span>
+              </Badge>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <p className="text-muted-foreground">Cantidad</p>
+                <p className="font-medium">
+                  {item.cantidadActual} {item.unidad}
+                </p>
+              </div>
+              <div>
+                <p className="text-muted-foreground">Mínimo</p>
+                <p className="font-medium">
+                  {item.cantidadMinima} {item.unidad}
+                </p>
+              </div>
+              <div>
+                <p className="text-muted-foreground">Costo</p>
+                <p className="font-medium">{formatearMoneda(item.costoUnitario)}</p>
+              </div>
+              <div>
+                <p className="text-muted-foreground">Vencimiento</p>
+                <p className={`font-medium ${estaProximoVencer(item.fechaVencimiento) ? "text-orange-600" : ""}`}>
+                  {formatearFecha(item.fechaVencimiento)}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <MapPin className="h-4 w-4" />
+              <span>{item.ubicacion}</span>
+            </div>
+
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" onClick={() => abrirModalDetalle(item)} className="flex-1">
+                Ver detalles
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => abrirModalActualizar(item)}>
+                <Edit className="h-4 w-4" />
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  )
+
+  const renderListView = (items: ItemInventario[]) => (
+    <div className="space-y-4">
+      {items.map((item) => (
+        <Card key={item.id} className="hover:shadow-md transition-shadow">
+          <CardContent className="p-4">
+            <div className="flex items-center space-x-6">
+              <div className="flex-1 grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
+                <div>
+                  <h3 className="text-lg font-semibold">{item.nombre}</h3>
+                  <p className="text-sm text-muted-foreground">{item.categoria}</p>
+                </div>
+
+                <div className="text-center">
+                  <Badge className={obtenerColorEstado(item.estado)}>
+                    {obtenerIconoEstado(item.estado)}
+                    <span className="ml-1">{item.estado.replace("_", " ")}</span>
+                  </Badge>
+                </div>
+
+                <div className="text-center">
+                  <p className="text-sm text-muted-foreground">Cantidad</p>
+                  <p className="font-medium">
+                    {item.cantidadActual} {item.unidad}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Min: {item.cantidadMinima} {item.unidad}
+                  </p>
+                </div>
+
+                <div className="text-center">
+                  <p className="text-sm text-muted-foreground">Costo</p>
+                  <p className="font-medium">{formatearMoneda(item.costoUnitario)}</p>
+                  <p className="text-xs text-muted-foreground">
+                    Valor: {formatearMoneda(item.cantidadActual * item.costoUnitario)}
+                  </p>
+                </div>
+
+                <div className="flex space-x-2">
+                  <Button variant="outline" size="sm" onClick={() => abrirModalDetalle(item)}>
+                    Ver detalles
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => abrirModalActualizar(item)}>
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  )
+
   const itemsDisponibles = inventario.filter((item) => item.estado === "disponible")
   const itemsBajoStock = inventario.filter((item) => item.estado === "bajo_stock" || item.estado === "critico")
   const itemsAgotados = inventario.filter((item) => item.estado === "agotado")
@@ -179,9 +295,31 @@ export default function InventarioView({ inventario: inventarioInicial, estadist
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Inventario</h1>
-        <p className="text-muted-foreground">Gestiona el inventario de ingredientes y productos de la cocina</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Inventario</h1>
+          <p className="text-muted-foreground">Gestiona el inventario de ingredientes y productos de la cocina</p>
+        </div>
+        <Card>
+          <CardContent className="p-2">
+            <div className="flex space-x-1">
+              <Button
+                variant={viewMode === "grid" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setViewMode("grid")}
+              >
+                <Grid3X3 className="h-4 w-4" />
+              </Button>
+              <Button
+                variant={viewMode === "list" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setViewMode("list")}
+              >
+                <List className="h-4 w-4" />
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Estadísticas */}
@@ -332,225 +470,23 @@ export default function InventarioView({ inventario: inventarioInicial, estadist
         </TabsList>
 
         <TabsContent value="todos" className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {inventario.map((item) => (
-              <Card key={item.id} className="hover:shadow-md transition-shadow">
-                <CardHeader className="pb-3">
-                  <div className="flex items-start justify-between">
-                    <div className="space-y-1">
-                      <CardTitle className="text-lg">{item.nombre}</CardTitle>
-                      <CardDescription>{item.categoria}</CardDescription>
-                    </div>
-                    <Badge className={obtenerColorEstado(item.estado)}>
-                      {obtenerIconoEstado(item.estado)}
-                      <span className="ml-1">{item.estado.replace("_", " ")}</span>
-                    </Badge>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div>
-                      <p className="text-muted-foreground">Cantidad</p>
-                      <p className="font-medium">
-                        {item.cantidadActual} {item.unidad}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground">Mínimo</p>
-                      <p className="font-medium">
-                        {item.cantidadMinima} {item.unidad}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground">Costo</p>
-                      <p className="font-medium">{formatearMoneda(item.costoUnitario)}</p>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground">Vencimiento</p>
-                      <p className={`font-medium ${estaProximoVencer(item.fechaVencimiento) ? "text-orange-600" : ""}`}>
-                        {formatearFecha(item.fechaVencimiento)}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <MapPin className="h-4 w-4" />
-                    <span>{item.ubicacion}</span>
-                  </div>
-
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="sm" onClick={() => abrirModalDetalle(item)} className="flex-1">
-                      Ver detalles
-                    </Button>
-                    <Button variant="outline" size="sm" onClick={() => abrirModalActualizar(item)}>
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          {viewMode === "grid" ? renderGridView(inventario) : renderListView(inventario)}
         </TabsContent>
 
         <TabsContent value="disponibles">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {itemsDisponibles.map((item) => (
-              <Card key={item.id} className="hover:shadow-md transition-shadow">
-                <CardHeader className="pb-3">
-                  <div className="flex items-start justify-between">
-                    <div className="space-y-1">
-                      <CardTitle className="text-lg">{item.nombre}</CardTitle>
-                      <CardDescription>{item.categoria}</CardDescription>
-                    </div>
-                    <Badge className={obtenerColorEstado(item.estado)}>
-                      {obtenerIconoEstado(item.estado)}
-                      <span className="ml-1">{item.estado}</span>
-                    </Badge>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div>
-                      <p className="text-muted-foreground">Cantidad</p>
-                      <p className="font-medium">
-                        {item.cantidadActual} {item.unidad}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground">Valor</p>
-                      <p className="font-medium">{formatearMoneda(item.cantidadActual * item.costoUnitario)}</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="sm" onClick={() => abrirModalDetalle(item)} className="flex-1">
-                      Ver detalles
-                    </Button>
-                    <Button variant="outline" size="sm" onClick={() => abrirModalActualizar(item)}>
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          {viewMode === "grid" ? renderGridView(itemsDisponibles) : renderListView(itemsDisponibles)}
         </TabsContent>
 
         <TabsContent value="bajo-stock">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {itemsBajoStock.map((item) => (
-              <Card key={item.id} className="hover:shadow-md transition-shadow border-yellow-200">
-                <CardHeader className="pb-3">
-                  <div className="flex items-start justify-between">
-                    <div className="space-y-1">
-                      <CardTitle className="text-lg">{item.nombre}</CardTitle>
-                      <CardDescription>{item.categoria}</CardDescription>
-                    </div>
-                    <Badge className={obtenerColorEstado(item.estado)}>
-                      {obtenerIconoEstado(item.estado)}
-                      <span className="ml-1">{item.estado.replace("_", " ")}</span>
-                    </Badge>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div>
-                      <p className="text-muted-foreground">Actual</p>
-                      <p className="font-medium text-yellow-600">
-                        {item.cantidadActual} {item.unidad}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground">Mínimo</p>
-                      <p className="font-medium">
-                        {item.cantidadMinima} {item.unidad}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="sm" onClick={() => abrirModalDetalle(item)} className="flex-1">
-                      Ver detalles
-                    </Button>
-                    <Button variant="outline" size="sm" onClick={() => abrirModalActualizar(item)}>
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          {viewMode === "grid" ? renderGridView(itemsBajoStock) : renderListView(itemsBajoStock)}
         </TabsContent>
 
         <TabsContent value="agotados">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {itemsAgotados.map((item) => (
-              <Card key={item.id} className="hover:shadow-md transition-shadow border-red-200">
-                <CardHeader className="pb-3">
-                  <div className="flex items-start justify-between">
-                    <div className="space-y-1">
-                      <CardTitle className="text-lg">{item.nombre}</CardTitle>
-                      <CardDescription>{item.categoria}</CardDescription>
-                    </div>
-                    <Badge className={obtenerColorEstado(item.estado)}>
-                      {obtenerIconoEstado(item.estado)}
-                      <span className="ml-1">{item.estado}</span>
-                    </Badge>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="text-center py-4">
-                    <XCircle className="h-12 w-12 text-red-500 mx-auto mb-2" />
-                    <p className="text-red-600 font-medium">Producto agotado</p>
-                    <p className="text-sm text-muted-foreground">Proveedor: {item.proveedor}</p>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="sm" onClick={() => abrirModalDetalle(item)} className="flex-1">
-                      Ver detalles
-                    </Button>
-                    <Button variant="outline" size="sm" onClick={() => abrirModalActualizar(item)}>
-                      <Plus className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          {viewMode === "grid" ? renderGridView(itemsAgotados) : renderListView(itemsAgotados)}
         </TabsContent>
 
         <TabsContent value="por-vencer">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {itemsProximosVencer.map((item) => (
-              <Card key={item.id} className="hover:shadow-md transition-shadow border-orange-200">
-                <CardHeader className="pb-3">
-                  <div className="flex items-start justify-between">
-                    <div className="space-y-1">
-                      <CardTitle className="text-lg">{item.nombre}</CardTitle>
-                      <CardDescription>{item.categoria}</CardDescription>
-                    </div>
-                    <Badge className="bg-orange-100 text-orange-800 border-orange-200">
-                      <Calendar className="h-4 w-4" />
-                      <span className="ml-1">Por vencer</span>
-                    </Badge>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="text-center py-2">
-                    <p className="text-orange-600 font-medium">Vence: {formatearFecha(item.fechaVencimiento)}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {item.cantidadActual} {item.unidad} disponibles
-                    </p>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="sm" onClick={() => abrirModalDetalle(item)} className="flex-1">
-                      Ver detalles
-                    </Button>
-                    <Button variant="outline" size="sm" onClick={() => abrirModalActualizar(item)}>
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          {viewMode === "grid" ? renderGridView(itemsProximosVencer) : renderListView(itemsProximosVencer)}
         </TabsContent>
       </Tabs>
 

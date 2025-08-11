@@ -15,7 +15,6 @@ import { Separator } from "@/components/ui/separator"
 import { ProductoForm } from "./producto-form"
 import { ProductoDetail } from "./producto-detail"
 import {
-  obtenerProductosAction,
   alternarFavoritoAction,
   alternarSuspendidoAction,
   eliminarProductoAction,
@@ -23,7 +22,7 @@ import {
 } from "@/actions/productos.actions"
 // import { Producto } from "@/schemas/produtos.schemas"
 import { ProductosService } from "@/lib/services/productos.service"
-import { IGetProducto } from "@/interfaces/productos.interface"
+import type { IGetProducto } from "@/interfaces/productos.interface"
 import { toast } from "sonner"
 import {
   Plus,
@@ -56,7 +55,7 @@ export function ProductosView({ productosIniciales, datosRelacionados }: Product
   // Estados principales
   const [productos, setProductos] = useState<IGetProducto[]>(productosIniciales)
   const [loading, setLoading] = useState(false)
-  const [vistaActual, setVistaActual] = useState<"grid" | "lista">("grid")
+  const [vistaActual, setVistaActual] = useState<"grid" | "list">("grid")
 
   // Estados de modales
   const [modalFormulario, setModalFormulario] = useState(false)
@@ -78,7 +77,7 @@ export function ProductosView({ productosIniciales, datosRelacionados }: Product
     try {
       const result = await obtenerProductosActionAPI()
       if (result.success && result.data) {
-        console.log('HOLA?', result.data);
+        console.log("HOLA?", result.data)
         setProductos(result.data)
       } else {
         toast.error("Error al recargar productos")
@@ -209,15 +208,34 @@ export function ProductosView({ productosIniciales, datosRelacionados }: Product
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Productos</h1>
-          <p className="text-muted-foreground">Gestiona el catálogo de productos del restaurante</p>
+          <h1 className="text-3xl font-bold text-gray-900">Gestión de Productos</h1>
+          <p className="text-gray-600 mt-1">Administra el catálogo de productos del restaurante</p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={recargarProductos} disabled={loading}>
-            <RefreshCw className={`h-4 w-4 mr-2 ${loading ? "animate-spin" : ""}`} />
-            Actualizar
-          </Button>
-          <Button onClick={handleCrearProducto}>
+        <div className="flex items-center gap-4">
+          <Card>
+            <CardContent className="p-2">
+              <div className="flex space-x-1">
+                <Button
+                  variant={vistaActual === "grid" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setVistaActual("grid")}
+                >
+                  <Grid3X3 className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant={vistaActual === "list" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setVistaActual("list")}
+                >
+                  <List className="h-4 w-4" />
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+          <Button
+            onClick={handleCrearProducto}
+            className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700"
+          >
             <Plus className="h-4 w-4 mr-2" />
             Nuevo Producto
           </Button>
@@ -346,25 +364,6 @@ export function ProductosView({ productosIniciales, datosRelacionados }: Product
                 </SelectContent>
               </Select>
             </div>
-
-            <div className="flex items-center justify-center">
-              <div className="flex items-center gap-4">
-                <Button
-                  variant={vistaActual === "grid" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setVistaActual("grid")}
-                >
-                  <Grid3X3 className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant={vistaActual === "lista" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setVistaActual("lista")}
-                >
-                  <List className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
           </div>
 
           {/* Switches de filtros rápidos */}
@@ -392,10 +391,18 @@ export function ProductosView({ productosIniciales, datosRelacionados }: Product
             <div>
               <CardTitle>Productos ({productosFiltrados.length})</CardTitle>
               <CardDescription>
-                {productosFiltrados.length === productos.length
-                  ? "Mostrando todos los productos"
-                  : `Mostrando ${productosFiltrados.length} de ${productos.length} productos`}
+                {estadisticas.total} productos totales • {estadisticas.activos} activos • {estadisticas.favoritos}{" "}
+                favoritos
               </CardDescription>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm" onClick={recargarProductos} disabled={loading}>
+                <RefreshCw className={`h-4 w-4 mr-2 ${loading ? "animate-spin" : ""}`} />
+                Recargar
+              </Button>
+              <Button variant="outline" size="sm" onClick={limpiarFiltros}>
+                Limpiar Filtros
+              </Button>
             </div>
             <div className="flex items-center gap-2">
               <Button variant="outline" size="sm">

@@ -73,16 +73,14 @@ export function ClientesView({ clientes }: ClientesViewProps) {
                 size="sm"
                 onClick={() => setViewMode("grid")}
               >
-                <Grid3X3 className="h-4 w-4 mr-2" />
-                Grid
+                <Grid3X3 className="h-4 w-4" />
               </Button>
               <Button
                 variant={viewMode === "list" ? "default" : "outline"}
                 size="sm"
                 onClick={() => setViewMode("list")}
               >
-                <List className="h-4 w-4 mr-2" />
-                Lista
+                <List className="h-4 w-4" />
               </Button>
             </div>
           </CardContent>

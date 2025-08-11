@@ -6,10 +6,26 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Search, Eye, Calendar, Clock, Users, Phone, Mail, CheckCircle, XCircle, Clock3, Filter } from "lucide-react"
+import {
+  Search,
+  Eye,
+  Calendar,
+  Clock,
+  Users,
+  Phone,
+  Mail,
+  CheckCircle,
+  XCircle,
+  Clock3,
+  Filter,
+  Grid3X3,
+  List,
+} from "lucide-react"
 import type { Reservacion, ReservacionesViewProps } from "@/interfaces/reservaciones.interface"
 import { ReservacionDetailModal } from "./reservacion-detail-modal"
 import { CrearReservacionForm } from "./crear-reservacion-form"
+
+type ViewMode = "grid" | "list"
 
 export function ReservacionesView({ reservaciones: reservacionesIniciales }: ReservacionesViewProps) {
   const [reservaciones, setReservaciones] = useState<Reservacion[]>(reservacionesIniciales)
@@ -17,6 +33,7 @@ export function ReservacionesView({ reservaciones: reservacionesIniciales }: Res
   const [filtroEstado, setFiltroEstado] = useState<string>("todos")
   const [selectedReservacion, setSelectedReservacion] = useState<Reservacion | null>(null)
   const [modalOpen, setModalOpen] = useState(false)
+  const [viewMode, setViewMode] = useState<ViewMode>("list")
 
   // Función para refrescar la lista después de crear una nueva reservación
   const handleReservacionCreada = () => {
@@ -110,7 +127,30 @@ export function ReservacionesView({ reservaciones: reservacionesIniciales }: Res
           <h1 className="text-2xl font-bold text-gray-900">Reservaciones</h1>
           <p className="text-gray-600">Gestiona las reservaciones del restaurante</p>
         </div>
-        <CrearReservacionForm onReservacionCreada={handleReservacionCreada} />
+        <div className="flex items-center gap-4">
+          {/* View mode toggle */}
+          <Card>
+            <CardContent className="p-2">
+              <div className="flex space-x-1">
+                <Button
+                  variant={viewMode === "grid" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setViewMode("grid")}
+                >
+                  <Grid3X3 className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant={viewMode === "list" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setViewMode("list")}
+                >
+                  <List className="h-4 w-4" />
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+          <CrearReservacionForm onReservacionCreada={handleReservacionCreada} />
+        </div>
       </div>
 
       {/* Estadísticas */}
@@ -202,91 +242,175 @@ export function ReservacionesView({ reservaciones: reservacionesIniciales }: Res
         </Select>
       </div>
 
-      {/* Lista de Reservaciones */}
-      <div className="grid gap-4">
-        {reservacionesFiltradas.length === 0 ? (
-          <Card>
-            <CardContent className="p-8 text-center">
-              <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">No hay reservaciones</h3>
-              <p className="text-gray-600">
-                {searchTerm || filtroEstado !== "todos"
-                  ? "No se encontraron reservaciones con los filtros aplicados."
-                  : "Aún no hay reservaciones registradas."}
-              </p>
-            </CardContent>
-          </Card>
-        ) : (
-          reservacionesFiltradas.map((reservacion) => (
-            <Card key={reservacion.id} className="hover:shadow-md transition-shadow">
-              <CardContent className="p-6">
-                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-                  {/* Información principal */}
-                  <div className="flex-1 space-y-3">
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                      <h3 className="text-lg font-semibold text-gray-900">{reservacion.clienteNombre}</h3>
-                      <div className="flex items-center gap-2">
-                        {getEstadoBadge(reservacion.estado)}
-                        {reservacion.tipoEvento && getTipoEventoBadge(reservacion.tipoEvento)}
+      {viewMode === "grid" ? (
+        /* Vista Grid */
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {reservacionesFiltradas.length === 0 ? (
+            <div className="col-span-full">
+              <Card>
+                <CardContent className="p-8 text-center">
+                  <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">No hay reservaciones</h3>
+                  <p className="text-gray-600">
+                    {searchTerm || filtroEstado !== "todos"
+                      ? "No se encontraron reservaciones con los filtros aplicados."
+                      : "Aún no hay reservaciones registradas."}
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+          ) : (
+            reservacionesFiltradas.map((reservacion) => (
+              <Card key={reservacion.id} className="hover:shadow-md transition-shadow">
+                <CardContent className="p-6">
+                  <div className="space-y-4">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <h3 className="text-lg font-semibold text-gray-900 truncate">{reservacion.clienteNombre}</h3>
+                        <div className="flex items-center gap-2 mt-1">
+                          {getEstadoBadge(reservacion.estado)}
+                          {reservacion.tipoEvento && getTipoEventoBadge(reservacion.tipoEvento)}
+                        </div>
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-sm text-gray-600">
-                      <div className="flex items-center gap-2">
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 text-sm text-gray-600">
                         <Calendar className="h-4 w-4" />
                         <span>{formatearFecha(reservacion.fechaReservacion)}</span>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 text-sm text-gray-600">
                         <Clock className="h-4 w-4" />
                         <span>{formatearHora(reservacion.horaReservacion)}</span>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 text-sm text-gray-600">
                         <Users className="h-4 w-4" />
                         <span>{reservacion.numeroPersonas} personas</span>
                       </div>
                       {reservacion.mesaAsignada && (
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium">Mesa {reservacion.mesaAsignada}</span>
-                        </div>
+                        <div className="text-sm font-medium">Mesa {reservacion.mesaAsignada}</div>
                       )}
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-600">
-                      <div className="flex items-center gap-2">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2 text-sm text-gray-600">
                         <Mail className="h-4 w-4" />
                         <span className="truncate">{reservacion.clienteEmail}</span>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 text-sm text-gray-600">
                         <Phone className="h-4 w-4" />
                         <span>{reservacion.clienteTelefono}</span>
                       </div>
                     </div>
 
                     {reservacion.observaciones && (
-                      <p className="text-sm text-gray-600 bg-gray-50 p-2 rounded">
+                      <p className="text-sm text-gray-600 bg-gray-50 p-2 rounded line-clamp-2">
                         <strong>Observaciones:</strong> {reservacion.observaciones}
                       </p>
                     )}
-                  </div>
 
-                  {/* Acciones */}
-                  <div className="flex flex-col sm:flex-row lg:flex-col gap-2">
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={() => handleVerDetalles(reservacion)}
-                      className="gap-2"
+                      className="w-full gap-2"
                     >
                       <Eye className="h-4 w-4" />
                       Ver Detalles
                     </Button>
                   </div>
-                </div>
+                </CardContent>
+              </Card>
+            ))
+          )}
+        </div>
+      ) : (
+        /* Vista Lista */
+        <div className="grid gap-4">
+          {reservacionesFiltradas.length === 0 ? (
+            <Card>
+              <CardContent className="p-8 text-center">
+                <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">No hay reservaciones</h3>
+                <p className="text-gray-600">
+                  {searchTerm || filtroEstado !== "todos"
+                    ? "No se encontraron reservaciones con los filtros aplicados."
+                    : "Aún no hay reservaciones registradas."}
+                </p>
               </CardContent>
             </Card>
-          ))
-        )}
-      </div>
+          ) : (
+            reservacionesFiltradas.map((reservacion) => (
+              <Card key={reservacion.id} className="hover:shadow-md transition-shadow">
+                <CardContent className="p-6">
+                  <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                    {/* Información principal */}
+                    <div className="flex-1 space-y-3">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                        <h3 className="text-lg font-semibold text-gray-900">{reservacion.clienteNombre}</h3>
+                        <div className="flex items-center gap-2">
+                          {getEstadoBadge(reservacion.estado)}
+                          {reservacion.tipoEvento && getTipoEventoBadge(reservacion.tipoEvento)}
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-sm text-gray-600">
+                        <div className="flex items-center gap-2">
+                          <Calendar className="h-4 w-4" />
+                          <span>{formatearFecha(reservacion.fechaReservacion)}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Clock className="h-4 w-4" />
+                          <span>{formatearHora(reservacion.horaReservacion)}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Users className="h-4 w-4" />
+                          <span>{reservacion.numeroPersonas} personas</span>
+                        </div>
+                        {reservacion.mesaAsignada && (
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium">Mesa {reservacion.mesaAsignada}</span>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-600">
+                        <div className="flex items-center gap-2">
+                          <Mail className="h-4 w-4" />
+                          <span className="truncate">{reservacion.clienteEmail}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Phone className="h-4 w-4" />
+                          <span>{reservacion.clienteTelefono}</span>
+                        </div>
+                      </div>
+
+                      {reservacion.observaciones && (
+                        <p className="text-sm text-gray-600 bg-gray-50 p-2 rounded">
+                          <strong>Observaciones:</strong> {reservacion.observaciones}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Acciones */}
+                    <div className="flex flex-col sm:flex-row lg:flex-col gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleVerDetalles(reservacion)}
+                        className="gap-2"
+                      >
+                        <Eye className="h-4 w-4" />
+                        Ver Detalles
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          )}
+        </div>
+      )}
 
       {/* Modal de detalles */}
       <ReservacionDetailModal
