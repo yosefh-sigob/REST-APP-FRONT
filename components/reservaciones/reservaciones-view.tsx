@@ -128,92 +128,8 @@ export function ReservacionesView({ reservaciones: reservacionesIniciales }: Res
           <p className="text-gray-600">Gestiona las reservaciones del restaurante</p>
         </div>
         <div className="flex items-center gap-4">
-          {/* View mode toggle */}
-          <Card>
-            <CardContent className="p-2">
-              <div className="flex space-x-1">
-                <Button
-                  variant={viewMode === "grid" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setViewMode("grid")}
-                >
-                  <Grid3X3 className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant={viewMode === "list" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setViewMode("list")}
-                >
-                  <List className="h-4 w-4" />
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
           <CrearReservacionForm onReservacionCreada={handleReservacionCreada} />
         </div>
-      </div>
-
-      {/* Estadísticas */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Total</p>
-                <p className="text-2xl font-bold">{estadisticas.total}</p>
-              </div>
-              <Calendar className="h-8 w-8 text-gray-400" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Pendientes</p>
-                <p className="text-2xl font-bold text-yellow-600">{estadisticas.pendientes}</p>
-              </div>
-              <Clock3 className="h-8 w-8 text-yellow-400" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Confirmadas</p>
-                <p className="text-2xl font-bold text-green-600">{estadisticas.confirmadas}</p>
-              </div>
-              <CheckCircle className="h-8 w-8 text-green-400" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Completadas</p>
-                <p className="text-2xl font-bold text-blue-600">{estadisticas.completadas}</p>
-              </div>
-              <CheckCircle className="h-8 w-8 text-blue-400" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Canceladas</p>
-                <p className="text-2xl font-bold text-red-600">{estadisticas.canceladas}</p>
-              </div>
-              <XCircle className="h-8 w-8 text-red-400" />
-            </div>
-          </CardContent>
-        </Card>
       </div>
 
       {/* Filtros */}
@@ -227,6 +143,26 @@ export function ReservacionesView({ reservaciones: reservacionesIniciales }: Res
             className="pl-10"
           />
         </div>
+        <Card>
+          <CardContent className="p-2">
+            <div className="flex space-x-1">
+              <Button
+                variant={viewMode === "grid" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setViewMode("grid")}
+              >
+                <Grid3X3 className="h-4 w-4" />
+              </Button>
+              <Button
+                variant={viewMode === "list" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setViewMode("list")}
+              >
+                <List className="h-4 w-4" />
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
         <Select value={filtroEstado} onValueChange={setFiltroEstado}>
           <SelectTrigger className="w-full sm:w-48">
             <Filter className="h-4 w-4 mr-2" />

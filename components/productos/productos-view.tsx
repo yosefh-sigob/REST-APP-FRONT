@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { useState, useMemo } from "react"
@@ -37,8 +36,6 @@ import {
   Package,
   AlertCircle,
   RefreshCw,
-  Download,
-  Upload,
 } from "lucide-react"
 
 interface ProductosViewProps {
@@ -212,26 +209,6 @@ export function ProductosView({ productosIniciales, datosRelacionados }: Product
           <p className="text-gray-600 mt-1">Administra el catálogo de productos del restaurante</p>
         </div>
         <div className="flex items-center gap-4">
-          <Card>
-            <CardContent className="p-2">
-              <div className="flex space-x-1">
-                <Button
-                  variant={vistaActual === "grid" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setVistaActual("grid")}
-                >
-                  <Grid3X3 className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant={vistaActual === "list" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setVistaActual("list")}
-                >
-                  <List className="h-4 w-4" />
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
           <Button
             onClick={handleCrearProducto}
             className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700"
@@ -242,55 +219,6 @@ export function ProductosView({ productosIniciales, datosRelacionados }: Product
         </div>
       </div>
 
-      {/* Estadísticas */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Productos</CardTitle>
-            <Package className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{estadisticas.total}</div>
-            <p className="text-xs text-muted-foreground">{productosFiltrados.length} mostrados</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Productos Activos</CardTitle>
-            <div className="h-4 w-4 bg-green-500 rounded-full" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{estadisticas.activos}</div>
-            <p className="text-xs text-muted-foreground">
-              {Math.round((estadisticas.activos / estadisticas.total) * 100)}% del total
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Favoritos</CardTitle>
-            <Star className="h-4 w-4 text-yellow-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{estadisticas.favoritos}</div>
-            <p className="text-xs text-muted-foreground">Productos destacados</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Suspendidos</CardTitle>
-            <AlertCircle className="h-4 w-4 text-red-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{estadisticas.suspendidos}</div>
-            <p className="text-xs text-muted-foreground">Temporalmente inactivos</p>
-          </CardContent>
-        </Card>
-      </div>
-
       {/* Filtros y Búsqueda */}
       <Card>
         <CardHeader>
@@ -298,7 +226,7 @@ export function ProductosView({ productosIniciales, datosRelacionados }: Product
           <CardDescription>Encuentra productos específicos usando los filtros disponibles</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {/* Búsqueda */}
+          {/* Búsqueda y selector de vista */}
           <div className="flex items-center gap-2">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -309,6 +237,27 @@ export function ProductosView({ productosIniciales, datosRelacionados }: Product
                 className="pl-10"
               />
             </div>
+            {/* Selector de vista */}
+            <Card>
+              <CardContent className="p-2">
+                <div className="flex space-x-1">
+                  <Button
+                    variant={vistaActual === "grid" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setVistaActual("grid")}
+                  >
+                    <Grid3X3 className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant={vistaActual === "list" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setVistaActual("list")}
+                  >
+                    <List className="h-4 w-4" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
             <Button variant="outline" onClick={limpiarFiltros}>
               Limpiar Filtros
             </Button>
@@ -404,16 +353,6 @@ export function ProductosView({ productosIniciales, datosRelacionados }: Product
                 Limpiar Filtros
               </Button>
             </div>
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm">
-                <Download className="h-4 w-4 mr-2" />
-                Exportar
-              </Button>
-              <Button variant="outline" size="sm">
-                <Upload className="h-4 w-4 mr-2" />
-                Importar
-              </Button>
-            </div>
           </div>
         </CardHeader>
         <CardContent>
@@ -501,27 +440,35 @@ export function ProductosView({ productosIniciales, datosRelacionados }: Product
               ))}
             </div>
           ) : (
-            <div className="space-y-2">
+            /* Vista Lista */
+            <div className="space-y-4">
               {productosFiltrados.map((producto) => (
-                <Card key={producto.ProductoULID} className="hover:shadow-sm transition-shadow">
+                <Card key={producto.ProductoULID} className="hover:shadow-md transition-shadow">
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4 flex-1">
-                        <div className="flex items-center gap-2">
-                          <Badge variant="outline">{producto.ClaveProducto}</Badge>
-                          {producto.Favorito && <Star className="h-4 w-4 text-yellow-500 fill-current" />}
-                        </div>
                         <div className="flex-1">
-                          <h3 className="font-medium">{producto.Nombredelproducto}</h3>
-                          <p className="text-sm text-muted-foreground line-clamp-1">{producto.Descripcion}</p>
+                          <div className="flex items-center gap-2 mb-1">
+                            <Badge variant="outline" className="text-xs">
+                              {producto.ClaveProducto}
+                            </Badge>
+                            {producto.Favorito && <Star className="h-4 w-4 text-yellow-500 fill-current" />}
+                            <Badge variant={producto.Suspendido ? "destructive" : "secondary"}>
+                              {producto.TipoProducto}
+                            </Badge>
+                          </div>
+                          <h3 className="font-semibold text-lg">{producto.Nombredelproducto}</h3>
+                          {producto.Descripcion && (
+                            <p className="text-sm text-muted-foreground mt-1 line-clamp-1">{producto.Descripcion}</p>
+                          )}
                         </div>
-                        <div className="flex items-center gap-2">
-                          <Badge variant={producto.Suspendido ? "destructive" : "secondary"}>
-                            {producto.TipoProducto}
-                          </Badge>
-                          <Badge variant={producto.Suspendido ? "destructive" : "default"}>
+                        <div className="text-right">
+                          <div className="text-sm text-muted-foreground">
                             {producto.Suspendido ? "Suspendido" : "Activo"}
-                          </Badge>
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            {new Date(producto.Fecha_UltimoCambio).toLocaleDateString()}
+                          </div>
                         </div>
                       </div>
                       <DropdownMenu>
@@ -563,11 +510,11 @@ export function ProductosView({ productosIniciales, datosRelacionados }: Product
         </CardContent>
       </Card>
 
-      {/* Modal Formulario */}
+      {/* Modales */}
       <Dialog open={modalFormulario} onOpenChange={setModalFormulario}>
-        <DialogContent className="w-[80vw] max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>{productoSeleccionado ? "Editar Producto" : "Nuevo Producto"}</DialogTitle>
+            <DialogTitle>{productoSeleccionado ? "Editar Producto" : "Crear Nuevo Producto"}</DialogTitle>
           </DialogHeader>
           <ProductoForm
             producto={productoSeleccionado}
@@ -578,9 +525,8 @@ export function ProductosView({ productosIniciales, datosRelacionados }: Product
         </DialogContent>
       </Dialog>
 
-      {/* Modal Detalle */}
       <Dialog open={modalDetalle} onOpenChange={setModalDetalle}>
-        <DialogContent className="w-[80vw] max-w-3xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Detalle del Producto</DialogTitle>
           </DialogHeader>
@@ -590,7 +536,7 @@ export function ProductosView({ productosIniciales, datosRelacionados }: Product
               datosRelacionados={datosRelacionados}
               onEdit={() => {
                 setModalDetalle(false)
-                handleEditarProducto(productoSeleccionado)
+                setModalFormulario(true)
               }}
               onClose={() => setModalDetalle(false)}
             />
