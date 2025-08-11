@@ -6,21 +6,8 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import {
-  Search,
-  Eye,
-  Calendar,
-  Clock,
-  Users,
-  Phone,
-  Mail,
-  CheckCircle,
-  XCircle,
-  Clock3,
-  Filter,
-  Grid3X3,
-  List,
-} from "lucide-react"
+import { ViewToggle } from "@/components/ui/view-toggle"
+import { Search, Eye, Calendar, Clock, Users, Phone, Mail, CheckCircle, XCircle, Clock3, Filter } from "lucide-react"
 import type { Reservacion, ReservacionesViewProps } from "@/interfaces/reservaciones.interface"
 import { ReservacionDetailModal } from "./reservacion-detail-modal"
 import { CrearReservacionForm } from "./crear-reservacion-form"
@@ -143,24 +130,7 @@ export function ReservacionesView({ reservaciones: reservacionesIniciales }: Res
             className="pl-10"
           />
         </div>
-        <div className="flex items-center border rounded-lg p-1">
-          <Button
-            variant={viewMode === "grid" ? "default" : "ghost"}
-            size="sm"
-            onClick={() => setViewMode("grid")}
-            className="h-8 w-8 p-0"
-          >
-            <Grid3X3 className="h-4 w-4" />
-          </Button>
-          <Button
-            variant={viewMode === "list" ? "default" : "ghost"}
-            size="sm"
-            onClick={() => setViewMode("list")}
-            className="h-8 w-8 p-0"
-          >
-            <List className="h-4 w-4" />
-          </Button>
-        </div>
+        <ViewToggle viewMode={viewMode} onViewModeChange={setViewMode} />
         <Select value={filtroEstado} onValueChange={setFiltroEstado}>
           <SelectTrigger className="w-full sm:w-48">
             <Filter className="h-4 w-4 mr-2" />

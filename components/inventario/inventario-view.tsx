@@ -17,6 +17,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
+import { ViewToggle } from "@/components/ui/view-toggle"
 import {
   Package,
   AlertTriangle,
@@ -29,8 +30,6 @@ import {
   MapPin,
   DollarSign,
   Edit,
-  Grid3X3,
-  List,
 } from "lucide-react"
 import type {
   ItemInventario,
@@ -302,22 +301,7 @@ export default function InventarioView({ inventario: inventarioInicial, estadist
         </div>
         <Card>
           <CardContent className="p-2">
-            <div className="flex space-x-1">
-              <Button
-                variant={viewMode === "grid" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setViewMode("grid")}
-              >
-                <Grid3X3 className="h-4 w-4" />
-              </Button>
-              <Button
-                variant={viewMode === "list" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setViewMode("list")}
-              >
-                <List className="h-4 w-4" />
-              </Button>
-            </div>
+            <ViewToggle viewMode={viewMode} onViewModeChange={setViewMode} />
           </CardContent>
         </Card>
       </div>

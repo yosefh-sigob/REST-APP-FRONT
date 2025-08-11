@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Users, Search, Plus, Phone, Mail, Calendar, Star, Grid3X3, List } from "lucide-react"
+import { ViewToggle } from "@/components/ui/view-toggle"
+import { Users, Search, Plus, Phone, Mail, Calendar, Star } from "lucide-react"
 import type { Cliente } from "@/interfaces/clientes.interface"
 import Link from "next/link"
 
@@ -67,22 +68,7 @@ export function ClientesView({ clientes }: ClientesViewProps) {
 
         <Card>
           <CardContent className="p-4">
-            <div className="flex space-x-2">
-              <Button
-                variant={viewMode === "grid" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setViewMode("grid")}
-              >
-                <Grid3X3 className="h-4 w-4" />
-              </Button>
-              <Button
-                variant={viewMode === "list" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setViewMode("list")}
-              >
-                <List className="h-4 w-4" />
-              </Button>
-            </div>
+            <ViewToggle viewMode={viewMode} onViewModeChange={setViewMode} />
           </CardContent>
         </Card>
       </div>

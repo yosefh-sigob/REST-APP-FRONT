@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { ProductoForm } from "./producto-form"
 import { ProductoDetail } from "./producto-detail"
+import { ViewToggle } from "@/components/ui/view-toggle"
 import {
   alternarFavoritoAction,
   alternarSuspendidoAction,
@@ -23,20 +24,7 @@ import {
 import { ProductosService } from "@/lib/services/productos.service"
 import type { IGetProducto } from "@/interfaces/productos.interface"
 import { toast } from "sonner"
-import {
-  Plus,
-  Search,
-  Grid3X3,
-  List,
-  Star,
-  MoreVertical,
-  Edit,
-  Trash2,
-  Eye,
-  Package,
-  AlertCircle,
-  RefreshCw,
-} from "lucide-react"
+import { Plus, Search, Star, MoreVertical, Edit, Trash2, Eye, Package, AlertCircle, RefreshCw } from "lucide-react"
 
 interface ProductosViewProps {
   productosIniciales: IGetProducto[]
@@ -237,24 +225,8 @@ export function ProductosView({ productosIniciales, datosRelacionados }: Product
                 className="pl-10"
               />
             </div>
-            <div className="flex items-center border rounded-lg p-1">
-              <Button
-                variant={vistaActual === "grid" ? "default" : "ghost"}
-                size="sm"
-                onClick={() => setVistaActual("grid")}
-                className="h-8 w-8 p-0"
-              >
-                <Grid3X3 className="h-4 w-4" />
-              </Button>
-              <Button
-                variant={vistaActual === "list" ? "default" : "ghost"}
-                size="sm"
-                onClick={() => setVistaActual("list")}
-                className="h-8 w-8 p-0"
-              >
-                <List className="h-4 w-4" />
-              </Button>
-            </div>
+            {/* Selector de vista */}
+            <ViewToggle viewMode={vistaActual} onViewModeChange={setVistaActual} />
             <Button variant="outline" onClick={limpiarFiltros}>
               Limpiar Filtros
             </Button>

@@ -4,10 +4,11 @@ import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { UtensilsCrossed, Users, Clock, Plus, Eye, Edit, MapPin, Grid3X3, List } from "lucide-react"
+import { UtensilsCrossed, Users, Clock, Plus, Eye, Edit, MapPin } from "lucide-react"
 import type { Mesa, EstadisticasMesas } from "@/interfaces/mesas.interface"
 import { MesaDetailModal } from "./mesa-detail-modal"
 import { MesaEditModal } from "./mesa-edit-modal"
+import { ViewToggle } from "@/components/ui/view-toggle"
 
 interface MesasViewProps {
   mesas: Mesa[]
@@ -94,22 +95,7 @@ export function MesasView({ mesas, estadisticas }: MesasViewProps) {
           {/* View mode toggle */}
           <Card>
             <CardContent className="p-2">
-              <div className="flex space-x-1">
-                <Button
-                  variant={viewMode === "grid" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setViewMode("grid")}
-                >
-                  <Grid3X3 className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant={viewMode === "list" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setViewMode("list")}
-                >
-                  <List className="h-4 w-4" />
-                </Button>
-              </div>
+              <ViewToggle viewMode={viewMode} onViewModeChange={setViewMode} />
             </CardContent>
           </Card>
           <Button className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700">
