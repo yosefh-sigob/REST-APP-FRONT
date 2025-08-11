@@ -1,6 +1,7 @@
 "use client"
 
-import React, { createContext, useContext, useState, useEffect } from "react"
+import type React from "react"
+import { createContext, useContext, useState, useEffect } from "react"
 import type { KitchenOrder } from "@/interfaces/ordenes.interface"
 
 interface OrdersContextProps {
@@ -17,13 +18,16 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   useEffect(() => {
     async function fetchOrders() {
       try {
-        const response = await fetch('/api/ordenes')
+        const response = await fetch("/api/ordenes")
         if (response.ok) {
           const fetchedOrders = await response.json()
           setOrders(fetchedOrders)
+        } else {
+          console.error("Failed to fetch orders:", response.status, response.statusText)
         }
       } catch (error) {
-        console.error('Error fetching orders:', error)
+        console.error("Error fetching orders:", error)
+        setOrders([])
       }
     }
 
@@ -31,13 +35,11 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   }, [])
 
   const pendingAndPreparingCount = orders.filter(
-    (order) => order.status === "pending" || order.status === "preparing"
+    (order) => order.status === "pending" || order.status === "preparing",
   ).length
 
   return (
-    <OrdersContext.Provider value={{ orders, setOrders, pendingAndPreparingCount }}>
-      {children}
-    </OrdersContext.Provider>
+    <OrdersContext.Provider value={{ orders, setOrders, pendingAndPreparingCount }}>{children}</OrdersContext.Provider>
   )
 }
 

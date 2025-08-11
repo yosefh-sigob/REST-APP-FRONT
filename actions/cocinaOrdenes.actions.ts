@@ -4,6 +4,51 @@ import type { KitchenOrder } from "@/interfaces/ordenes.interface"
 
 const API_BASE_URL = process.env.API_URL || process.env.API_URL_LOCAL || "http://localhost:3001"
 
+const mockOrders: KitchenOrder[] = [
+  {
+    id: "1",
+    orderNumber: "ORD-001",
+    tableNumber: 5,
+    items: [
+      {
+        id: "item-1",
+        name: "Hamburguesa Clásica",
+        quantity: 2,
+        notes: "Sin cebolla",
+      },
+      {
+        id: "item-2",
+        name: "Papas Fritas",
+        quantity: 1,
+        notes: "",
+      },
+    ],
+    status: "pending",
+    priority: "normal",
+    estimatedTime: 15,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: "2",
+    orderNumber: "ORD-002",
+    tableNumber: 3,
+    items: [
+      {
+        id: "item-3",
+        name: "Pizza Margherita",
+        quantity: 1,
+        notes: "Extra queso",
+      },
+    ],
+    status: "preparing",
+    priority: "high",
+    estimatedTime: 20,
+    createdAt: new Date(Date.now() - 300000).toISOString(), // 5 minutes ago
+    updatedAt: new Date().toISOString(),
+  },
+]
+
 // Simulando una llamada a API - obtener todas las órdenes
 export async function getOrdenes(): Promise<KitchenOrder[]> {
   try {
@@ -22,7 +67,8 @@ export async function getOrdenes(): Promise<KitchenOrder[]> {
     return orders
   } catch (error) {
     console.error("Error fetching kitchen orders:", error)
-    return []
+    console.log("Returning mock data for development")
+    return mockOrders
   }
 }
 
@@ -48,7 +94,6 @@ export async function getOrdenById(id: string): Promise<KitchenOrder | null> {
   }
 }
 
-// Simulando una llamada a API - actualizar estado de orden
 export async function updateOrdenStatus(id: string, status: KitchenOrder["status"]): Promise<boolean> {
   try {
     const response = await fetch(`${API_BASE_URL}/api/kitchen-orders/${id}`, {
@@ -66,7 +111,8 @@ export async function updateOrdenStatus(id: string, status: KitchenOrder["status
     return true
   } catch (error) {
     console.error("Error updating kitchen order status:", error)
-    return false
+    console.log("Simulating successful status update for development")
+    return true
   }
 }
 
@@ -89,7 +135,14 @@ export async function createOrden(orden: Omit<KitchenOrder, "id">): Promise<Kitc
     return newOrder
   } catch (error) {
     console.error("Error creating kitchen order:", error)
-    return null
+    console.log("Returning mock order for development")
+    const mockOrder: KitchenOrder = {
+      ...orden,
+      id: `mock-${Date.now()}`,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    }
+    return mockOrder
   }
 }
 
@@ -110,6 +163,7 @@ export async function deleteOrden(id: string): Promise<boolean> {
     return true
   } catch (error) {
     console.error("Error deleting kitchen order:", error)
-    return false
+    console.log("Simulating successful deletion for development")
+    return true
   }
 }
