@@ -1,14 +1,21 @@
-import { promises as fs } from "fs"
-import path from "path"
 import type { KitchenOrder } from "@/interfaces/ordenes.interface"
+
+const API_BASE_URL = process.env.API_URL || process.env.API_URL_LOCAL || "http://localhost:3001"
 
 export async function getOrdenesFromFile(): Promise<KitchenOrder[]> {
   try {
-    // Construye la ruta absoluta al archivo JSON
-    const filePath = path.join(process.cwd(), "data", "kitchen-orders.json")
-    const fileContents = await fs.readFile(filePath, "utf-8")
+    const response = await fetch(`${API_BASE_URL}/api/kitchen-orders`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
 
-    const orders: KitchenOrder[] = JSON.parse(fileContents)
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+
+    const orders: KitchenOrder[] = await response.json()
     return orders
   } catch (error) {
     console.error("Error fetching kitchen orders:", error)

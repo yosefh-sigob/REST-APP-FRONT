@@ -13,20 +13,17 @@ import {
   existeClaveProducto,
   getEstadisticasProductos,
 } from "@/lib/mock/productos.mock"
-
-import { IGetAlmacen } from "@/interfaces/almacen.interface"
-import { IGetGrupoProducto } from "@/interfaces/grupos.interface"
-import { IGetProducto } from "@/interfaces/productos.interface"
-import { IGetSubgrupoProducto } from "@/interfaces/subgrupos.interface"
-import { IGetUnidad } from "@/interfaces/unidad.interface"
-import { IGetAreaProduccion } from "@/interfaces/areaProduccion.interface"
+import type { IGetGrupoProducto } from "@/interfaces/grupos.interface"
+import type { IGetProducto } from "@/interfaces/productos.interface"
+import type { IGetSubgrupoProducto } from "@/interfaces/subgrupos.interface"
+import type { IGetUnidad } from "@/interfaces/unidad.interface"
+import type { IGetAreaProduccion } from "@/interfaces/areaProduccion.interface"
 
 export class ProductosService {
-
   // Productos
   static async obtenerProductos(): Promise<IGetProducto[]> {
     try {
-      return await getProductos();
+      return await getProductos()
     } catch (error) {
       console.error("Error al obtener productos:", error)
       throw new Error("Error al cargar los productos")
@@ -53,7 +50,10 @@ export class ProductosService {
     }
   }
 
-  static async actualizarProducto(id: string, producto: Partial<Omit<IGetProducto, "ProductoULID">>): Promise<IGetProducto> {
+  static async actualizarProducto(
+    id: string,
+    producto: Partial<Omit<IGetProducto, "ProductoULID">>,
+  ): Promise<IGetProducto> {
     try {
       return await updateProducto(id, producto)
     } catch (error) {
@@ -200,7 +200,11 @@ export class ProductosService {
   }
 
   // Ordenamiento
-  static ordenarProductos(productos: IGetProducto[], campo: keyof IGetProducto, direccion: "asc" | "desc" = "asc"): IGetProducto[] {
+  static ordenarProductos(
+    productos: IGetProducto[],
+    campo: keyof IGetProducto,
+    direccion: "asc" | "desc" = "asc",
+  ): IGetProducto[] {
     return [...productos].sort((a, b) => {
       const valorA = a[campo]
       const valorB = b[campo]
@@ -222,3 +226,5 @@ export class ProductosService {
     })
   }
 }
+
+export type Producto = IGetProducto
