@@ -143,26 +143,24 @@ export function ReservacionesView({ reservaciones: reservacionesIniciales }: Res
             className="pl-10"
           />
         </div>
-        <Card>
-          <CardContent className="p-2">
-            <div className="flex space-x-1">
-              <Button
-                variant={viewMode === "grid" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setViewMode("grid")}
-              >
-                <Grid3X3 className="h-4 w-4" />
-              </Button>
-              <Button
-                variant={viewMode === "list" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setViewMode("list")}
-              >
-                <List className="h-4 w-4" />
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+        <div className="flex items-center border rounded-lg p-1">
+          <Button
+            variant={viewMode === "grid" ? "default" : "ghost"}
+            size="sm"
+            onClick={() => setViewMode("grid")}
+            className="h-8 w-8 p-0"
+          >
+            <Grid3X3 className="h-4 w-4" />
+          </Button>
+          <Button
+            variant={viewMode === "list" ? "default" : "ghost"}
+            size="sm"
+            onClick={() => setViewMode("list")}
+            className="h-8 w-8 p-0"
+          >
+            <List className="h-4 w-4" />
+          </Button>
+        </div>
         <Select value={filtroEstado} onValueChange={setFiltroEstado}>
           <SelectTrigger className="w-full sm:w-48">
             <Filter className="h-4 w-4 mr-2" />

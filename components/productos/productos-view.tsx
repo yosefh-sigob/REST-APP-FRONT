@@ -237,27 +237,24 @@ export function ProductosView({ productosIniciales, datosRelacionados }: Product
                 className="pl-10"
               />
             </div>
-            {/* Selector de vista */}
-            <Card>
-              <CardContent className="p-2">
-                <div className="flex space-x-1">
-                  <Button
-                    variant={vistaActual === "grid" ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setVistaActual("grid")}
-                  >
-                    <Grid3X3 className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant={vistaActual === "list" ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setVistaActual("list")}
-                  >
-                    <List className="h-4 w-4" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+            <div className="flex items-center border rounded-lg p-1">
+              <Button
+                variant={vistaActual === "grid" ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setVistaActual("grid")}
+                className="h-8 w-8 p-0"
+              >
+                <Grid3X3 className="h-4 w-4" />
+              </Button>
+              <Button
+                variant={vistaActual === "list" ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setVistaActual("list")}
+                className="h-8 w-8 p-0"
+              >
+                <List className="h-4 w-4" />
+              </Button>
+            </div>
             <Button variant="outline" onClick={limpiarFiltros}>
               Limpiar Filtros
             </Button>
