@@ -1,12 +1,12 @@
 "use client"
 
 import { useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Users, Search, Plus, Phone, Mail, Calendar, Star } from "lucide-react"
+import { Users, Search, Plus, Phone, Mail, Calendar, Star, Grid3X3, List } from "lucide-react"
 import type { Cliente } from "@/interfaces/clientes.interface"
 import Link from "next/link"
 
@@ -14,8 +14,11 @@ interface ClientesViewProps {
   clientes: Cliente[]
 }
 
+type ViewMode = "grid" | "list"
+
 export function ClientesView({ clientes }: ClientesViewProps) {
   const [searchTerm, setSearchTerm] = useState("")
+  const [viewMode, setViewMode] = useState<ViewMode>("grid")
 
   const filteredClientes = clientes.filter(
     (cliente) =>
@@ -46,141 +49,200 @@ export function ClientesView({ clientes }: ClientesViewProps) {
         </Button>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Total Clientes</CardTitle>
-            <Users className="h-4 w-4 text-blue-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-blue-600">{totalClientes}</div>
-            <p className="text-xs text-gray-500 mt-1">Registrados en el sistema</p>
+      {/* Search and View Controls */}
+      <div className="flex flex-col sm:flex-row gap-4">
+        <Card className="flex-1">
+          <CardContent className="p-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Input
+                placeholder="Buscar clientes por nombre, email o teléfono..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Clientes Activos</CardTitle>
-            <Users className="h-4 w-4 text-green-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-600">{clientesActivos}</div>
-            <p className="text-xs text-gray-500 mt-1">Últimos 30 días</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Gasto Promedio</CardTitle>
-            <Users className="h-4 w-4 text-purple-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-purple-600">${gastoPromedio.toFixed(2)}</div>
-            <p className="text-xs text-gray-500 mt-1">Por cliente</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Calificación Promedio</CardTitle>
-            <Star className="h-4 w-4 text-yellow-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-yellow-600">{calificacionPromedio.toFixed(1)}</div>
-            <p className="text-xs text-gray-500 mt-1">Satisfacción general</p>
+          <CardContent className="p-4">
+            <div className="flex space-x-2">
+              <Button
+                variant={viewMode === "grid" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setViewMode("grid")}
+              >
+                <Grid3X3 className="h-4 w-4 mr-2" />
+                Grid
+              </Button>
+              <Button
+                variant={viewMode === "list" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setViewMode("list")}
+              >
+                <List className="h-4 w-4 mr-2" />
+                Lista
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Search */}
-      <Card>
-        <CardContent className="p-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <Input
-              placeholder="Buscar clientes por nombre, email o teléfono..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-        </CardContent>
-      </Card>
+      {viewMode === "grid" ? (
+        /* Vista Grid */
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+          {filteredClientes.map((cliente) => (
+            <Card key={cliente.id} className="hover:shadow-md transition-shadow">
+              <CardContent className="p-6">
+                <div className="flex items-start space-x-4">
+                  <Avatar className="h-12 w-12">
+                    <AvatarImage src="/placeholder-user.jpg" alt={cliente.nombre} />
+                    <AvatarFallback className="bg-gradient-to-br from-orange-500 to-red-600 text-white">
+                      {cliente.nombre
+                        .split(" ")
+                        .map((n) => n[0])
+                        .join("")}
+                    </AvatarFallback>
+                  </Avatar>
 
-      {/* Clientes List */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {filteredClientes.map((cliente) => (
-          <Card key={cliente.id} className="hover:shadow-md transition-shadow">
-            <CardContent className="p-6">
-              <div className="flex items-start space-x-4">
-                <Avatar className="h-12 w-12">
-                  <AvatarImage src="/placeholder-user.jpg" alt={cliente.nombre} />
-                  <AvatarFallback className="bg-gradient-to-br from-orange-500 to-red-600 text-white">
-                    {cliente.nombre
-                      .split(" ")
-                      .map((n) => n[0])
-                      .join("")}
-                  </AvatarFallback>
-                </Avatar>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="text-lg font-semibold text-gray-900 truncate">{cliente.nombre}</h3>
+                      <div className="flex items-center space-x-1">
+                        <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                        <span className="text-sm font-medium">{cliente.calificacion}</span>
+                      </div>
+                    </div>
 
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="text-lg font-semibold text-gray-900 truncate">{cliente.nombre}</h3>
-                    <div className="flex items-center space-x-1">
-                      <Star className="h-4 w-4 text-yellow-500 fill-current" />
-                      <span className="text-sm font-medium">{cliente.calificacion}</span>
+                    <div className="space-y-2">
+                      <div className="flex items-center text-sm text-gray-600">
+                        <Mail className="h-4 w-4 mr-2" />
+                        {cliente.email}
+                      </div>
+                      <div className="flex items-center text-sm text-gray-600">
+                        <Phone className="h-4 w-4 mr-2" />
+                        {cliente.telefono}
+                      </div>
+                      <div className="flex items-center text-sm text-gray-600">
+                        <Calendar className="h-4 w-4 mr-2" />
+                        Última visita: {new Date(cliente.ultimaVisita).toLocaleDateString("es-ES")}
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="space-y-2">
-                    <div className="flex items-center text-sm text-gray-600">
-                      <Mail className="h-4 w-4 mr-2" />
-                      {cliente.email}
+                    <div className="mt-3 flex items-center justify-between">
+                      <div className="text-sm">
+                        <span className="font-medium">{cliente.totalVisitas}</span> visitas •
+                        <span className="font-medium text-green-600"> ${cliente.gastoTotal}</span> total
+                      </div>
                     </div>
-                    <div className="flex items-center text-sm text-gray-600">
-                      <Phone className="h-4 w-4 mr-2" />
-                      {cliente.telefono}
-                    </div>
-                    <div className="flex items-center text-sm text-gray-600">
-                      <Calendar className="h-4 w-4 mr-2" />
-                      Última visita: {new Date(cliente.ultimaVisita).toLocaleDateString("es-ES")}
-                    </div>
-                  </div>
 
-                  <div className="mt-3 flex items-center justify-between">
-                    <div className="text-sm">
-                      <span className="font-medium">{cliente.totalVisitas}</span> visitas •
-                      <span className="font-medium text-green-600"> ${cliente.gastoTotal}</span> total
-                    </div>
-                  </div>
+                    {cliente.preferencias.length > 0 && (
+                      <div className="mt-3 flex flex-wrap gap-1">
+                        {cliente.preferencias.map((pref, index) => (
+                          <Badge key={index} variant="secondary" className="text-xs">
+                            {pref}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
 
-                  {cliente.preferencias.length > 0 && (
-                    <div className="mt-3 flex flex-wrap gap-1">
-                      {cliente.preferencias.map((pref, index) => (
-                        <Badge key={index} variant="secondary" className="text-xs">
-                          {pref}
-                        </Badge>
-                      ))}
-                    </div>
-                  )}
-
-                  <div className="mt-4 flex space-x-2">
-                    <Link href={`/clientes/${cliente.id}`}>
-                      <Button size="sm" variant="outline" className="flex-1 bg-transparent">
-                        Ver Historial
+                    <div className="mt-4 flex space-x-2">
+                      <Link href={`/clientes/${cliente.id}`}>
+                        <Button size="sm" variant="outline" className="flex-1 bg-transparent">
+                          Ver Historial
+                        </Button>
+                      </Link>
+                      <Button size="sm" className="flex-1">
+                        Contactar
                       </Button>
-                    </Link>
-                    <Button size="sm" className="flex-1">
-                      Contactar
-                    </Button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      ) : (
+        /* Vista Lista */
+        <div className="space-y-4">
+          {filteredClientes.map((cliente) => (
+            <Card key={cliente.id} className="hover:shadow-md transition-shadow">
+              <CardContent className="p-4">
+                <div className="flex items-center space-x-6">
+                  <Avatar className="h-16 w-16">
+                    <AvatarImage src="/placeholder-user.jpg" alt={cliente.nombre} />
+                    <AvatarFallback className="bg-gradient-to-br from-orange-500 to-red-600 text-white text-lg">
+                      {cliente.nombre
+                        .split(" ")
+                        .map((n) => n[0])
+                        .join("")}
+                    </AvatarFallback>
+                  </Avatar>
+
+                  <div className="flex-1 grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900">{cliente.nombre}</h3>
+                      <div className="flex items-center space-x-1 mt-1">
+                        <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                        <span className="text-sm font-medium">{cliente.calificacion}</span>
+                      </div>
+                    </div>
+
+                    <div className="space-y-1">
+                      <div className="flex items-center text-sm text-gray-600">
+                        <Mail className="h-4 w-4 mr-2" />
+                        {cliente.email}
+                      </div>
+                      <div className="flex items-center text-sm text-gray-600">
+                        <Phone className="h-4 w-4 mr-2" />
+                        {cliente.telefono}
+                      </div>
+                    </div>
+
+                    <div className="space-y-1">
+                      <div className="text-sm text-gray-600">
+                        <span className="font-medium">{cliente.totalVisitas}</span> visitas
+                      </div>
+                      <div className="text-sm">
+                        <span className="font-medium text-green-600">${cliente.gastoTotal}</span> total
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        Última: {new Date(cliente.ultimaVisita).toLocaleDateString("es-ES")}
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col space-y-2">
+                      {cliente.preferencias.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mb-2">
+                          {cliente.preferencias.slice(0, 2).map((pref, index) => (
+                            <Badge key={index} variant="secondary" className="text-xs">
+                              {pref}
+                            </Badge>
+                          ))}
+                          {cliente.preferencias.length > 2 && (
+                            <Badge variant="secondary" className="text-xs">
+                              +{cliente.preferencias.length - 2}
+                            </Badge>
+                          )}
+                        </div>
+                      )}
+                      <div className="flex space-x-2">
+                        <Link href={`/clientes/${cliente.id}`}>
+                          <Button size="sm" variant="outline">
+                            Ver Historial
+                          </Button>
+                        </Link>
+                        <Button size="sm">Contactar</Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
 
       {filteredClientes.length === 0 && (
         <Card>
