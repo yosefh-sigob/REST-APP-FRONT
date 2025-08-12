@@ -62,8 +62,11 @@ export function ClientesView({ clientes }: ClientesViewProps) {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
               />
-              <ViewToggle viewMode={viewMode} onViewModeChange={setViewMode} />
+              
             </div>
+            <div>
+              <ViewToggle viewMode={viewMode} onViewModeChange={setViewMode} />
+            <div/>
           </CardContent>
         </Card>
       </div>
