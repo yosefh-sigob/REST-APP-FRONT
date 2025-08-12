@@ -197,6 +197,10 @@ export function ProductosView({ productosIniciales, datosRelacionados }: Product
           <p className="text-gray-600 mt-1">Administra el catálogo de productos del restaurante</p>
         </div>
         <div className="flex items-center gap-4">
+          <Button onClick={recargarProductos} variant="outline" disabled={loading}>
+            <RefreshCw className={`h-4 w-4 mr-2 ${loading ? "animate-spin" : ""}`} />
+            Actualizar
+          </Button>
           <Button
             onClick={handleCrearProducto}
             className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700"
