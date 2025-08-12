@@ -93,11 +93,7 @@ export function MesasView({ mesas, estadisticas }: MesasViewProps) {
         </div>
         <div className="flex items-center gap-4">
           {/* View mode toggle */}
-          <Card>
-            <CardContent className="p-2">
-              <ViewToggle viewMode={viewMode} onViewModeChange={setViewMode} />
-            </CardContent>
-          </Card>
+          <ViewToggle viewMode={viewMode} onViewModeChange={setViewMode} />
           <Button className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700">
             <Plus className="h-4 w-4 mr-2" />
             Nueva Mesa
