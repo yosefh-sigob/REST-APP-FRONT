@@ -65,11 +65,7 @@ function CardFilters({
   searchPlaceholder?: string
 }) {
   return (
-    <div
-      data-slot="card-filters"
-      className={cn("flex items-center justify-between gap-4 px-6 pb-4 border-b", className)}
-      {...props}
-    >
+    <div data-slot="card-filters" className={cn("flex items-center gap-4 px-6 pb-4 border-b", className)} {...props}>
       <div className="relative flex-1 max-w-sm">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
         <Input
