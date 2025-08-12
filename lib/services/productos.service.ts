@@ -1,69 +1,83 @@
 import type { IGetProducto } from "@/interfaces/productos.interface"
 
-const MOCK_PRODUCTOS: IGetProducto[] = [
-  {
-    ULID: "01HXYZ123456789ABCDEFGHIJ",
-    ClaveProducto: "PROD001",
-    Nombredelproducto: "Hamburguesa Clásica",
-    Descripcion: "Hamburguesa con carne, lechuga, tomate y queso",
-    TipoProducto: "Plato Principal",
-    PrecioVenta: 150.0,
-    Favorito: true,
-    Suspendido: false,
-    GrupoProductoULID: "01GRUPO123456789ABCDEFGH",
-    SubgrupoProductoULID: "01SUBGR123456789ABCDEFGH",
-    UnidadULID: "01UNIDAD123456789ABCDEFG",
-    AlmacenULID: "01ALMAC123456789ABCDEFGH",
-    AreaProduccionULID: "01AREAP123456789ABCDEFGH",
-    CostoPromedio: 80.0,
-    Stock: 50,
-    StockMinimo: 10,
-    StockMaximo: 100,
-    FechaCreacion: new Date().toISOString(),
-    FechaActualizacion: new Date().toISOString(),
-  },
-  {
-    ULID: "01HXYZ123456789ABCDEFGHIK",
-    ClaveProducto: "PROD002",
-    Nombredelproducto: "Pizza Margherita",
-    Descripcion: "Pizza con salsa de tomate, mozzarella y albahaca",
-    TipoProducto: "Plato Principal",
-    PrecioVenta: 200.0,
-    Favorito: false,
-    Suspendido: false,
-    GrupoProductoULID: "01GRUPO123456789ABCDEFGH",
-    SubgrupoProductoULID: "01SUBGR123456789ABCDEFGH",
-    UnidadULID: "01UNIDAD123456789ABCDEFG",
-    AlmacenULID: "01ALMAC123456789ABCDEFGH",
-    AreaProduccionULID: "01AREAP123456789ABCDEFGH",
-    CostoPromedio: 120.0,
-    Stock: 30,
-    StockMinimo: 5,
-    StockMaximo: 50,
-    FechaCreacion: new Date().toISOString(),
-    FechaActualizacion: new Date().toISOString(),
-  },
-]
+import productosData from "@/data/productos.json"
+import gruposData from "@/data/grupos.json"
+import subgruposData from "@/data/subgrupos.json"
+import unidadesData from "@/data/unidades.json"
+import areasProduccionData from "@/data/areas-produccion.json"
 
-const MOCK_GRUPOS = [
-  { ULID: "01GRUPO123456789ABCDEFGH", Nombre: "Comida Rápida", Activo: true },
-  { ULID: "01GRUPO123456789ABCDEFGI", Nombre: "Bebidas", Activo: true },
-]
+const transformProductosData = (): IGetProducto[] => {
+  return productosData.map((producto) => ({
+    ULID: producto.ProductoULID,
+    ClaveProducto: producto.ClaveProducto,
+    Nombredelproducto: producto.Nombredelproducto,
+    Descripcion: producto.Descripcion,
+    TipoProducto: producto.TipoProducto,
+    PrecioVenta: 150.0, // Valor por defecto ya que no está en el JSON
+    Favorito: producto.Favorito,
+    Suspendido: producto.Suspendido,
+    GrupoProductoULID: "01GRUPO123456789ABCDEFGH", // Valor por defecto
+    SubgrupoProductoULID: "01SUBGR123456789ABCDEFGH", // Valor por defecto
+    UnidadULID: "01UNIDAD123456789ABCDEFG", // Valor por defecto
+    AlmacenULID: "01ALMAC123456789ABCDEFGH", // Valor por defecto
+    AreaProduccionULID: "01AREAP123456789ABCDEFGH", // Valor por defecto
+    CostoPromedio: 80.0, // Valor por defecto
+    Stock: 50, // Valor por defecto
+    StockMinimo: 10, // Valor por defecto
+    StockMaximo: 100, // Valor por defecto
+    FechaCreacion: producto.Fecha_UltimoCambio,
+    FechaActualizacion: producto.Fecha_Sync,
+  }))
+}
 
-const MOCK_SUBGRUPOS = [
-  { ULID: "01SUBGR123456789ABCDEFGH", Nombre: "Hamburguesas", GrupoULID: "01GRUPO123456789ABCDEFGH", Activo: true },
-  { ULID: "01SUBGR123456789ABCDEFGI", Nombre: "Pizzas", GrupoULID: "01GRUPO123456789ABCDEFGH", Activo: true },
-]
+const transformGruposData = () => {
+  return gruposData.map((grupo) => ({
+    ULID: grupo.id,
+    Nombre: grupo.nombre,
+    Clave: grupo.clave,
+    Descripcion: grupo.descripcion,
+    Activo: grupo.activo,
+  }))
+}
 
-const MOCK_UNIDADES = [
-  { ULID: "01UNIDAD123456789ABCDEFG", Nombre: "Pieza", Abreviacion: "pza", Activo: true },
-  { ULID: "01UNIDAD123456789ABCDEFH", Nombre: "Kilogramo", Abreviacion: "kg", Activo: true },
-]
+const transformSubgruposData = () => {
+  return subgruposData.map((subgrupo) => ({
+    ULID: subgrupo.id,
+    Nombre: subgrupo.nombre,
+    Clave: subgrupo.clave,
+    Descripcion: subgrupo.descripcion,
+    GrupoULID: subgrupo.grupo_id,
+    Activo: subgrupo.activo,
+  }))
+}
 
-const MOCK_AREAS_PRODUCCION = [
-  { ULID: "01AREAP123456789ABCDEFGH", Nombre: "Cocina Principal", Activo: true },
-  { ULID: "01AREAP123456789ABCDEFGI", Nombre: "Parrilla", Activo: true },
-]
+const transformUnidadesData = () => {
+  return unidadesData.map((unidad) => ({
+    ULID: unidad.id,
+    Nombre: unidad.nombre,
+    Clave: unidad.clave,
+    Abreviacion: unidad.abreviacion,
+    Descripcion: unidad.descripcion,
+    Activo: unidad.activo,
+  }))
+}
+
+const transformAreasProduccionData = () => {
+  return areasProduccionData.map((area) => ({
+    ULID: area.id,
+    Nombre: area.descripcion,
+    Clave: area.clave,
+    Descripcion: area.descripcion,
+    Impresora: area.impresora,
+    Activo: area.activa,
+  }))
+}
+
+const PRODUCTOS_LOCAL = transformProductosData()
+const GRUPOS_LOCAL = transformGruposData()
+const SUBGRUPOS_LOCAL = transformSubgruposData()
+const UNIDADES_LOCAL = transformUnidadesData()
+const AREAS_PRODUCCION_LOCAL = transformAreasProduccionData()
 
 export class ProductosService {
   static async obtenerProductos(): Promise<IGetProducto[]> {
@@ -78,8 +92,8 @@ export class ProductosService {
       const data = await response.json()
       return data
     } catch (error) {
-      console.warn("API no disponible, usando datos mock:", error)
-      return MOCK_PRODUCTOS
+      console.warn("API no disponible, usando datos locales:", error)
+      return PRODUCTOS_LOCAL
     }
   }
 
@@ -95,8 +109,8 @@ export class ProductosService {
       const data = await response.json()
       return data
     } catch (error) {
-      console.warn("API no disponible, usando datos mock:", error)
-      return MOCK_PRODUCTOS.find((p) => p.ULID === id) || null
+      console.warn("API no disponible, usando datos locales:", error)
+      return PRODUCTOS_LOCAL.find((p) => p.ULID === id) || null
     }
   }
 
@@ -112,8 +126,8 @@ export class ProductosService {
       const data = await response.json()
       return data
     } catch (error) {
-      console.warn("API no disponible, usando datos mock:", error)
-      return MOCK_GRUPOS
+      console.warn("API no disponible, usando datos locales:", error)
+      return GRUPOS_LOCAL
     }
   }
 
@@ -129,8 +143,8 @@ export class ProductosService {
       const data = await response.json()
       return data
     } catch (error) {
-      console.warn("API no disponible, usando datos mock:", error)
-      return MOCK_SUBGRUPOS
+      console.warn("API no disponible, usando datos locales:", error)
+      return SUBGRUPOS_LOCAL
     }
   }
 
@@ -146,8 +160,8 @@ export class ProductosService {
       const data = await response.json()
       return data
     } catch (error) {
-      console.warn("API no disponible, usando datos mock:", error)
-      return MOCK_UNIDADES
+      console.warn("API no disponible, usando datos locales:", error)
+      return UNIDADES_LOCAL
     }
   }
 
@@ -163,8 +177,8 @@ export class ProductosService {
       const data = await response.json()
       return data
     } catch (error) {
-      console.warn("API no disponible, usando datos mock:", error)
-      return MOCK_AREAS_PRODUCCION
+      console.warn("API no disponible, usando datos locales:", error)
+      return AREAS_PRODUCCION_LOCAL
     }
   }
 
@@ -186,10 +200,9 @@ export class ProductosService {
       const data = await response.json()
       return data
     } catch (error) {
-      console.warn("API no disponible, usando datos mock:", error)
-      // Return mock created product
+      console.warn("API no disponible, usando datos locales:", error)
       return {
-        ...MOCK_PRODUCTOS[0],
+        ...PRODUCTOS_LOCAL[0],
         ULID: `01NEW${Date.now()}`,
         ...producto,
         FechaCreacion: new Date().toISOString(),
@@ -216,9 +229,8 @@ export class ProductosService {
       const data = await response.json()
       return data
     } catch (error) {
-      console.warn("API no disponible, usando datos mock:", error)
-      // Return mock updated product
-      const existing = MOCK_PRODUCTOS.find((p) => p.ULID === id) || MOCK_PRODUCTOS[0]
+      console.warn("API no disponible, usando datos locales:", error)
+      const existing = PRODUCTOS_LOCAL.find((p) => p.ULID === id) || PRODUCTOS_LOCAL[0]
       return {
         ...existing,
         ...producto,
@@ -240,7 +252,7 @@ export class ProductosService {
 
       return true
     } catch (error) {
-      console.warn("API no disponible, usando datos mock:", error)
+      console.warn("API no disponible, usando datos locales:", error)
       return true // Mock success
     }
   }
@@ -259,8 +271,8 @@ export class ProductosService {
       const data = await response.json()
       return data
     } catch (error) {
-      console.warn("API no disponible, usando datos mock:", error)
-      const existing = MOCK_PRODUCTOS.find((p) => p.ULID === id) || MOCK_PRODUCTOS[0]
+      console.warn("API no disponible, usando datos locales:", error)
+      const existing = PRODUCTOS_LOCAL.find((p) => p.ULID === id) || PRODUCTOS_LOCAL[0]
       return {
         ...existing,
         Favorito: !existing.Favorito,
@@ -283,8 +295,8 @@ export class ProductosService {
       const data = await response.json()
       return data
     } catch (error) {
-      console.warn("API no disponible, usando datos mock:", error)
-      const existing = MOCK_PRODUCTOS.find((p) => p.ULID === id) || MOCK_PRODUCTOS[0]
+      console.warn("API no disponible, usando datos locales:", error)
+      const existing = PRODUCTOS_LOCAL.find((p) => p.ULID === id) || PRODUCTOS_LOCAL[0]
       return {
         ...existing,
         Suspendido: !existing.Suspendido,
@@ -307,9 +319,8 @@ export class ProductosService {
       const data = await response.json()
       return data.existe
     } catch (error) {
-      console.warn("API no disponible, usando datos mock:", error)
-      // Mock validation - check if clave exists in mock data
-      return MOCK_PRODUCTOS.some((p) => p.ClaveProducto === clave && p.ULID !== excludeId)
+      console.warn("API no disponible, usando datos locales:", error)
+      return PRODUCTOS_LOCAL.some((p) => p.ClaveProducto === clave && p.ULID !== excludeId)
     }
   }
 
@@ -325,12 +336,12 @@ export class ProductosService {
       const data = await response.json()
       return data
     } catch (error) {
-      console.warn("API no disponible, usando datos mock:", error)
+      console.warn("API no disponible, usando datos locales:", error)
       return {
-        totalProductos: MOCK_PRODUCTOS.length,
-        productosFavoritos: MOCK_PRODUCTOS.filter((p) => p.Favorito).length,
-        productosSuspendidos: MOCK_PRODUCTOS.filter((p) => p.Suspendido).length,
-        stockBajo: MOCK_PRODUCTOS.filter((p) => p.Stock <= p.StockMinimo).length,
+        totalProductos: PRODUCTOS_LOCAL.length,
+        productosFavoritos: PRODUCTOS_LOCAL.filter((p) => p.Favorito).length,
+        productosSuspendidos: PRODUCTOS_LOCAL.filter((p) => p.Suspendido).length,
+        stockBajo: PRODUCTOS_LOCAL.filter((p) => p.Stock <= p.StockMinimo).length,
       }
     }
   }
